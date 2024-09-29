@@ -1,0 +1,107 @@
+/* src/assets/styles/utilities/_general.scss */
+
+/* ============================================================
+   Utility Mixins
+   ============================================================ */
+
+/* Rounded Small Mixin */
+@mixin rounded-sm {
+  border-radius: $border-radius-sm !important;
+}
+
+/* Rounded Medium Mixin */
+@mixin rounded-md {
+  border-radius: $border-radius-md !important;
+}
+
+/* Rounded Large Mixin */
+@mixin rounded-lg {
+  border-radius: $border-radius-lg !important;
+}
+/* Box Shadow Mixin */
+@mixin box-shadow($shadow-level) {
+  box-shadow: var(--v-elevation-#{$shadow-level});
+}
+
+/* ============================================================
+     Utility Mixins
+     ============================================================ */
+
+/* text-transform-uppercase applies text-transform-uppercase mixin */
+@mixin text-transform-uppercase {
+  text-transform: uppercase;
+}
+
+/* text-transform-lowercase applies text-transform-lowercase mixin */
+@mixin text-transform-lowercase {
+  text-transform: lowercase;
+}
+
+/* text-transform-capitalize applies text-transform-capitalize mixin */
+@mixin text-transform-capitalize {
+  text-transform: capitalize;
+}
+
+/* visibility-visible applies visibility-visible mixin */
+@mixin visibility-visible {
+  visibility: visible;
+}
+
+/* visibility-hidden applies visibility-hidden mixin */
+@mixin visibility-hidden {
+  visibility: hidden;
+}
+
+/* ============================================================
+     General Utility Classes
+     ============================================================ */
+
+/* rounded-sm applies rounded-sm mixin */
+.rounded-sm {
+  @include rounded-sm;
+}
+
+/* rounded-md applies rounded-md mixin */
+.rounded-md {
+  @include rounded-md;
+}
+
+/* rounded-lg applies rounded-lg mixin */
+.rounded-lg {
+  @include rounded-lg;
+}
+
+/* shadow-2 applies box-shadow with shadow level 2 */
+.shadow-2 {
+  @include box-shadow(2);
+}
+
+/* shadow-4 applies box-shadow with shadow level 4 */
+.shadow-4 {
+  @include box-shadow(4);
+}
+
+/* text-uppercase applies text-transform-uppercase mixin */
+.text-uppercase {
+  @include text-transform-uppercase;
+}
+
+/* text-lowercase applies text-transform-lowercase mixin */
+.text-lowercase {
+  @include text-transform-lowercase;
+}
+
+/* text-capitalize applies text-transform-capitalize mixin */
+.text-capitalize {
+  @include text-transform-capitalize;
+}
+
+/* visibility-visible applies visibility-visible mixin */
+.visible {
+  @include visibility-visible;
+}
+
+/* visibility-hidden applies visibility-hidden mixin */
+.invisible {
+  @include visibility-hidden;
+}

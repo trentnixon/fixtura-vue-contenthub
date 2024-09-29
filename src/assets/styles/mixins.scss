@@ -1,0 +1,228 @@
+/* src/assets/styles/mixins.scss */
+
+/* ============================================================
+   Flexbox Mixins
+   ============================================================ */
+
+/* Flexbox Mixin */
+@mixin flex($direction: row, $justify: flex-start, $align: stretch) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+/* Centering Mixin */
+@mixin center-content($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flex Center Mixin */
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flex Between Mixin */
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Flex Column Center Mixin */
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ============================================================
+   Typography Mixins
+   ============================================================ */
+
+/* Text Title Styles */
+@mixin text-title-styles {
+  font-size: $font-size-lg; /* e.g., 2rem */
+  font-weight: $font-weight-xl; /* e.g., 700 */
+  line-height: $line-height-heading; /* e.g., 1.2 */
+  color: $primary-color; /* Defined in variables.scss */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* Text Subtitle Styles */
+@mixin text-subtitle-styles {
+  font-size: $font-size-md; /* e.g., 1.5rem */
+  font-weight: $font-weight-lg; /* e.g., 600 */
+  line-height: $line-height-heading; /* e.g., 1.2 */
+  color: $secondary-color; /* Defined in variables.scss */
+
+  margin-top: $spacing-2; /* e.g., 0.5rem */
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* Text Body Styles */
+@mixin text-body-styles {
+  font-size: $font-size-xs; /* e.g., 1rem */
+  font-weight: $font-weight-md; /* e.g., 400 */
+  line-height: $line-height-base; /* e.g., 1.5 */
+  color: var(--v-text-base); /* Ensure --v-text-base is defined */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* ============================================================
+   Spacing Mixins
+   ============================================================ */
+
+/* Margin Vertical Mixin */
+@mixin margin-vertical($size) {
+  margin-top: $size;
+  margin-bottom: $size;
+}
+
+/* Margin Horizontal Mixin */
+@mixin margin-horizontal($size) {
+  margin-left: $size;
+  margin-right: $size;
+}
+
+/* Padding Vertical Mixin */
+@mixin padding-vertical($size) {
+  padding-top: $size;
+  padding-bottom: $size;
+}
+
+/* Padding Horizontal Mixin */
+@mixin padding-horizontal($size) {
+  padding-left: $size;
+  padding-right: $size;
+}
+
+/* ============================================================
+   Button Mixins
+   ============================================================ */
+
+/* Button Primary Mixin */
+@mixin button-primary {
+  background-color: $primary-color !important;
+  color: #fff !important;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $primary-lighten1 !important;
+  }
+}
+
+/* Button Secondary Mixin */
+@mixin button-secondary {
+  background-color: $secondary-color !important;
+  color: #fff !important;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $secondary-lighten1 !important;
+  }
+}
+
+/* Button Large Mixin */
+@mixin button-large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+}
+
+/* Button Small Mixin */
+@mixin button-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* ============================================================
+   Card Mixins
+   ============================================================ */
+
+/* Card Base Mixin */
+@mixin card-base {
+  background-color: $surface-color !important;
+  border-radius: $border-radius-md;
+  box-shadow: var(--v-elevation-2);
+  padding: $spacing-3;
+}
+
+/* Card Primary Mixin */
+@mixin card-primary {
+  background-color: $primary-lighten1 !important;
+  color: $primary-color;
+}
+
+/* Card Secondary Mixin */
+@mixin card-secondary {
+  background-color: $secondary-lighten1 !important;
+  color: $secondary-color;
+}
+
+/* ============================================================
+   Responsive Mixins
+   ============================================================ */
+
+/* Responsive Text Mixin */
+@mixin responsive-text($size-sm, $size-md, $size-lg) {
+  font-size: $size-sm;
+
+  @media (min-width: $breakpoint-sm) {
+    font-size: $size-md;
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $size-lg;
+  }
+}
+
+/* Responsive Padding Mixin */
+@mixin responsive-padding($padding-sm, $padding-md, $padding-lg) {
+  padding: $padding-sm;
+
+  @media (min-width: $breakpoint-sm) {
+    padding: $padding-md;
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    padding: $padding-lg;
+  }
+}
+
+/* ============================================================
+   Utility Mixins
+   ============================================================ */
+
+/* Rounded Small Mixin */
+@mixin rounded-sm {
+  border-radius: $border-radius-sm;
+}
+
+/* Rounded Medium Mixin */
+@mixin rounded-md {
+  border-radius: $border-radius-md;
+}
+
+/* Rounded Large Mixin */
+@mixin rounded-lg {
+  border-radius: $border-radius-lg; /* Ensure $border-radius-lg is defined in variables.scss */
+}
+
+/* Box Shadow Mixin */
+@mixin box-shadow($shadow-level) {
+  box-shadow: var(--v-elevation-#{$shadow-level});
+}

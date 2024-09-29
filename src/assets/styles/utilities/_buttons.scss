@@ -1,0 +1,59 @@
+/* src/assets/styles/utilities/_buttons.scss */
+
+/* ============================================================
+   Button Mixins
+   ============================================================ */
+
+/* Button Primary Mixin */
+@mixin button-primary {
+  background-color: $primary-color !important;
+  color: #fff !important;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $primary-lighten1 !important;
+  }
+}
+
+/* Button Secondary Mixin */
+@mixin button-secondary {
+  background-color: $secondary-color !important;
+  color: #fff !important;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $secondary-lighten1 !important;
+  }
+}
+
+/* Button Large Mixin */
+@mixin button-large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+}
+
+/* Button Small Mixin */
+@mixin button-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* ============================================================
+     Button Utility Classes
+     ============================================================ */
+
+/* btn-primary combines button-primary and button-large mixins */
+.btn-primary {
+  @include button-primary;
+  @include button-large;
+}
+
+/* btn-secondary combines button-secondary and button-small mixins */
+.btn-secondary {
+  @include button-secondary;
+  @include button-small;
+}

@@ -1,0 +1,45 @@
+/* src/assets/styles/utilities/_responsive.scss */
+
+/* ============================================================
+   Responsive Mixins
+   ============================================================ */
+
+/* Responsive Text Mixin */
+@mixin responsive-text($size-sm, $size-md, $size-lg) {
+  font-size: $size-sm;
+
+  @media (min-width: $breakpoint-sm) {
+    font-size: $size-md;
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $size-lg;
+  }
+}
+
+/* Responsive Padding Mixin */
+@mixin responsive-padding($padding-sm, $padding-md, $padding-lg) {
+  padding: $padding-sm;
+
+  @media (min-width: $breakpoint-sm) {
+    padding: $padding-md;
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    padding: $padding-lg;
+  }
+}
+
+/* ============================================================
+     Responsive Utility Classes
+     ============================================================ */
+
+/* responsive-text-title adjusts font size based on screen size */
+.responsive-text-title {
+  @include responsive-text(1.5rem, 2rem, 2.5rem);
+}
+
+/* responsive-padding-small adjusts padding based on screen size */
+.responsive-padding-small {
+  @include responsive-padding($spacing-1, $spacing-2, $spacing-3);
+}

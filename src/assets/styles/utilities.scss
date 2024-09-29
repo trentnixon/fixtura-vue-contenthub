@@ -1,0 +1,24 @@
+/* src/assets/styles/utilities.scss */
+
+/* Import SCSS Variables, Mixins, and Functions */
+@import "./variables";
+//@import "./mixins";
+//@import "./functions";
+
+/* Import Utility Partials */
+@import "./utilities/typography";
+@import "./utilities/spacing";
+@import "./utilities/flexbox";
+@import "./utilities/buttons";
+@import "./utilities/cards";
+@import "./utilities/responsive";
+@import "./utilities/general";
+@import "./utilities/navbar";
+@import "./utilities/footer";
+@import "./utilities/modal";
+@import "./utilities/background";
+/* ============================================================
+   Additional Global Utilities (If Any)
+   ============================================================ */
+
+/* You can add any additional global utility classes here */

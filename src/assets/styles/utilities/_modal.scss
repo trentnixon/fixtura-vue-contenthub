@@ -1,0 +1,21 @@
+/* src/assets/styles/utilities/_modal.scss */
+
+/* ============================================================
+   Component-Specific Mixins
+   ============================================================ */
+
+/* Modal Styles Mixin */
+@mixin modal-styles {
+  background-color: $surface-color;
+  padding: $spacing-3;
+  border-radius: $border-radius-md;
+}
+
+/* ============================================================
+     Modal Utility Classes
+     ============================================================ */
+
+/* modal combines modal-styles mixin */
+.modal {
+  @include modal-styles;
+}

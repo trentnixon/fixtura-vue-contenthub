@@ -1,0 +1,134 @@
+/* src/assets/styles/utilities/_background.scss */
+
+/* ============================================================
+   Background Mixins
+   ============================================================ */
+
+/* Background Color Mixin */
+@mixin bg-color($color) {
+  background-color: $color;
+}
+
+/* ============================================================
+     Background Utility Classes
+     ============================================================ */
+
+/* Primary Background */
+.bg-primary {
+  @include bg-color($primary-color);
+}
+
+/* Primary Lighten1 Background */
+.bg-primary-lighten1 {
+  @include bg-color($primary-lighten1);
+}
+
+/* Primary Darken1 Background */
+.bg-primary-darken1 {
+  @include bg-color($primary-darken1);
+}
+
+/* Secondary Background */
+.bg-secondary {
+  @include bg-color($secondary-color);
+}
+
+/* Secondary Lighten1 Background */
+.bg-secondary-lighten1 {
+  @include bg-color($secondary-lighten1);
+}
+
+/* Secondary Darken1 Background */
+.bg-secondary-darken1 {
+  @include bg-color($secondary-darken1);
+}
+
+/* Accent Background */
+.bg-accent {
+  @include bg-color($accent-color);
+}
+
+.bg-accent-lighten1 {
+  @include bg-color($accent-lighten1);
+}
+
+.bg-accent-darken1 {
+  @include bg-color($accent-darken1);
+}
+
+/* Error Background */
+.bg-error {
+  @include bg-color($error-color);
+}
+
+.bg-error-lighten1 {
+  @include bg-color($error-lighten1);
+}
+
+.bg-error-darken1 {
+  @include bg-color($error-darken1);
+}
+
+/* Warning Background */
+.bg-warning {
+  @include bg-color($warning-color);
+}
+
+.bg-warning-lighten1 {
+  @include bg-color($warning-lighten1);
+}
+
+.bg-warning-darken1 {
+  @include bg-color($warning-darken1);
+}
+
+/* Info Background */
+.bg-info {
+  @include bg-color($info-color);
+}
+
+.bg-info-lighten1 {
+  @include bg-color($info-lighten1);
+}
+
+.bg-info-darken1 {
+  @include bg-color($info-darken1);
+}
+
+/* Success Background */
+.bg-success {
+  @include bg-color($success-color);
+}
+
+.bg-success-lighten1 {
+  @include bg-color($success-lighten1);
+}
+
+.bg-success-darken1 {
+  @include bg-color($success-darken1);
+}
+
+/* Neutral Background */
+.bg-neutral {
+  @include bg-color($card-neutral);
+}
+
+/* Surface Background */
+.bg-surface {
+  @include bg-color($surface-color);
+}
+
+.bg-surface-lighten1 {
+  @include bg-color($surface-color-lighten1);
+}
+
+.bg-surface-darken1 {
+  @include bg-color($surface-color-darken1);
+}
+
+/* Default Background */
+.bg-default {
+  @include bg-color($background-color);
+}
+
+/* Additional Background Utility Classes as Needed */

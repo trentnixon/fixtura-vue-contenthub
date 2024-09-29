@@ -1,0 +1,16 @@
+/* src/assets/styles/functions.scss */
+
+/* Function to Darken a Color */
+@function darken-color($color, $percentage) {
+  @return darken($color, $percentage);
+}
+
+/* Function to Lighten a Color */
+@function lighten-color($color, $percentage) {
+  @return lighten($color, $percentage);
+}
+
+/* Function to Calculate Rems */
+@function rem($pixels) {
+  @return #{$pixels / 16}rem;
+}

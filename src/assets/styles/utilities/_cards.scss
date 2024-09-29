@@ -1,0 +1,41 @@
+/* src/assets/styles/utilities/_cards.scss */
+
+/* ============================================================
+   Card Mixins
+   ============================================================ */
+
+/* Card Base Mixin */
+@mixin card-base {
+  background-color: $surface-color !important;
+  border-radius: $border-radius-md;
+  box-shadow: var(--v-elevation-2);
+  padding: $spacing-3;
+}
+
+/* Card Primary Mixin */
+@mixin card-primary {
+  background-color: $primary-lighten1 !important;
+  color: $primary-color;
+}
+
+/* Card Secondary Mixin */
+@mixin card-secondary {
+  background-color: $secondary-lighten1 !important;
+  color: $secondary-color;
+}
+
+/* ============================================================
+     Card Utility Classes
+     ============================================================ */
+
+/* card-primary combines card-base and card-primary mixins */
+.card-primary {
+  @include card-base;
+  @include card-primary;
+}
+
+/* card-secondary combines card-base and card-secondary mixins */
+.card-secondary {
+  @include card-base;
+  @include card-secondary;
+}

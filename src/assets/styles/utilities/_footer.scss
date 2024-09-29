@@ -1,0 +1,22 @@
+/* src/assets/styles/utilities/_footer.scss */
+
+/* ============================================================
+   Component-Specific Mixins
+   ============================================================ */
+
+/* Footer Styles Mixin */
+@mixin footer-styles {
+  background-color: $secondary-color;
+  padding: $spacing-3;
+  color: #fff;
+  text-align: center;
+}
+
+/* ============================================================
+     Footer Utility Classes
+     ============================================================ */
+
+/* footer combines footer-styles mixin */
+.footer {
+  @include footer-styles;
+}

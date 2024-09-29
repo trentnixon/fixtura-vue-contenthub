@@ -1,0 +1,40 @@
+/* src/assets/styles/utilities/_navbar.scss */
+
+/* ============================================================
+   Component-Specific Mixins
+   ============================================================ */
+
+/* Navbar Styles Mixin */
+@mixin navbar-styles {
+  background-color: $primary-color;
+  padding: $spacing-2;
+
+  .navbar-brand {
+    font-size: $font-size-lg;
+    color: #fff;
+  }
+
+  .nav-link {
+    color: #fff;
+    margin-right: $spacing-3;
+
+    &:hover {
+      color: $primary-lighten1 !important;
+    }
+  }
+}
+
+/* ============================================================
+     Navbar Utility Classes
+     ============================================================ */
+
+/* navbar combines navbar-styles mixin */
+.navbar {
+  @include navbar-styles;
+}
+
+#side-navigation {
+  .active-nav-item {
+    color: $secondary-color !important;
+  }
+}

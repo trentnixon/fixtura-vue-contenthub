@@ -1,0 +1,196 @@
+/* src/assets/styles/utilities/_spacing.scss */
+
+/* ============================================================
+   Spacing Mixins
+   ============================================================ */
+
+/* Margin Vertical Mixin */
+@mixin margin-vertical($size) {
+  margin-top: $size;
+  margin-bottom: $size;
+}
+
+/* Margin Horizontal Mixin */
+@mixin margin-horizontal($size) {
+  margin-left: $size;
+  margin-right: $size;
+}
+
+/* Padding Vertical Mixin */
+@mixin padding-vertical($size) {
+  padding-top: $size;
+  padding-bottom: $size;
+}
+
+/* Padding Horizontal Mixin */
+@mixin padding-horizontal($size) {
+  padding-left: $size;
+  padding-right: $size;
+}
+
+/* ============================================================
+     Spacing Utility Classes
+     ============================================================ */
+
+/* Margin Top Utilities */
+.mt-0 {
+  margin-top: 0 !important;
+}
+.mt-1 {
+  margin-top: $spacing-1 !important;
+}
+.mt-2 {
+  margin-top: $spacing-2 !important;
+}
+.mt-3 {
+  margin-top: $spacing-3 !important;
+}
+.mt-4 {
+  margin-top: $spacing-4 !important;
+}
+.mt-5 {
+  margin-top: $spacing-5 !important;
+}
+
+/* Margin Bottom Utilities */
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mb-1 {
+  margin-bottom: $spacing-1 !important;
+}
+.mb-2 {
+  margin-bottom: $spacing-2 !important;
+}
+.mb-3 {
+  margin-bottom: $spacing-3 !important;
+}
+.mb-4 {
+  margin-bottom: $spacing-4 !important;
+}
+.mb-5 {
+  margin-bottom: $spacing-5 !important;
+}
+
+/* Margin Left Utilities */
+.ml-0 {
+  margin-left: 0 !important;
+}
+.ml-1 {
+  margin-left: $spacing-1 !important;
+}
+.ml-2 {
+  margin-left: $spacing-2 !important;
+}
+.ml-3 {
+  margin-left: $spacing-3 !important;
+}
+.ml-4 {
+  margin-left: $spacing-4 !important;
+}
+.ml-5 {
+  margin-left: $spacing-5 !important;
+}
+
+/* Margin Right Utilities */
+.mr-0 {
+  margin-right: 0 !important;
+}
+.mr-1 {
+  margin-right: $spacing-1 !important;
+}
+.mr-2 {
+  margin-right: $spacing-2 !important;
+}
+.mr-3 {
+  margin-right: $spacing-3 !important;
+}
+.mr-4 {
+  margin-right: $spacing-4 !important;
+}
+.mr-5 {
+  margin-right: $spacing-5 !important;
+}
+
+/* Padding Utilities */
+.p-0 {
+  padding: 0 !important;
+}
+.p-1 {
+  padding: $spacing-1 !important;
+}
+.p-2 {
+  padding: $spacing-2 !important;
+}
+.p-3 {
+  padding: $spacing-3 !important;
+}
+.p-4 {
+  padding: $spacing-4 !important;
+}
+.p-5 {
+  padding: $spacing-5 !important;
+}
+
+/* ============================================================
+     Responsive Spacing Utility Classes
+     ============================================================ */
+
+/* Responsive Margin Top - Small Devices */
+@media (min-width: $breakpoint-sm) {
+  .mt-sm-1 {
+    margin-top: $spacing-1 !important;
+  }
+  .mt-sm-2 {
+    margin-top: $spacing-2 !important;
+  }
+  .mt-sm-3 {
+    margin-top: $spacing-3 !important;
+  }
+  .mt-sm-4 {
+    margin-top: $spacing-4 !important;
+  }
+  .mt-sm-5 {
+    margin-top: $spacing-5 !important;
+  }
+}
+
+/* Responsive Margin Top - Medium Devices */
+@media (min-width: $breakpoint-md) {
+  .mt-md-1 {
+    margin-top: $spacing-1 !important;
+  }
+  .mt-md-2 {
+    margin-top: $spacing-2 !important;
+  }
+  .mt-md-3 {
+    margin-top: $spacing-3 !important;
+  }
+  .mt-md-4 {
+    margin-top: $spacing-4 !important;
+  }
+  .mt-md-5 {
+    margin-top: $spacing-5 !important;
+  }
+}
+
+/* Responsive Margin Top - Large Devices */
+@media (min-width: $breakpoint-lg) {
+  .mt-lg-1 {
+    margin-top: $spacing-1 !important;
+  }
+  .mt-lg-2 {
+    margin-top: $spacing-2 !important;
+  }
+  .mt-lg-3 {
+    margin-top: $spacing-3 !important;
+  }
+  .mt-lg-4 {
+    margin-top: $spacing-4 !important;
+  }
+  .mt-lg-5 {
+    margin-top: $spacing-5 !important;
+  }
+}
+
+/* Repeat similar media queries for other spacing utilities (mb, ml, mr, p) */

@@ -1,0 +1,72 @@
+/* src/assets/styles/utilities/_flexbox.scss */
+
+/* ============================================================
+   Flexbox Mixins
+   ============================================================ */
+
+/* Flexbox Mixin */
+@mixin flex($direction: row, $justify: flex-start, $align: stretch) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+/* Centering Mixin */
+@mixin center-content($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flex Center Mixin */
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flex Between Mixin */
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Flex Column Center Mixin */
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ============================================================
+     Flexbox Utility Classes
+     ============================================================ */
+
+/* d-flex applies flex mixin with default parameters */
+.d-flex {
+  @include flex;
+}
+
+/* d-inline-flex applies flex mixin with inline-flex display */
+.d-inline-flex {
+  display: inline-flex;
+}
+
+/* flex-center applies flex-center mixin */
+.flex-center {
+  @include flex-center;
+}
+
+/* flex-between applies flex-between mixin */
+.flex-between {
+  @include flex-between;
+}
+
+/* flex-column-center applies flex-column-center mixin */
+.flex-column-center {
+  @include flex-column-center;
+}

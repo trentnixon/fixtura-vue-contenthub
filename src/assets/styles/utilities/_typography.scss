@@ -1,0 +1,226 @@
+/* src/assets/styles/utilities/_typography.scss */
+
+/* ============================================================
+   Typography Mixins
+   ============================================================ */
+
+/* Text Title Styles */
+@mixin text-title-styles {
+  font-size: $font-size-lg; /* e.g., 2rem */
+  font-weight: $font-weight-xl; /* e.g., 700 */
+  line-height: $line-height-sm; /* e.g., 1.2 */
+  color: $primary-color; /* Defined in variables.scss */
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* Text Subtitle Styles */
+@mixin text-subtitle-styles {
+  font-size: $font-size-md; /* e.g., 1.5rem */
+  font-weight: $font-weight-lg; /* e.g., 600 */
+  line-height: $line-height-lg; /* e.g., 1.2 */
+  color: $secondary-color; /* Defined in variables.scss */
+  margin-top: $spacing-2; /* e.g., 0.5rem */
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* Text Leading Styles */
+@mixin text-leading-styles {
+  font-size: $font-size-sm; /* e.g., 1.5rem */
+  font-weight: $font-weight-md; /* e.g., 600 */
+  line-height: $line-height-md; /* e.g., 1.2 */
+  color: $secondary-color; /* Defined in variables.scss */
+  margin-top: $spacing-1; /* e.g., 0.5rem */
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* Text Body Styles */
+@mixin text-body-styles {
+  font-size: $font-size-sm; /* e.g., 1rem */
+  font-weight: $font-weight-md; /* e.g., 400 */
+  line-height: $line-height-md; /* e.g., 1.5 */
+  color: var(--v-text-base); /* Ensure --v-text-base is defined */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* Small Text Styles */
+@mixin text-small-styles {
+  font-size: $font-size-xs; /* e.g., 1rem */
+  font-weight: $font-weight-sm; /* e.g., 400 */
+  line-height: $line-height-sm; /* e.g., 1.5 */
+  color: var(--v-text-base); /* Ensure --v-text-base is defined */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* ============================================================
+     New Article Typography Mixins with Slightly Smaller Sizes
+   ============================================================ */
+
+/* Article Title Styles */
+@mixin article-title-styles {
+  font-size: $font-size-md; /* e.g., 1.5rem */
+  font-weight: $font-weight-md; /* e.g., 600 */
+  line-height: $line-height-sm; /* e.g., 1.2 */
+  color: $primary-color; /* Defined in variables.scss */
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* Article Subtitle Styles */
+@mixin article-subtitle-styles {
+  font-size: $font-size-xs; /* e.g., 1.25rem */
+  font-weight: $font-weight-md; /* e.g., 500 */
+  line-height: $line-height-sm; /* e.g., 1.1 */
+  color: $secondary-color; /* Defined in variables.scss */
+  margin-top: $spacing-1; /* e.g., 0.25rem */
+  margin-bottom: $spacing-2; /* e.g., 0.5rem */
+}
+
+/* Article Body Styles */
+@mixin article-body-styles {
+  font-size: $font-size-xs; /* e.g., 1rem */
+  font-weight: $font-weight-md; /* e.g., 400 */
+  line-height: $line-height-lg; /* e.g., 1.5 */
+  color: var(--v-text-base); /* Ensure --v-text-base is defined */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+
+/* ============================================================
+   New Typography Mixins
+   ============================================================ */
+
+/* Card Title Styles */
+@mixin card-title-styles {
+  font-size: $font-size-sm; /* Same as text title size */
+  font-weight: $font-weight-lg; /* Bold but less than main title */
+  line-height: $line-height-md;
+  color: $primary-color; /* Use primary color for emphasis */
+  margin-top: 0;
+  margin-bottom: $spacing-1;
+}
+
+/* Card Subtitle Styles */
+@mixin card-subtitle-styles {
+  font-size: $font-size-xs; /* Same as text subtitle size */
+  font-weight: $font-weight-md; /* Slightly lighter weight */
+  line-height: $line-height-xs;
+  color: $secondary-color; /* Secondary color for contrast */
+  margin-top: $spacing-1;
+  margin-bottom: $spacing-2;
+}
+
+/* Table Header Styles */
+@mixin table-header-styles {
+  font-size: $font-size-xs; /* Keep consistent with body */
+  font-weight: $font-weight-md; /* Medium weight for emphasis */
+  line-height: $line-height-md;
+  color: $primary-color; /* Darker for headers */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1;
+  text-transform: uppercase; /* Uppercase for headers */
+}
+
+/* Table Copy Styles */
+@mixin table-copy-styles {
+  font-size: $font-size-xs; /* Regular body text size */
+  font-weight: $font-weight-md; /* Normal weight */
+  line-height: $line-height-md;
+  color: var(--v-text-base); /* Ensure it's aligned with the base text color */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1;
+}
+
+/* ============================================================
+     Typography Utility Classes
+     ============================================================ */
+
+/* text-title combines text-title-styles mixin */
+.text-title {
+  @include text-title-styles;
+}
+
+/* text-subtitle combines text-subtitle-styles mixin */
+.text-subtitle {
+  @include text-subtitle-styles;
+}
+
+.text-leading {
+  @include text-leading-styles;
+}
+
+/* text-body combines text-body-styles mixin */
+.text-body {
+  @include text-body-styles;
+}
+
+/* text-small combines text-small-styles mixin */
+.text-small {
+  @include text-small-styles;
+}
+
+/* New Typography Utility Classes */
+
+/* card-title combines card-title-styles mixin */
+.card-title {
+  @include card-title-styles;
+}
+
+/* card-subtitle combines card-subtitle-styles mixin */
+.card-subtitle {
+  @include card-subtitle-styles;
+}
+
+/* table-header combines table-header-styles mixin */
+.table-header {
+  @include table-header-styles;
+}
+
+/* table-copy combines table-copy-styles mixin */
+.table-copy {
+  @include table-copy-styles;
+}
+/* ============================================================
+     Typography Utility Classes for Articles
+   ============================================================ */
+
+/* Apply the new mixins to utility classes */
+.article-title {
+  @include article-title-styles;
+}
+
+.article-subtitle {
+  @include article-subtitle-styles;
+}
+
+.article-body {
+  @include article-body-styles;
+}
+
+// Font Weight Utility Classes
+.text-bold {
+  font-weight: $font-weight-xl; // 700
+}
+
+.text-semi-bold {
+  font-weight: $font-weight-lg; // 600
+}
+
+.text-normal {
+  font-weight: $font-weight-md; // 400
+}
+
+.text-light {
+  font-weight: $font-weight-sm; // 200
+}
+
+.text-extra-bold {
+  font-weight: $font-weight-xxl; // 900
+}

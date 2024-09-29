@@ -1,0 +1,112 @@
+/* src/assets/styles/variables.scss */
+
+/* ============================================================
+   Color Palette
+   ============================================================ */
+
+/* Updated Color Palette */
+
+/* Surface Colors */
+$surface-color: #e0dede; /* Light neutral surface */
+$surface-color-lighten1: lighten(#525b76ff, 50%);
+$surface-color-darken1: darken(#525b76ff, 50%);
+$background-color: #ffffff;
+
+/* Primary Colors */
+$primary-color: #525b76ff; /* New primary */
+$primary-lighten1: lighten(#525b76ff, 15%); /* Lighter variant */
+$primary-darken1: darken(#525b76ff, 15%); /* Darker variant */
+
+/* Secondary Colors */
+$secondary-color: #298da7ff; /* New secondary */
+$secondary-lighten1: lighten(#298da7ff, 15%); /* Lighter variant */
+$secondary-darken1: darken(#298da7ff, 15%); /* Darker variant */
+
+/* Accent Colors */
+$accent-color: #ed9107; /* New accent 1 */
+$accent-lighten1: lighten(#ed9107, 15%); /* Lighter variant */
+$accent-darken1: darken(#ed9107, 15%); /* Darker variant */
+
+$accent2-color: #6baa75ff; /* New accent 2 */
+$accent2-lighten1: lighten(#6baa75ff, 15%); /* Lighter variant */
+$accent2-darken1: darken(#6baa75ff, 15%); /* Darker variant */
+
+/* Error Colors */
+$error-color: #a9406c; /* Existing */
+$error-lighten1: lighten(#a9406c, 15%);
+$error-darken1: darken(#a9406c, 15%);
+
+/* Warning Colors */
+$warning-color: #ff8d3e; /* Existing */
+$warning-lighten1: lighten(#ff8d3e, 15%);
+$warning-darken1: darken(#ff8d3e, 15%);
+
+/* Info Colors */
+$info-color: #f3f2c9; /* Slightly updated to fit the new palette */
+$info-lighten1: lighten(#f3f2c9, 15%);
+$info-darken1: darken(#f3f2c9, 15%);
+
+/* Success Colors */
+$success-color: #6baa75ff; /* Reused the accent 2 color as a success color */
+$success-lighten1: lighten(#6baa75ff, 15%);
+$success-darken1: darken(#6baa75ff, 15%);
+
+/* Card Colors */
+$card-neutral: #fafafa; /* Surface neutral card color */
+$card-error: #a9406c;
+$card-warning: #ff8d3e;
+$card-info: #f3f2c9;
+$card-success: #6baa75ff;
+
+/* ============================================================
+   Typography
+   ============================================================ */
+$font-size-xl: 2rem;
+$font-size-lg: 1.7rem;
+$font-size-md: 1.3rem;
+$font-size-sm: 1.125rem;
+$font-size-xs: 1rem;
+$font-size-xxs: 0.8rem;
+
+/* Font Weights */
+$font-weight-xxl: 900;
+$font-weight-xl: 700;
+$font-weight-lg: 600;
+$font-weight-md: 400;
+$font-weight-sm: 200;
+
+/* ============================================================
+   Border Radii
+   ============================================================ */
+$border-radius-sm: 0.25rem;
+$border-radius-md: 0.5rem;
+$border-radius-lg: 1rem;
+/* ============================================================
+   Spacing Units
+   ============================================================ */
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 1rem;
+$spacing-4: 1.5rem;
+$spacing-5: 3rem;
+
+/* ============================================================
+   Additional Variables (Optional)
+   ============================================================ */
+
+/* Font Families */
+$font-family-base: "Roboto", sans-serif;
+$font-family-heading: "Roboto Slab", serif;
+
+/* Line Heights */
+$line-height-xl: 1.5em;
+$line-height-lg: 1.3em;
+$line-height-md: 1.15em;
+$line-height-sm: 1em;
+$line-height-xs: 0.9em;
+
+/* Media Query Breakpoints */
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
