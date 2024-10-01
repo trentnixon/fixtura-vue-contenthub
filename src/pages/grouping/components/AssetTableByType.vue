@@ -40,7 +40,7 @@
           <!-- Slot for the Action button -->
           <template v-slot:[`item.link`]="{ item }">
             <IconButton
-              :to="getCategoryLink(item.type)"
+              :to="item.link"
               color="accent"
               icon="mdi-arrow-right"
               size="small"
@@ -57,23 +57,16 @@
 import { ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import CustomChip from "@/components/primitives/chips/CustomChip.vue";
-import { useGroupedAssetsData } from "@/pages/grouping/composables/useGroupedAssetsData";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
+import { useRenderGroupingData } from "@/pages/grouping/composables/useRenderGroupingData";
 
+// Fetch data from the composable
+const { loading, getAssetsByType } = useRenderGroupingData();
 const route = useRoute();
 
 // Search bar state
 const search = ref("");
-
-// Reactive route parameters
-const groupingCategory = ref(route.params.groupingcategory || "");
-
-// Fetching data from the composable
-let { loading, getAssetTypeWithIds } = useGroupedAssetsData(
-  groupingCategory.value,
-  route.params.renderid
-);
-
+const groupingCategory = ref(route.params.groupingcategory);
 // Define the table headers
 const headers = [
   { title: "Asset Type", value: "type", align: "start" },
@@ -82,16 +75,28 @@ const headers = [
   { title: "", value: "link", align: "end", sortable: false },
 ];
 
+// Define a custom order for the asset types
+const assetOrder = [
+  "WeekendResults",
+  "WeekendSingleGameResult",
+  "Top5BattingList",
+  "Top5BowlingList",
+  "Ladder",
+  "UpComingFixtures",
+];
+
 // Prepare the data for the table
 const items = computed(() => {
-  return (
-    getAssetTypeWithIds.value.map((item) => ({
-      type: item.type,
-      downloadCount: item.downloads.length,
-      articleCount: item.aiArticles.length,
-      link: getCategoryLink(item.type),
-    })) || []
-  );
+  const sortedItems = Object.entries(getAssetsByType.value)
+    .map(([type, stats]) => ({
+      type,
+      downloadCount: stats.downloads,
+      articleCount: stats.aiArticles,
+      link: getCategoryLink(type),
+    }))
+    .sort((a, b) => assetOrder.indexOf(a.type) - assetOrder.indexOf(b.type)); // Sort based on custom order
+
+  return sortedItems;
 });
 
 // Filter the data based on search input
@@ -111,7 +116,7 @@ function getCategoryLink(type) {
   }/${type.toLowerCase()}`;
 }
 
-// Function to return a display name for the type
+// Function to return a display name for the type (enum guide)
 function getDisplayName(type) {
   const names = {
     WeekendResults: "Weekend Results",
@@ -120,7 +125,6 @@ function getDisplayName(type) {
     Top5BattingList: "Top 5 Batting",
     UpComingFixtures: "Upcoming Fixtures",
     WeekendSingleGameResult: "Single Game Result",
-    RosterPoster: "Roster Poster",
   };
   return names[type] || type;
 }
@@ -141,21 +145,14 @@ function getIcon(type) {
     Top5BattingList: "mdi-baseball-bat",
     UpComingFixtures: "mdi-calendar-multiple",
     WeekendSingleGameResult: "mdi-calendar-weekend",
-    RosterPoster: "mdi-account-group",
   };
   return icons[type] || "mdi-file";
 }
 
-// Watch for changes in the route parameters and refetch data
 watch(
-  () => route.params.groupingcategory,
-  (newCategory) => {
-    groupingCategory.value = newCategory;
-    const groupedData = useGroupedAssetsData(
-      groupingCategory.value,
-      route.params.renderid
-    );
-    loading = groupedData.loading;
+  () => route.params,
+  (newParams) => {
+    groupingCategory.value = newParams.groupingcategory;
   }
 );
 </script>

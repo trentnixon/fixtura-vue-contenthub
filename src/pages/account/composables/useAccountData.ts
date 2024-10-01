@@ -1,140 +1,58 @@
-import { computed } from "vue";
-import { useAccountStore } from "@/store/account";
-import { useSchedulerStore } from "@/store/scheduler";
-import { useOrdersStore } from "@/store/orders";
-import { useAssociationStore } from "@/store/associationStore";
-import { useClubStore } from "@/store/clubStore";
-import { storeToRefs } from "pinia";
+// composables/useAccountData.ts
 
+import { useAccountStore } from "@/store/account";
+import { storeToRefs } from "pinia";
 export function useAccountData() {
   const accountStore = useAccountStore();
+
   const {
-    selectedAccount,
     loading,
     error,
     getAccountType,
+    rollupMetrics,
+    metricsOverTime,
+    metricsAsPercentageOfCost,
+    getAccountName,
     getAccountRenderToken,
+    getOrganizationDetails,
     getAccountTemplate,
     getAccountTheme,
-    getAccountTrialInstance,
-    getAccountSubscription,
+    getAccountRenders,
+    getAccountSport,
+    isSchedulerQueued,
+    isSchedulerRendering,
   } = storeToRefs(accountStore);
 
-  const schedulerStore = useSchedulerStore();
-  const { scheduler } = storeToRefs(schedulerStore);
-
-  const ordersStore = useOrdersStore();
-  const { accountOrders } = storeToRefs(ordersStore);
-
-  const associationStore = useAssociationStore();
-  const { getAssociation } = storeToRefs(associationStore); // Update here
-
-  const clubStore = useClubStore();
-  const { getClub } = storeToRefs(clubStore); // Update here
-
-  // Fetch the account by ID
+  /**
+   * Fetch the account by ID and store the details in Pinia
+   * @param id - Account ID
+   */
   async function fetchAccountById(id: number) {
     try {
-      await accountStore.fetchAccountDetails(id);
+      await accountStore.fetchFilteredAccountDetails(id);
     } catch (err) {
       console.error("Failed to fetch account:", err);
     }
   }
 
-  // Get the account name
-  const getAccountName = computed(() => {
-    const firstName = selectedAccount.value?.FirstName || "";
-    const lastName = selectedAccount.value?.LastName || "";
-    return `${firstName} ${lastName}`.trim() || "Unknown";
-  });
-
-  // Get the account's associated clubs or associations based on the account type
-  const getOrganizationDetails = computed(() => {
-    const accountType = getAccountType.value;
-
-    if (accountType === "Association") {
-      return {
-        type: "Association",
-        details: getAssociation.value, // Filter out any null/undefined values
-      };
-    } else if (accountType === "Club") {
-      return {
-        type: "Club",
-        details: getClub.value,
-      };
-    } else {
-      return null;
-    }
-  });
-
-  // Get the account's sport
-  const getAccountSport = computed(() => {
-    return selectedAccount.value?.Sport || "Unknown";
-  });
-
-  // Get the account's scheduler details
-  const getScheduler = computed(() => {
-    return selectedAccount.value?.scheduler?.data?.attributes || null;
-  });
-  const getSchedulerID = computed(() => {
-    return selectedAccount.value?.scheduler?.data?.id || null;
-  });
-  const getTemplateDetails = computed(() => {
-    return selectedAccount.value?.template?.data?.attributes || null;
-  });
-
-  const getTrialInstance = computed(() => {
-    return selectedAccount.value?.trial_instance?.data?.attributes || null;
-  });
-
-  // Get the account's sponsors
-  const getSponsors = computed(() => {
-    return selectedAccount.value?.sponsors?.data || [];
-  });
-
-  // Get the account's trial status
-  const getTrialStatus = computed(() => {
-    const trial = getAccountTrialInstance.value;
-    return trial ? trial.isActive : false;
-  });
-
-  // Get the account's render expiration date
-  const getRenderExpiration = computed(() => {
-    return getAccountRenderToken.value?.expiration || "No expiration date";
-  });
-
-  // Get the scheduler's queued status
-  const isSchedulerQueued = computed(() => {
-    return getScheduler.value?.Queued || false;
-  });
-
-  // Get the scheduler's rendering status
-  const isSchedulerRendering = computed(() => {
-    return getScheduler.value?.isRendering || false;
-  });
-
   return {
-    selectedAccount,
+    // State and Actions
+    /*  accountDetails, */
     fetchAccountById,
-    getAccountName,
-    getAccountType,
-    getOrganizationDetails,
-    getAccountSport,
-    getAccountRenderToken,
-    getRenderExpiration,
-    getTrialInstance,
-    getTemplateDetails,
-    getAccountTemplate,
-    getAccountTheme,
-    getAccountTrialInstance,
-    getTrialStatus,
-    getAccountSubscription,
-    getScheduler,
-    getSchedulerID,
-    isSchedulerQueued,
-    isSchedulerRendering,
-    getSponsors,
     loading,
     error,
+    getAccountType,
+    rollupMetrics,
+    getAccountName,
+    getAccountRenderToken,
+    getOrganizationDetails,
+    getAccountTemplate,
+    getAccountTheme,
+    getAccountSport,
+    getAccountRenders,
+    metricsOverTime,
+    metricsAsPercentageOfCost,
+    isSchedulerQueued,
+    isSchedulerRendering,
   };
 }

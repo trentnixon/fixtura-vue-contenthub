@@ -1,21 +1,33 @@
 <template>
-  <v-row>
-    <v-col cols="8">
-      <MainHeader
-        :title="`${getRenderTime.date} Bundle`"
-        :subtitle="`Processed at ${getRenderTime.time}`"
-      />
-    </v-col>
-    <v-col class="d-flex justify-end" cols="4" v-if="!$vuetify.display.xs">
-      <CustomChip label="Processed" :value="!isProcessing" type="boolean" />
-      <CustomChip label="Completed" :value="isComplete" type="boolean" />
-    </v-col>
-  </v-row>
+  <template v-if="loading">
+    <v-skeleton-loader type="paragraph"></v-skeleton-loader>
+  </template>
+  <template v-else>
+    <v-row>
+      <v-col cols="8">
+        <MainHeader
+          :title="`${getRenderDate} Bundle`"
+          :subtitle="`Processed at ${getRenderTime}`"
+        />
+      </v-col>
+      <v-col class="d-flex justify-end" cols="4" v-if="!$vuetify.display.xs">
+        <CustomChip label="Processed" :value="!getProcessing" type="boolean" />
+        <CustomChip label="Completed" :value="getComplete" type="boolean" />
+      </v-col>
+    </v-row>
+  </template>
 </template>
 
 <script setup>
 import MainHeader from "@/components/primitives/headers/MainHeader.vue";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
 import CustomChip from "@/components/primitives/chips/CustomChip.vue";
-const { isProcessing, isComplete, getRenderTime } = useRenderData();
+const {
+  loading,
+  error,
+  getRenderDate,
+  getRenderTime,
+  getProcessing,
+  getComplete,
+} = useRenderData();
 </script>

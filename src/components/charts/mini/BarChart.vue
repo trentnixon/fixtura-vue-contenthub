@@ -40,7 +40,7 @@ const props = defineProps({
    */
   height: {
     type: String,
-    default: "50px",
+    default: "100px",
   },
   /**
    * Data for the chart. An array of numbers representing bar heights.

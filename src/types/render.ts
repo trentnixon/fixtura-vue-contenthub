@@ -1,10 +1,47 @@
-import { Download } from "./download";
 import { Scheduler } from "./scheduler";
+
+// Define the structure for the metrics
+interface MetricsSummary {
+  totalDownloads: number;
+  totalAiArticles: number;
+  totalErrors: number;
+  totalFixtures: number; // Added for fixture metrics
+  totalGameResults: number;
+  totalUpcomingGames: number;
+  totalGrades: number;
+}
+
+interface GroupingCategoryMetrics {
+  downloads: number;
+  videos: number;
+  images: number;
+  aiWriteups: number;
+  hasErrors: boolean;
+  results: number; // Specific to fixtures
+  upcoming: number; // Specific to fixtures
+}
+
+interface AssetCategorySplitMetrics {
+  results: number | null;
+  upcoming: number | null;
+  statistics: number | null;
+}
+
+interface Metrics {
+  summary: MetricsSummary;
+  groupingCategories: Record<string, GroupingCategoryMetrics>; // Dynamic keys for grouping categories like "Junior" or "Senior"
+  assetCategorySplit: {
+    video: AssetCategorySplitMetrics;
+    image: AssetCategorySplitMetrics;
+    writeup: AssetCategorySplitMetrics;
+  };
+}
+
 export interface RenderAttributes {
   Name: string;
   Processing: boolean;
   Complete: boolean;
-  sendEmail: boolean;
+  sendEmail: boolean | null; // Updated to allow null values
   hasTeamRosterRequest: boolean;
   hasTeamRosters: boolean;
   forceRerender: boolean;
@@ -13,26 +50,60 @@ export interface RenderAttributes {
   hasTeamRosterEmail: boolean;
   updatedAt: string;
   publishedAt: string;
-  downloads: {
-    data: Download[];
-  };
-  scheduler: {
-    data: Scheduler;
-  };
+
+  // Date and Time fields for render creation
+  date: string; // E.g., "Tue 24th Sep"
+  time: string; // E.g., "8:47 PM"
+
+  // Total counts of downloads and AI articles
+  downloads: number; // Number of downloads
+  aiArticles: number; // Number of AI articles
+
+  // Metrics (including summary, grouping categories, and asset category splits)
+  metrics: Metrics;
+
+  // New game-related fields
+  gameResults: number; // Total game results
+  upcomingGames: number; // Total upcoming games
+  grades: number; // Total grades
+
+  // Relations for game results, upcoming games, and grades
   game_results_in_renders: {
-    data: Render[];
+    data: Render[]; // Array of related game results
   };
   upcoming_games_in_renders: {
-    data: Render[];
+    data: Render[]; // Array of related upcoming games
   };
   grades_in_renders: {
-    data: Render[];
+    data: Render[]; // Array of related grades
+  };
+
+  // Scheduler related fields
+  scheduler: {
+    data: Scheduler;
   };
 }
 
 export interface Render {
   id: number;
-  attributes: RenderAttributes;
+  name: string;
+  processing: boolean;
+  complete: boolean;
+  sendEmail: boolean | null;
+  emailSent: boolean;
+  forceRerender: boolean;
+  forceRerenderEmail: boolean;
+  hasTeamRosterRequest: boolean;
+  hasTeamRosters: boolean;
+  hasTeamRosterEmail: boolean;
+  date: string;
+  time: string;
+  downloads: number;
+  aiArticles: number;
+  metrics: Metrics;
+  gameResults: number;
+  upcomingGames: number;
+  grades: number;
 }
 
 export interface RenderState {
@@ -40,4 +111,19 @@ export interface RenderState {
   renders: Render[];
   loading: boolean;
   error: string | null;
+}
+// Grouping Details specific interfaces
+export interface GroupingDetails {
+  id: number;
+  name: string;
+  groupingCategory: string;
+  downloads: number;
+  aiArticles: number;
+  metrics: Metrics;
+  assets: Record<string, { downloads: number; aiArticles: number }>; // Dynamic asset composition (e.g. Top5BattingList, Ladder, etc.)
+}
+
+// Interface for grouping response from API
+export interface GroupingApiResponse {
+  data: GroupingDetails;
 }

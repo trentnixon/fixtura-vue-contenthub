@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { computed } from "vue";
-import { useDownloadsData } from "./useDownloadsData";
-import { useAiArticlesData } from "./useAiArticlesData";
+import { useDownloadsData } from "./OLD_useDownloadsData";
+import { useAiArticlesData } from "./OLD_useAiArticlesData";
 
 export function useGroupedAssetsData(
   groupingCategory: string | number,

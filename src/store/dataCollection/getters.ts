@@ -119,7 +119,7 @@ export const aggregatedDataSummary = computed(() => {
     (item) =>
       item.attributes.whenWasTheLastCollection &&
       item.attributes.TimeTaken &&
-      item.attributes.account.data.attributes.FirstName
+      item.attributes.account.data.FirstName
   );
 
   //console.log("Valid collections:", validCollections.length);
@@ -140,7 +140,7 @@ export const aggregatedDataSummary = computed(() => {
   const piechartArray = validCollections.map((item) => {
     return {
       name: item.attributes.whenWasTheLastCollection,
-      account: item.attributes.account.data.attributes.FirstName,
+      account: item.attributes.account.data.FirstName,
       value: item.attributes.TimeTaken / 60000, // Convert ms to minutes
     };
   });

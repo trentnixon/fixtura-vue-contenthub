@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useGroupedAssetsData } from "@/pages/grouping/composables/useGroupedAssetsData";
+import { useGroupedAssetsData } from "@/pages/grouping/composables/OLD_useGroupedAssetsData";
 import { useDownloadsStore } from "@/store/downloads"; // Import Downloads Store
 import { useAiArticlesStore } from "@/store/aiArticles"; // Import AI Articles Store
 

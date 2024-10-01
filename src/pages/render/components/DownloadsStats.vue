@@ -1,42 +1,57 @@
-<!-- src/components/render/DownloadsStats.vue -->
 <template>
-  <v-row class="d-flex justify-center">
+  <v-row
+    class="d-flex justify-center"
+    v-if="renderMetrics && renderMetrics.summary"
+  >
+    <!-- Total Downloads -->
     <v-col cols="4" md="4">
       <CardSmall1DataPoint
         icon="mdi-download"
         buttonText=""
-        :value="getTotalDownloads"
+        :value="renderMetrics.summary.totalDownloads"
         subtitle="Total Downloads"
         theme="cardNeutral"
       />
     </v-col>
+
+    <!-- Total AI Articles -->
     <v-col cols="4" md="4">
       <CardSmall1DataPoint
-        icon="mdi-download"
+        icon="mdi-file-document"
         buttonText=""
-        :value="totalAiArticles"
+        :value="renderMetrics.summary.totalAiArticles"
         subtitle="Total Articles"
         theme="cardNeutral"
       />
     </v-col>
+
+    <!-- Errors -->
     <v-col cols="4" md="4">
       <CardSmall1DataPoint
-        icon="mdi-download"
+        icon="mdi-alert-circle"
         buttonText=""
-        :value="checkBundleErrors.assets.length"
+        :value="renderMetrics.summary.totalErrors"
         subtitle="Errors"
-        :theme="checkBundleErrors ? 'cardError' : 'cardError'"
+        :theme="
+          renderMetrics.summary.totalErrors > 0 ? 'cardError' : 'cardNeutral'
+        "
       />
     </v-col>
   </v-row>
+
+  <!-- Loading spinner while metrics data is not available -->
+  <div v-else class="text-center">
+    <v-progress-circular indeterminate color="primary"></v-progress-circular>
+  </div>
 </template>
 
 <script setup>
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
-import { useAiArticleData } from "@/pages/render/composables/useAiArticleData";
-import { useDownloadData } from "@/pages/render/composables/useDownloadData";
+import { computed } from "vue";
+import { useRenderData } from "@/pages/render/composables/useRenderData";
 
-// Use the composable to get download data
-const { getTotalDownloads, checkBundleErrors } = useDownloadData();
-const { totalAiArticles } = useAiArticleData();
+// Extract renderMetrics from the composable
+const { renderMetrics } = useRenderData();
+
+// You can now directly use the renderMetrics object for the stats
 </script>

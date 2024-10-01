@@ -1,16 +1,18 @@
 <template>
   <!-- Show Loading Spinner when there are no renders -->
-  <LoadingSpinner v-if="renders.length === 0" />
+  <LoadingSpinner v-if="loading" />
 
   <!-- Show Error Alert if there's an error -->
   <ErrorAlert v-else-if="error" :message="error" />
   <template v-else>
     <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4">
-      <div class="text-body py-2 px-4">{{ renders.length }} Season Bundles</div>
+      <div class="text-body py-2 px-4">
+        Season Bundles ({{ getAccountRenders?.length }})
+      </div>
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
         <!-- Display the renders data in a data table when renders are available -->
         <v-data-table
-          :headers="responsiveHeaders"
+          :headers="computedHeaders"
           :items="filteredRenders"
           class="mx-auto"
           fixed-header
@@ -21,35 +23,72 @@
         >
           <!-- Slot for the name -->
           <template v-slot:[`item.name`]="{ item }">
-            <span v-if="item.name" class="table-copy">{{ item.name }}</span>
+            <span v-if="item.Name" class="table-copy">{{ item.Name }}</span>
           </template>
 
           <!-- Modify the Complete status slot -->
-          <template v-slot:[`item.complete`]="{ item }">
+          <template v-slot:[`item.Complete`]="{ item }">
             <v-icon
-              :color="item.complete ? 'success' : 'error'"
+              :color="item.Complete ? 'success' : 'error'"
               v-if="$vuetify.display.smAndUp"
             >
-              {{ item.complete ? "mdi-check-circle" : "mdi-close-circle" }}
+              {{ item.Complete ? "mdi-check-circle" : "mdi-close-circle" }}
             </v-icon>
           </template>
 
           <!-- Modify the Email Sent status slot -->
-          <template v-slot:[`item.emailSent`]="{ item }">
+          <template v-slot:[`item.EmailSent`]="{ item }">
             <v-icon
-              :color="item.emailSent ? 'success' : 'error'"
+              :color="item.EmailSent ? 'success' : 'error'"
               v-if="$vuetify.display.smAndUp"
             >
-              {{ item.emailSent ? "mdi-check-circle" : "mdi-close-circle" }}
+              {{ item.EmailSent ? "mdi-check-circle" : "mdi-close-circle" }}
             </v-icon>
           </template>
 
-          <!-- Slot for the action button -->
-          <template v-slot:[`item.updatedAt`]="{ item }">
+          <!-- Slot for the created date -->
+          <template v-slot:[`item.created`]="{ item }">
             <div class="table-copy">
-              {{ formatDate(item.updatedAt) }}
+              {{ item.created }}
             </div>
           </template>
+
+          <!-- Add game results count -->
+          <template v-slot:[`item.game_results_in_renders_count`]="{ item }">
+            <div class="table-copy">
+              {{ item.game_results_in_renders_count }}
+            </div>
+          </template>
+
+          <!-- Add upcoming games count -->
+          <template v-slot:[`item.upcoming_games_in_renders_count`]="{ item }">
+            <div class="table-copy">
+              {{ item.upcoming_games_in_renders_count }}
+            </div>
+          </template>
+
+          <!-- Add grades count -->
+          <template v-slot:[`item.grades_in_renders_count`]="{ item }">
+            <div class="table-copy">
+              {{ item.grades_in_renders_count }}
+            </div>
+          </template>
+
+          <!-- Add downloads count -->
+          <template v-slot:[`item.downloads_count`]="{ item }">
+            <div class="table-copy">
+              {{ item.downloads_count }}
+            </div>
+          </template>
+
+          <!-- Add AI articles count -->
+          <template v-slot:[`item.ai_articles_count`]="{ item }">
+            <div class="table-copy">
+              {{ item.ai_articles_count }}
+            </div>
+          </template>
+
+          <!-- Slot for the action button -->
           <template v-slot:[`item.actions`]="{ item }">
             <div class="table-copy">
               <IconButton
@@ -84,50 +123,94 @@
     </v-card>
   </template>
 </template>
+
 <script setup>
-import { ref, computed, watch } from "vue";
-import { format } from "date-fns";
+import { ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import LoadingSpinner from "@/components/UI/LoadingSpinner.vue";
 import ErrorAlert from "@/components/UI/ErrorMessage.vue";
-import { useAccountData } from "@/pages/account/composables/useAccountData";
-import { useSchedulerData } from "@/pages/account/composables/useSchedulerData";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import { useDisplay } from "vuetify";
+import { useAccountData } from "@/pages/account/composables/useAccountData";
 
-const { smAndUp } = useDisplay();
+// Vuetify display
+const { smAndUp, mdAndUp, lgAndUp } = useDisplay();
+
 // Initialize router and route
 const router = useRouter();
 const route = useRoute();
 
 // Use composables for data
-const { getSchedulerID, getAccountSport } = useAccountData();
-const { fetchSchedulerById, renders, loading, error } = useSchedulerData();
-
+const { getAccountRenders, getAccountSport, loading, error } = useAccountData(); // Ensure this is a ref or computed value
 // Search input state
 const search = ref("");
 
-// Define the table headers with "Updated At", "Name", "Email Sent", and "Actions"
-const headers = [
-  { title: "Bundles", key: "updatedAt", align: "start", sortable: true },
-  { title: "Complete", key: "complete", align: "end", sortable: false },
-  { title: "Notified", key: "emailSent", align: "end", sortable: false },
+// Define the full set of table headers with all items
+const fullHeaders = [
+  { title: "Bundles", key: "created", align: "start", sortable: true },
+
+  {
+    title: "Results",
+    key: "game_results_in_renders_count",
+    align: "center",
+    sortable: true,
+  },
+  {
+    title: "Upcoming",
+    key: "upcoming_games_in_renders_count",
+    align: "center",
+    sortable: true,
+  },
+  {
+    title: "Grades",
+    key: "grades_in_renders_count",
+    align: "center",
+    sortable: true,
+  },
+  {
+    title: "Downloads",
+    key: "downloads_count",
+    align: "center",
+    sortable: true,
+  },
+  {
+    title: "Articles",
+    key: "ai_articles_count",
+    align: "center",
+    sortable: true,
+  },
+  { title: "Complete", key: "Complete", align: "center", sortable: false },
+  { title: "Notified", key: "EmailSent", align: "center", sortable: false },
   { title: "", key: "actions", align: "end", sortable: false },
 ];
-// Add a new computed property for responsive headers
-const responsiveHeaders = computed(() => {
-  if (smAndUp.value) {
-    return headers;
+
+// Define headers for medium screens (sm and up to md)
+const mediumHeaders = [
+  { title: "Bundles", key: "created", align: "start", sortable: true },
+  { title: "Complete", key: "Complete", align: "center", sortable: false },
+  { title: "Notified", key: "EmailSent", align: "center", sortable: false },
+  { title: "", key: "actions", align: "end", sortable: false },
+];
+
+// Define headers for extra small screens (xs)
+const smallHeaders = [
+  { title: "Bundles", key: "created", align: "start", sortable: true },
+  { title: "", key: "actions", align: "end", sortable: false },
+];
+
+// Computed property to switch between headers based on screen size
+const computedHeaders = computed(() => {
+  if (lgAndUp.value) {
+    return fullHeaders; // Use all headers for large screens
+  } else if (mdAndUp.value) {
+    return mediumHeaders; // Use reduced headers for medium screens
   } else {
-    return headers.filter(
-      (header) => !["complete", "emailSent"].includes(header.key)
-    );
+    return smallHeaders; // Only show Name and actions for small screens
   }
 });
-// Function to format the date
-function formatDate(dateStr) {
-  return format(new Date(dateStr), "EEE do MMM yyyy");
-}
+
+// Fallback to an empty array if getAccountRenders is undefined or null
+const renders = computed(() => getAccountRenders.value || []);
 
 // Handle viewing the render (ensure the URL is constructed correctly)
 function viewRender(renderId) {
@@ -137,56 +220,13 @@ function viewRender(renderId) {
   );
 }
 
-// Prepare the data for the table
-const items = computed(() => {
-  return renders.value.map((item) => ({
-    id: item.id, // Add the id for the button action
-    updatedAt: item.attributes?.updatedAt, // Defensive check for updatedAt
-    name: item.attributes?.Name, // Add name from the attributes
-    complete: item.attributes?.Complete, // Defensive check for complete status
-    emailSent: item.attributes?.EmailSent, // Add email status from attributes
-  }));
-});
-
 // Filtered renders based on the search input
 const filteredRenders = computed(() => {
   if (search.value) {
-    return items.value.filter((item) =>
-      item.name?.toLowerCase().includes(search.value.toLowerCase())
+    return renders.value.filter((item) =>
+      item.Name.toLowerCase().includes(search.value.toLowerCase())
     );
   }
-  return items.value;
+  return renders.value;
 });
-
-// Watch for changes in scheduler ID and fetch renders when it changes
-watch(
-  () => getSchedulerID.value,
-  async (schedulerId) => {
-    if (schedulerId) {
-      try {
-        console.log("Fetching renders for scheduler:", schedulerId);
-        await fetchSchedulerById(schedulerId);
-      } catch (err) {
-        console.error("Failed to fetch scheduler renders:", err);
-      }
-    }
-  },
-  { immediate: true } // This ensures the fetch happens immediately when the component is mounted
-);
-
-// Watch for updates to the renders and log them for debugging
-watch(
-  () => renders.value,
-  (newVal) => {
-    console.log("[RendersTable] Renders updated:", newVal);
-  }
-);
-
-// Watch for loading changes and log them for debugging
-watch(
-  () => loading.value,
-  (newVal) => {
-    console.log("[Loading] Loading updated:", newVal);
-  }
-);
 </script>

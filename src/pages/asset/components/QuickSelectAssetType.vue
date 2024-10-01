@@ -23,7 +23,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useGroupedAssetsData } from "@/pages/grouping/composables/useGroupedAssetsData";
+import { useGroupedAssetsData } from "@/pages/grouping/composables/OLD_useGroupedAssetsData";
 import { useGlobalComposable } from "@/utils/useGlobalComposable"; // Importing global composable
 
 // Router and Route composables

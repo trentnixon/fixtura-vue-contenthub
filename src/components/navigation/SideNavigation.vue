@@ -6,23 +6,16 @@
     @update:model-value="updateDrawer"
   >
     <v-layout class="fill-height" style="flex-direction: column">
-      <template v-if="!Boolean(getOrganizationDetails?.details)">
+      <template v-if="!Boolean(getOrganizationDetails)">
         <v-skeleton-loader type="paragraph"></v-skeleton-loader>
       </template>
       <template v-else>
         <v-container class="bg-surface text-center p-2">
           <!-- Added p-2 for padding and rounded-md for border-radius -->
-          <v-avatar
-            class="mb-0"
-            v-if="getOrganizationDetails && getOrganizationDetails.details"
-            size="x-large"
-          >
+          <v-avatar class="mb-0" v-if="getOrganizationDetails" size="x-large">
             <v-img
               :alt="getAccountName"
-              :src="
-                getOrganizationDetails.details.attributes.Logo.data.attributes
-                  .url
-              "
+              :src="getOrganizationDetails.ParentLogo"
             ></v-img>
           </v-avatar>
           <BodyText>{{ getAccountName }}</BodyText>
@@ -46,13 +39,13 @@
               <v-icon>mdi-package-variant-closed</v-icon>
             </template>
           </v-list-item>
-          <v-divider class="my-2"></v-divider>
+          <v-divider class="mt-2"></v-divider>
           <v-list v-if="renderId">
             <!-- Render link with correct icon -->
             <v-list-item
               class="rounded-md shadow-2"
               :to="{ path: `/${accountid}/${sport}/${renderId}` }"
-              :title="getRenderTime.date"
+              :title="getRenderDate"
               subtitle="Selected Bundle"
               active-class="active-nav-item"
             >
@@ -61,7 +54,7 @@
               </template>
             </v-list-item>
             <template v-if="renderId">
-              <v-divider class="my-2"></v-divider>
+              <v-divider class="mt-2"></v-divider>
             </template>
 
             <!-- Dynamic list of categories with icons and truncated text -->
@@ -84,16 +77,10 @@
                   </template>
                 </v-list-item>
               </v-list>
-              <v-divider class="my-2"></v-divider>
+              <v-divider class="mt-2"></v-divider>
             </template>
           </v-list>
         </v-list>
-      </v-container>
-
-      <v-container class="pa-0 mt-auto">
-        <v-divider></v-divider>
-        <div class="text-small text-bold text-center py-2">Fixtura 2024</div>
-        <v-divider></v-divider>
       </v-container>
     </v-layout>
   </v-navigation-drawer>
@@ -106,11 +93,9 @@ import { useRoute } from "vue-router";
 
 // Import composables and components
 import { useAccountData } from "@/pages/account/composables/useAccountData";
-import { useDownloadData } from "@/pages/render/composables/useDownloadData";
+import { useDownloadData } from "@/pages/render/composables/OLD_useDownloadData";
 
 import BodyText from "@/components/primitives/text/BodyText.vue";
-
-import { fetchRenderById } from "@/store/renders/actions";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
 
 // Define props and emits
@@ -129,7 +114,7 @@ const accountid = ref(Number(route.params.accountid));
 const renderId = ref(Number(route.params.renderid));
 const sport = ref(route.params.sport);
 
-const { getRenderTime } = useRenderData();
+const { getRenderDate } = useRenderData();
 
 // Watch for changes in the route parameters
 watch(
@@ -138,8 +123,6 @@ watch(
     accountid.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
     sport.value = newParams.sport;
-
-    await fetchRenderById(newParams.renderid);
   }
 );
 

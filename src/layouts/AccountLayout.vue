@@ -9,8 +9,15 @@
         :title="Fixtura"
       />
       <v-main class="bg-surface">
-        <v-container>
-          <router-view />
+        <v-container class="pa-0" fluid>
+          <v-container>
+            <router-view />
+          </v-container>
+          <v-footer class="bg-surface border-t-thin pa-4 mt-2">
+            <div class="text-small text-normal text-end mb-0 w-100">
+              Fixtura Content Hub {{ new Date().getFullYear() }}
+            </div>
+          </v-footer>
         </v-container>
       </v-main>
     </v-app>

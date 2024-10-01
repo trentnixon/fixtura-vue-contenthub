@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
-import { Account, AccountAttributes } from "@/types/account";
+import { Account } from "@/types/account";
 
 export interface PrivateAccountState {
   accounts: Account[];
   accountDetails: Account | null;
-  selectedAccount: AccountAttributes | null;
+  selectedAccount: Account | null;
   loading: boolean;
   error: string | null;
 }

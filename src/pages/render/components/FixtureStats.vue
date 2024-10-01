@@ -1,11 +1,14 @@
 <!-- src/components/render/FixtureStats.vue -->
 <template>
-  <v-row class="d-flex justify-center">
+  <v-row
+    class="d-flex justify-center"
+    v-if="renderMetrics && renderMetrics.summary"
+  >
     <v-col cols="4" md="3">
       <CardSmall1DataPoint
         icon="mdi-calendar"
         buttonText=""
-        :value="totalGameResults + totalUpcomingGames"
+        :value="renderMetrics.summary.totalFixtures"
         subtitle="Total Fixtures"
         theme="cardNeutral"
       >
@@ -19,7 +22,7 @@
       <CardSmall1DataPoint
         icon="mdi-clock"
         buttonText=""
-        :value="totalUpcomingGames"
+        :value="renderMetrics.summary.totalUpcomingGames"
         subtitle="Upcoming Games"
         theme="cardNeutral"
       >
@@ -28,11 +31,12 @@
         </template>
       </CardSmall1DataPoint>
     </v-col>
+
     <v-col cols="4" md="3">
       <CardSmall1DataPoint
         icon="mdi-soccer"
         buttonText=""
-        :value="totalGameResults"
+        :value="renderMetrics.summary.totalGameResults"
         subtitle="Game Results"
         theme="cardNeutral"
       >
@@ -41,11 +45,12 @@
         </template>
       </CardSmall1DataPoint>
     </v-col>
+
     <v-col cols="4" md="3">
       <CardSmall1DataPoint
         icon="mdi-school"
         buttonText=""
-        :value="totalGrades"
+        :value="renderMetrics.summary.totalGrades"
         subtitle="Total Grades"
         theme="cardNeutral"
       >
@@ -60,35 +65,53 @@
       </CardSmall1DataPoint>
     </v-col>
   </v-row>
+
+  <!-- Add a loader or fallback in case data is not ready -->
+  <div v-else class="text-center">
+    <v-progress-circular indeterminate color="primary"></v-progress-circular>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-
+import { computed, watch } from "vue";
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
-
-import { useGradeData } from "@/pages/render/composables/useGradeData";
-import { useUpcomingGameData } from "@/pages/render/composables/useUpcomingGameData";
-import { useGameResultsInRenderData } from "@/pages/render/composables/useGameResultsInRenderData";
-import LineChartMini from "@/components/charts/mini/LineChart.vue";
 import PieChartMini from "@/components/charts/mini/PieChart.vue";
 import BarChartMini from "@/components/charts/mini/BarChart.vue";
+import { useRenderData } from "@/pages/render/composables/useRenderData";
 
-const { totalGrades } = useGradeData(); // Use the total grades directly
-const { totalUpcomingGames } = useUpcomingGameData(); // Use the total upcoming games directly
-const { totalGameResults } = useGameResultsInRenderData(); // Use the total game results directly
+// Destructure the render metrics from the composable
+const { renderMetrics } = useRenderData();
 
+// Define the computed properties for charts
 const TotalFixturesData = computed(() => [
-  { value: totalUpcomingGames.value, name: "Upcoming" },
-  { value: totalGameResults.value, name: "Results" },
+  {
+    value: renderMetrics.value?.summary?.totalUpcomingGames || 0,
+    name: "Upcoming",
+  },
+  {
+    value: renderMetrics.value?.summary?.totalGameResults || 0,
+    name: "Results",
+  },
 ]);
+
 const upcomingData = computed(() => [
-  totalUpcomingGames.value,
-  totalGameResults.value,
+  renderMetrics.value?.summary?.totalUpcomingGames || 0,
+  renderMetrics.value?.summary?.totalGameResults || 0,
 ]);
+
 const resultsData = computed(() => [
-  totalGameResults.value,
-  totalUpcomingGames.value,
+  renderMetrics.value?.summary?.totalGameResults || 0,
+  renderMetrics.value?.summary?.totalUpcomingGames || 0,
 ]);
-const totalGradesData = computed(() => [totalGrades.value]);
+
+const totalGradesData = computed(() => [
+  renderMetrics.value?.summary?.totalGrades || 0,
+]);
+
+// Watch for changes in renderMetrics and ensure it's ready before rendering
+watch(renderMetrics, (newVal) => {
+  if (!newVal || !newVal.summary) {
+    console.warn("renderMetrics is not ready or summary is missing.");
+  }
+});
 </script>

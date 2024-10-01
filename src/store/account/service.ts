@@ -8,3 +8,9 @@ import { Account } from "@/types/account";
 export async function fetchAccountDetailsFromService(id: number) {
   return fetcher.get<{ data: Account }>(`/accounts/${id}?populate=*`);
 }
+
+export async function fetchFilteredAccountDetailsFromService(id: number) {
+  return fetcher.get<{ data: Account }>(
+    `/account/fixturaContentHubAccountDetails/${id}`
+  );
+}

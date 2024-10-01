@@ -1,5 +1,5 @@
 import fetcher from "@/actions/fetcher";
-import { Render } from "@/types";
+import { GroupingDetails, Render } from "@/types";
 
 interface ApiResponse<T> {
   data: T;
@@ -8,6 +8,48 @@ interface ApiResponse<T> {
 export async function fetchRenderFromService(
   id: number
 ): Promise<ApiResponse<Render>> {
-  const response = await fetcher.get<ApiResponse<Render>>(`/renders/${id}`);
-  return response;
+  try {
+    const response = await fetcher.get<ApiResponse<Render>>(`/renders/${id}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching render with ID ${id}:`, error);
+    throw new Error(`Failed to fetch render data.`);
+  }
+}
+
+export async function fetchFixturaRenderDetails(
+  userID: number,
+  renderID: number
+): Promise<ApiResponse<Render>> {
+  try {
+    const response = await fetcher.get<ApiResponse<Render>>(
+      `/render/fixturaContentHubRenderDetails/${userID}/${renderID}`
+    );
+    return response;
+  } catch (error) {
+    console.error(
+      `Error fetching Fixtura render details for user ${userID} and render ${renderID}:`,
+      error
+    );
+    throw new Error(`Failed to fetch Fixtura render details.`);
+  }
+}
+
+export async function fetchGroupingDetailsFromService(
+  userID: number,
+  renderID: number,
+  groupingCategory: string
+): Promise<ApiResponse<GroupingDetails>> {
+  try {
+    const response = await fetcher.get<ApiResponse<GroupingDetails>>(
+      `/render/fixturaContentHubGroupingDetails/${userID}/${renderID}/${groupingCategory}`
+    );
+    return response;
+  } catch (error) {
+    console.error(
+      `Error fetching grouping details for user ${userID}, render ${renderID}, and grouping ${groupingCategory}:`,
+      error
+    );
+    throw new Error(`Failed to fetch grouping details.`);
+  }
 }

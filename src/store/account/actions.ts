@@ -1,11 +1,26 @@
-import { useSchedulerStore } from "../scheduler";
+/* import { useSchedulerStore } from "../scheduler";
 import { useOrdersStore } from "../orders";
 import { useAssociationStore } from "../associationStore/index";
-import { useClubStore } from "../clubStore/index";
-import { fetchAccountDetailsFromService } from "./service";
+import { useClubStore } from "../clubStore/index"; */
+import { fetchFilteredAccountDetailsFromService } from "./service";
 import { usePrivateAccountState } from "./private";
-import { Association, Club, Order } from "@/types"; // Import necessary types
+import { AccountResponse } from "@/types";
 
+export async function fetchFilteredAccountDetails(id: number) {
+  const state = usePrivateAccountState();
+  try {
+    state.loading = true;
+    const response = await fetchFilteredAccountDetailsFromService(id);
+    if (response && response.data) {
+      state.accountDetails = (response as AccountResponse).data;
+    }
+  } catch (error) {
+    state.error = (error as Error).message;
+  } finally {
+    state.loading = false;
+  }
+}
+/*
 export async function fetchAccountDetails(id: number) {
   const state = usePrivateAccountState();
   try {
@@ -86,3 +101,4 @@ export async function fetchAccountDetails(id: number) {
     state.loading = false;
   }
 }
+ */
