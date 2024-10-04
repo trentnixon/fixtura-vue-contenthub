@@ -1,51 +1,68 @@
-<!-- src/components/ArticleTypes/LadderSummary.vue -->
 <template>
-  <div class="pa-4 text-body" :id="copyID">
-    <!-- Iterate through each league -->
-    <div v-for="league in leagues" :key="league.title" class="mb-4">
-      <!-- League Title -->
-      <h5 class="article-title">{{ league.title }}</h5>
+  <div class="pa-4" :id="copyID">
+    <!-- Check if leagues exist -->
+    <div v-if="leagues && leagues.length > 0">
+      <!-- Iterate through each league -->
+      <div v-for="(league, index) in leagues" :key="index" class="mb-4">
+        <!-- League Title and Subtitle -->
+        <h4 class="article-title">{{ league.title }}</h4>
+        <p class="article-subtitle">{{ league.subtitle }}</p>
 
-      <!-- League Subtitle -->
-      <h6 class="article-subtitle">{{ league.subtitle }}</h6>
+        <!-- Article Body -->
+        <p class="article-body">{{ league.article_body }}</p>
 
-      <!-- League Article Body -->
-      <p class="article-body">{{ league.article_body }}</p>
+        <!-- Divider Between Leagues -->
+        <v-divider class="my-4"></v-divider>
+      </div>
+    </div>
+    <div v-else>
+      <p class="article-body">No ladder information available.</p>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed, defineProps } from "vue";
-import { LadderSummaryArticle } from "@/types/ArticleTypes";
 
-const props = defineProps<{
-  selectedArticle: LadderSummaryArticle;
-  copyID: string;
-}>();
+// Define props
+const props = defineProps({
+  articles: Array,
+  copyID: String,
+});
 
-const displayArticle = computed(() => props.selectedArticle.structuredOutput);
-const leagues = computed(() => displayArticle.value.leagues);
+// Extract leagues from the structured article data
+const formattedArticles = computed(() => {
+  const aiArticles = props.articles || [];
+  return aiArticles.map((article) => ({
+    id: article.id,
+    title: article.structuredOutput?.leagues?.[0]?.title || "No Title",
+    subtitle: article.structuredOutput?.leagues?.[0]?.subtitle || "No Subtitle",
+    leagues: article.structuredOutput?.leagues || [],
+  }));
+});
 
-// Copy function
-function copyArticle(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    let content = "";
-    leagues.value.forEach((league) => {
-      content += `${league.title}\n${league.subtitle}\n\n${league.article_body}\n\n`;
-    });
+// Use the first article (assuming one ladder summary)
+const article = computed(() => formattedArticles.value[0]);
 
-    navigator.clipboard
-      .writeText(content)
-      .then(() => {
-        console.log("Ladder summary copied to clipboard.");
-        resolve();
-      })
-      .catch((err) => {
-        console.error("Failed to copy ladder summary:", err);
-        reject(err);
-      });
-  });
+// Extract title, subtitle, and leagues
+const leagues = computed(() => article.value?.leagues || []);
+
+// Copy function for the article content
+async function copyArticle() {
+  try {
+    let content = leagues.value
+      .map(
+        (league) =>
+          `${league.title}\n${league.subtitle}\n${league.article_body}\n\n`
+      )
+      .join("\n");
+
+    await navigator.clipboard.writeText(content);
+    console.log("Ladder summary copied to clipboard.");
+  } catch (err) {
+    console.error("Failed to copy ladder summary:", err);
+    throw err;
+  }
 }
 
 // Expose the copyArticle method to the parent
@@ -56,5 +73,5 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Styling handled by SASS utility classes */
+/* Any specific styling can be added here */
 </style>

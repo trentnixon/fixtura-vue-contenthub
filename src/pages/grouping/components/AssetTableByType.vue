@@ -3,8 +3,22 @@
   <v-skeleton-loader v-if="loading" type="table" />
 
   <template v-else>
+    <v-row>
+      <v-col class="d-flex justify-end py-0 px-1 my-0" cols="12">
+        <CustomChip
+          :label="
+            !getSelectedCategoryStats?.hasErrors
+              ? 'No Errors Detected'
+              : 'Errors'
+          "
+          :value="!getSelectedCategoryStats?.hasErrors"
+          type="boolean"
+        />
+      </v-col>
+    </v-row>
+
     <!-- Display the download stats in a data table when data is loaded -->
-    <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4">
+    <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-2">
       <div class="text-body py-2 px-4"></div>
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
         <v-data-table
@@ -61,7 +75,8 @@ import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import { useRenderGroupingData } from "@/pages/grouping/composables/useRenderGroupingData";
 
 // Fetch data from the composable
-const { loading, getAssetsByType } = useRenderGroupingData();
+const { loading, getAssetsByType, getSelectedCategoryStats } =
+  useRenderGroupingData();
 const route = useRoute();
 
 // Search bar state

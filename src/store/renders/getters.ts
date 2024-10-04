@@ -95,3 +95,12 @@ export const getTotalFixtures = computed(() => {
 export const getTotalErrors = computed(() => {
   return selectedGrouping.value?.metrics.summary.totalErrors || 0;
 });
+
+/** End Grouping Render */
+
+/** Fixtura Asset */
+
+// Getter to access the selected fixtura asset
+export const selectedFixturaAsset = computed(
+  () => usePrivateRendersState().selectedFixturaAsset
+);

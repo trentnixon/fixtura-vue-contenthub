@@ -1,54 +1,45 @@
 <template>
   <v-row class="d-flex justify-center">
-    <!-- Total Fixtures Card -->
-    <v-col cols="12" md="4">
-      <CardSmall1DataPoint
-        icon="mdi-calendar"
-        buttonText=""
-        :value="getTotalFixtures"
-        subtitle="Total Fixtures"
-        theme="cardNeutral"
-      />
-    </v-col>
-    <!-- Total Game Results Card -->
-    <v-col cols="12" md="4">
-      <CardSmall1DataPoint
-        icon="mdi-soccer"
-        buttonText=""
-        :value="getTotalGameResults"
-        subtitle="Game Results"
-        theme="cardNeutral"
-      />
-    </v-col>
-
-    <!-- Total Upcoming Games Card -->
-    <v-col cols="12" md="4">
-      <CardSmall1DataPoint
-        icon="mdi-clock"
-        buttonText=""
-        :value="getTotalUpcomingGames"
-        subtitle="Upcoming Games"
-        theme="cardNeutral"
-      />
-    </v-col>
-    <!-- Total Downloads Card -->
-    <v-col cols="12" md="6">
+    <!-- Downloads Card -->
+    <v-col cols="12" md="3">
       <CardSmall1DataPoint
         icon="mdi-download"
         buttonText=""
-        :value="getTotalDownloads"
+        :value="getSelectedCategoryStats?.downloads || 0"
         subtitle="Total Downloads"
         theme="cardNeutral"
       />
     </v-col>
 
-    <!-- Total Articles Card -->
-    <v-col cols="12" md="6">
+    <!-- Videos Card -->
+    <v-col cols="12" md="3">
       <CardSmall1DataPoint
-        icon="mdi-file-document"
+        icon="mdi-video"
         buttonText=""
-        :value="getTotalAiArticles"
-        subtitle="Total AI Articles"
+        :value="getSelectedCategoryStats?.videos || 0"
+        subtitle="Total Videos"
+        theme="cardNeutral"
+      />
+    </v-col>
+
+    <!-- Images Card -->
+    <v-col cols="12" md="3">
+      <CardSmall1DataPoint
+        icon="mdi-image"
+        buttonText=""
+        :value="getSelectedCategoryStats?.images || 0"
+        subtitle="Total Images"
+        theme="cardNeutral"
+      />
+    </v-col>
+
+    <!-- Articles Card -->
+    <v-col cols="12" md="3">
+      <CardSmall1DataPoint
+        icon="mdi-file-document-outline"
+        buttonText=""
+        :value="getSelectedCategoryStats?.aiWriteups || 0"
+        subtitle="Total Articles"
         theme="cardNeutral"
       />
     </v-col>
@@ -66,15 +57,7 @@ const route = useRoute();
 const groupingCategory = ref(route.params.groupingcategory);
 
 // Extract stats from the composable
-const {
-  getTotalDownloads,
-  getTotalAiArticles,
-  getTotalGameResults,
-  getTotalUpcomingGames,
-  getTotalGrades,
-  getTotalFixtures,
-  checkBundleErrors,
-} = useRenderGroupingData();
+const { getSelectedCategoryStats } = useRenderGroupingData();
 
 // Watch for route parameter changes
 watch(

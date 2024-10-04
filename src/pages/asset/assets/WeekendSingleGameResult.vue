@@ -1,4 +1,3 @@
-<!-- src/components/ArticleTypes/WeekendSingleGameResult.vue -->
 <template>
   <v-container class="pa-0" fluid>
     <!-- Fixtures Table View -->
@@ -36,7 +35,7 @@
                 :width="50"
                 aspect-ratio="16/9"
                 cover
-                :src="item.avatar.url"
+                :src="item.avatar"
               ></v-img>
             </template>
             <template v-slot:[`item.teams`]="{ item }">
@@ -48,7 +47,7 @@
               </div>
             </template>
 
-            <!-- Action Column Slot -->
+            <!-- Action Column -->
             <template v-slot:[`item.action`]="{ index }">
               <SecondaryButton
                 :label="'View Fixture'"
@@ -93,18 +92,17 @@
   </v-container>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, defineProps, computed } from "vue";
-import { WeekendSingleGameResult, ImageAsset } from "@/types/ArticleTypes";
 import AssetImageGallery from "./media/AssetImageGallery.vue";
 import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
 
 // Define component props
-const props = defineProps<{
-  formattedAssets: ImageAsset[];
-  formattedArticles: WeekendSingleGameResult[];
-}>();
+const props = defineProps({
+  formattedAssets: Array, // Images related to the fixtures
+  formattedArticles: Array, // Articles related to the fixtures
+});
 
 // State for search input
 const search = ref("");
@@ -119,12 +117,15 @@ const headers = [
 // Prepare fixtures data for the table
 const fixtures = computed(() => {
   return props.formattedArticles.map((article, index) => ({
-    ...article.structuredOutput,
     teams: `${article.structuredOutput.team1} vs ${article.structuredOutput.team2}`,
     scores: `${article.structuredOutput.score1} | ${article.structuredOutput.score2}`,
-    avatar: props.formattedAssets[0]?.url[index],
+    avatar:
+      props.formattedAssets && props.formattedAssets[0]
+        ? props.formattedAssets[0].url
+        : "", // Handle possible undefined values
   }));
 });
+
 // Filtered fixtures based on search input
 const filteredFixtures = computed(() => {
   if (!search.value) return fixtures.value;
@@ -134,7 +135,7 @@ const filteredFixtures = computed(() => {
 });
 
 // State for selected fixture index
-const selectedFixtureIndex = ref<number | null>(null);
+const selectedFixtureIndex = ref(null);
 
 // Computed properties for selected article and image
 const selectedArticle = computed(() => {
@@ -144,13 +145,22 @@ const selectedArticle = computed(() => {
 });
 
 const selectedImage = computed(() => {
-  return selectedFixtureIndex.value !== null
-    ? props.formattedAssets[0]?.url[selectedFixtureIndex.value]
-    : [];
+  if (
+    selectedFixtureIndex.value !== null &&
+    props.formattedAssets[0] &&
+    props.formattedAssets[0].downloads.length > 0
+  ) {
+    // Assuming you want the first image in the downloads array
+    return (
+      props.formattedAssets[0].downloads[selectedFixtureIndex.value] ||
+      props.formattedAssets[0].downloads[0]
+    );
+  }
+  return null; // Handle undefined or empty array
 });
 
 // Function to select a fixture and show details
-const selectFixture = (index: number) => {
+const selectFixture = (index) => {
   selectedFixtureIndex.value = index;
 };
 
@@ -159,3 +169,7 @@ const backToList = () => {
   selectedFixtureIndex.value = null;
 };
 </script>
+
+<style scoped>
+/* You can add any custom styling here */
+</style>

@@ -1,5 +1,5 @@
 import fetcher from "@/actions/fetcher";
-import { GroupingDetails, Render } from "@/types";
+import { GroupingDetails, Render, RenderAssetsResponse } from "@/types";
 
 interface ApiResponse<T> {
   data: T;
@@ -51,5 +51,26 @@ export async function fetchGroupingDetailsFromService(
       error
     );
     throw new Error(`Failed to fetch grouping details.`);
+  }
+}
+
+export async function fetchAssetsByRender(
+  userID: number,
+  renderID: number,
+  groupingCategory: string,
+  assetType: string
+): Promise<ApiResponse<RenderAssetsResponse>> {
+  try {
+    const response = await fetcher.get<ApiResponse<RenderAssetsResponse>>(
+      `/render/fixturaGetAssetsFromRender/${userID}/${renderID}/${groupingCategory}/${assetType}`
+    );
+
+    return response;
+  } catch (error) {
+    console.error(
+      `Error fetching assets for user ${userID}, render ${renderID}, grouping ${groupingCategory}, assetType ${assetType}:`,
+      error
+    );
+    throw new Error("Failed to fetch assets.");
   }
 }

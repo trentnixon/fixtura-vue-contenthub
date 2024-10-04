@@ -32,12 +32,12 @@
           :md="isSingleImage ? 12 : 3"
         >
           <AssetCard
-            :image="url.url"
+            :image="url"
             title="Image Asset"
             subtitle="Downloadable"
             description="Click the button to download or view the image"
-            @download="downloadImage(url.url)"
-            @view="viewImage(url.url)"
+            @download="downloadImage(url)"
+            @view="viewImage(url)"
           />
         </v-col>
       </v-row>
@@ -125,4 +125,6 @@ const {
   handleBulkDownload,
   viewImage,
 } = useImageDownloads();
+
+console.log("imageUrls", props.imageUrls);
 </script>

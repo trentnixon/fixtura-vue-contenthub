@@ -127,3 +127,36 @@ export interface GroupingDetails {
 export interface GroupingApiResponse {
   data: GroupingDetails;
 }
+
+export interface AssetItem {
+  id: number;
+  name: string;
+  assetLinkID: string;
+  compositionID: string;
+  downloads: DownloadItem[];
+  aiArticles: AIArticle[];
+}
+
+export interface DownloadItem {
+  id: number;
+  name: string;
+  url: string;
+  hasBeenProcessed: boolean;
+  forceRerender: boolean;
+}
+
+export interface AIArticle {
+  id: number;
+  name: string;
+  structuredOutput: any; // Keeping this flexible
+  assetType: string;
+}
+
+export interface RenderAssetsResponse {
+  [assetType: string]: {
+    [assetLinkID: string]: {
+      downloads: DownloadItem[];
+      aiArticles: AIArticle[];
+    };
+  };
+}

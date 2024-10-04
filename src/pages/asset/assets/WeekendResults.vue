@@ -3,8 +3,9 @@
     <!-- Tabs for xs screens -->
     <AssetTabs v-if="$vuetify.display.xs" :tabs="assetTabs">
       <template #articles>
+        <!-- Display the articles when available -->
         <AssetDisplayArticle
-          v-if="formattedArticles"
+          v-if="formattedArticles.length > 0"
           :articles="formattedArticles"
         />
       </template>
@@ -14,26 +15,31 @@
       <template #gallery>
         <AssetImageGallery
           v-if="imageAssets.length > 0"
-          :imageUrls="imageAssets[0]"
+          :imageUrls="imageAssets"
         />
       </template>
     </AssetTabs>
 
+    <!-- Layout for non-xs screens -->
     <v-row v-else>
+      <!-- Video Column -->
       <v-col cols="12" sm="5" class="px-1">
         <AssetVideo v-if="videoAssets.length > 0" :videoUrls="videoAssets[0]" />
       </v-col>
+
+      <!-- Article Column -->
       <v-col class="d-flex justify-start px-1" cols="12" sm="7">
         <AssetDisplayArticle
-          v-if="formattedArticles"
+          v-if="formattedArticles.length > 0"
           :articles="formattedArticles"
         />
       </v-col>
+
+      <!-- Image Gallery Column -->
       <v-col cols="12">
-        <!-- Display image gallery -->
         <AssetImageGallery
           v-if="imageAssets.length > 0"
-          :imageUrls="imageAssets[0]"
+          :imageUrls="imageAssets"
         />
       </v-col>
     </v-row>
@@ -63,16 +69,17 @@ const props = defineProps({
 const videoAssets = computed(() => {
   return props.formattedAssets
     .filter((asset) => asset.category === "VIDEO")
-    .map((asset) => asset.url);
+    .flatMap((asset) => asset.downloads.map((download) => download)); // Map all video URLs
 });
 
 // Extract image assets from formatted assets
 const imageAssets = computed(() => {
   return props.formattedAssets
     .filter((asset) => asset.category === "IMAGE")
-    .map((asset) => asset.url);
+    .flatMap((asset) => asset.downloads.map((download) => download)); // Map all image URLs
 });
 
+// Setup asset tabs for switching views
 const assetTabs = computed(() => [
   {
     value: "video",

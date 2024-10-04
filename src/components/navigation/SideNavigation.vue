@@ -18,7 +18,7 @@
               :src="getOrganizationDetails.ParentLogo"
             ></v-img>
           </v-avatar>
-          <BodyText>{{ getAccountName }}</BodyText>
+          <div class="text-body">{{ getAccountName }}</div>
         </v-container>
       </template>
       <v-container
@@ -58,22 +58,19 @@
             </template>
 
             <!-- Dynamic list of categories with icons and truncated text -->
-            <template v-if="renderId && downloadStats.groupingCategories">
+            <template v-if="renderId && filteredCategoryItems">
               <v-list>
                 <v-list-item
                   class="rounded-md shadow-2 my-1"
                   active-class="active-nav-item"
-                  v-for="(item, index) in downloadStats.groupingCategories"
-                  :title="truncateText(item, 20)"
-                  :subtitle="`Assets
-                ${getAssetCount(item)} `"
+                  v-for="(item, index) in filteredCategoryItems"
                   :key="index"
-                  :to="{
-                    path: `/${accountid}/${sport}/${renderId}/${item.toLowerCase()}`,
-                  }"
+                  :title="truncateText(item.category, 20)"
+                  :subtitle="`Assets: ${item.assetCount} | Articles: ${item.articleCount}`"
+                  :to="item.link"
                 >
                   <template v-slot:append>
-                    <v-icon>{{ getIconForCategory(item) }}</v-icon>
+                    <v-icon>{{ getIconForCategory(item.category) }}</v-icon>
                   </template>
                 </v-list-item>
               </v-list>
@@ -93,9 +90,6 @@ import { useRoute } from "vue-router";
 
 // Import composables and components
 import { useAccountData } from "@/pages/account/composables/useAccountData";
-import { useDownloadData } from "@/pages/render/composables/OLD_useDownloadData";
-
-import BodyText from "@/components/primitives/text/BodyText.vue";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
 
 // Define props and emits
@@ -114,8 +108,7 @@ const accountid = ref(Number(route.params.accountid));
 const renderId = ref(Number(route.params.renderid));
 const sport = ref(route.params.sport);
 
-const { getRenderDate } = useRenderData();
-
+const { getRenderDate, filteredCategoryItems } = useRenderData();
 // Watch for changes in the route parameters
 watch(
   () => route.params,
@@ -134,10 +127,7 @@ function updateDrawer(value) {
 }
 
 // Use account data composable
-const { getAccountName, getOrganizationDetails, loading } = useAccountData();
-
-// Download stats
-const { downloadStats } = useDownloadData();
+const { getAccountName, getOrganizationDetails } = useAccountData();
 
 // Function to dynamically choose the icon for each category
 function getIconForCategory(category) {
@@ -158,13 +148,4 @@ function truncateText(text, length) {
   }
   return text;
 }
-
-const getAssetCount = (item) => downloadStats.value.groupingCategory[item];
 </script>
-<style scoped>
-.footer {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-}
-</style>

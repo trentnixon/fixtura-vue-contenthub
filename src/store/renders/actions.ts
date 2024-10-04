@@ -1,6 +1,7 @@
 import { Render, RenderAttributes } from "@/types";
 import { usePrivateRendersState } from "./private";
 import {
+  fetchAssetsByRender,
   fetchFixturaRenderDetails,
   fetchGroupingDetailsFromService,
 } from "./service";
@@ -56,6 +57,37 @@ export async function fetchGroupingDetails(
     state.error = `Failed to fetch grouping details: ${
       (error as Error).message
     }`;
+  } finally {
+    state.loading = false;
+  }
+}
+
+export async function fetchAssetsByRenderAction(
+  userID: number,
+  renderID: number,
+  groupingCategory: string,
+  assetType: string
+) {
+  const state = usePrivateRendersState();
+
+  try {
+    state.loading = true;
+    state.error = null;
+
+    const response = await fetchAssetsByRender(
+      userID,
+      renderID,
+      groupingCategory,
+      assetType
+    );
+
+    if (response && response.data) {
+      state.selectedFixturaAsset = response.data; // Set the assets in the state
+    } else {
+      throw new Error("Invalid assets data structure");
+    }
+  } catch (error) {
+    state.error = `Failed to fetch assets: ${(error as Error).message}`;
   } finally {
     state.loading = false;
   }

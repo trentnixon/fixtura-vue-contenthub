@@ -31,7 +31,7 @@
       <v-sheet class="overflow-y-auto" :max-height="maxHeight">
         <component
           :is="assetComponent"
-          :selectedArticle="articles[0]"
+          :articles="Array.isArray(articles) ? articles : []"
           :copyID="generateCopyID()"
           ref="articleComponent"
         />
@@ -59,18 +59,16 @@ import UpcomingFixtures from "./articleTypes/UpcomingFixtures.vue";
 import WeekendWrapUp from "./articleTypes/WeekendWrapUp.vue";
 import SingleResultArticles from "./articleTypes/SingleResultArticles.vue";
 import { ArticleComponent } from "@/types/ArticleTypes";
-
+import { useRoute } from "vue-router";
 const props = defineProps({
   articles: {
     type: Object, // Assuming articles is an object containing structured output
     required: true,
   },
 });
+const route = useRoute();
 
-console.log("[assetdisplayarticle]", props.articles);
-
-import { useAssetDownloadData } from "@/pages/asset/composables/useAssetDownloadData";
-const { selectedAsset } = useAssetDownloadData();
+const assetType = ref(route.params.asset);
 const { name } = useDisplay();
 const loading = ref(true);
 
@@ -83,7 +81,7 @@ const articleComponent = ref<ArticleComponent | null>(null);
 
 // Define the dynamic component based on the asset type
 const assetComponent = computed(() => {
-  switch (selectedAsset.value?.type?.toLowerCase()) {
+  switch (assetType.value) {
     case "top5bowlinglist":
     case "top5battinglist":
       return Top5Listicle;
@@ -151,4 +149,6 @@ const maxHeight = computed(() => {
       return "600px";
   }
 });
+
+console.log("[props.articles ]", props.articles);
 </script>

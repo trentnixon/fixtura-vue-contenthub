@@ -1,97 +1,100 @@
-<!-- src/components/ArticleTypes/WeekendWrapUp.vue -->
 <template>
   <div class="pa-4 text-body" :id="copyID">
-    <!-- Check if results exist -->
-    <div v-if="results.length > 0">
-      <!-- Iterate through each result -->
-      <div v-for="(result, index) in results" :key="index" class="mb-4">
-        <!-- Subtitle -->
-        <p class="article-title">
-          {{ result.subtitle }}
-        </p>
-
-        <!-- Match and Scores -->
+    <!-- Check if articles exist -->
+    <div v-if="formattedArticles.length > 0">
+      <!-- Iterate through each article -->
+      <div
+        v-for="(article, index) in formattedArticles"
+        :key="index"
+        class="mb-4"
+      >
+        <h4 class="article-title">{{ article.title }}</h4>
+        <p class="article-subtitle">{{ article.subtitle }}</p>
         <h5 class="article-subtitle">
-          {{ result.team1 }} {{ result.score1 }} vs {{ result.team2 }}
-          {{ result.score2 }}
+          {{ article.team1 }} {{ article.score1 }} vs {{ article.team2 }}
+          {{ article.score2 }}
         </h5>
-
-        <!-- Highlights -->
-        <p class="article-body">
-          {{ result.highlights }}
-        </p>
-
-        <!-- Divider Between Results -->
+        <p class="article-body">{{ article.articleBody }}</p>
+        <p class="article-body">{{ article.highlights }}</p>
         <v-divider class="my-4"></v-divider>
       </div>
     </div>
     <div v-else>
-      <p class="article-body">No weekend results available.</p>
+      <p class="article-body">No articles available.</p>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed, defineProps } from "vue";
-import { WeekendWrapUpArticle, WeekendResult } from "@/types/ArticleTypes";
+<script setup>
+import { computed, defineProps, defineExpose } from "vue";
 
-const props = defineProps<{
-  selectedArticle: WeekendWrapUpArticle[]; // Now an array
-  copyID: string;
-}>();
-
-// Flatten all results from the array of articles
-const results = computed<WeekendResult[]>(() => {
-  if (!props.selectedArticle || !Array.isArray(props.selectedArticle)) {
-    return [];
-  }
-  return props.selectedArticle.reduce<WeekendResult[]>((acc, article) => {
-    if (
-      article.structuredOutput &&
-      Array.isArray(article.structuredOutput.results)
-    ) {
-      return acc.concat(article.structuredOutput.results);
-    }
-    return acc;
-  }, []);
+// Define the props
+const props = defineProps({
+  articles: Array,
+  copyID: String,
 });
 
-console.log(
-  "[WeekendWrapUp.vue] props.selectedArticle:",
-  props.selectedArticle
-);
-console.log("[WeekendWrapUp.vue] results:", results.value);
+console.log("[aiArticles]", props.articles);
 
-// Copy function that returns a Promise
-async function copyArticle(): Promise<void> {
+// Format the articles within the component
+const formattedArticles = computed(() => {
+  const aiArticles = props.articles || [];
+  console.log("[formattedArticles]", aiArticles);
+  // Return formatted AI articles based on structuredOutput results
+  return aiArticles.flatMap((article) => {
+    const results = article.structuredOutput?.results || [];
+    // Map each result as a separate formatted article
+    return results.map((result) => ({
+      id: article.id,
+      name: article.name || "Unknown Article",
+      title: result.title || "No Title",
+      subtitle: result.subtitle || "No Subtitle",
+      articleBody: result.article_body || "No Article Body",
+      highlights: result.highlights || "No Highlights",
+      team1: result.team1 || "Team 1",
+      team2: result.team2 || "Team 2",
+      score1: result.score1 || "0",
+      score2: result.score2 || "0",
+      winner: result.winner || "No Winner",
+      assetType: article.assetType || "Unknown Type",
+      assetCategory: article.assetCategory || "Unknown Category",
+      hasError: article.hasError || false,
+      errorHandler: article.errorHandler || null,
+      hasCompleted: article.hasCompleted || false,
+      forceRerender: article.forceRerender || false,
+      compositionID: article.compositionID || "Unknown Composition",
+    }));
+  });
+});
+
+// Function to handle copying the article content to the clipboard
+async function copyArticle() {
   try {
-    if (!results.value || !Array.isArray(results.value)) {
-      throw new Error("Results data is not available.");
+    if (!formattedArticles.value || formattedArticles.value.length === 0) {
+      throw new Error("No articles available to copy.");
     }
 
+    // Combine all article content into a single string
     let content = "";
-    results.value.forEach((result) => {
-      content += `${result.subtitle}\n`;
-      content += `${result.team1} ${result.score1} vs ${result.team2} ${result.score2}\n\n`;
-      content += `${result.highlights}\n\n`;
+    formattedArticles.value.forEach((article) => {
+      content += `${article.title}\n`;
+      content += `${article.subtitle}\n`;
+      content += `${article.team1} ${article.score1} vs ${article.team2} ${article.score2}\n\n`;
+      content += `${article.articleBody}\n\n`;
+      content += `Highlights: ${article.highlights}\n\n`;
     });
 
+    // Copy the content to the clipboard
     await navigator.clipboard.writeText(content);
-    console.log("Weekend results copied to clipboard.");
+    console.log("Articles copied to clipboard.");
   } catch (err) {
-    console.error("Failed to copy weekend results:", err);
-    throw err; // Propagate the error to the parent if needed
+    console.error("Failed to copy articles:", err);
+    throw err;
   }
 }
 
 // Expose the copyArticle method to the parent
-// eslint-disable-next-line
 defineExpose({
   copyArticle,
 });
 </script>
-
-<style scoped>
-/* Styling handled by SASS utility classes */
-/* If custom styles are needed, they can be added here */
-</style>

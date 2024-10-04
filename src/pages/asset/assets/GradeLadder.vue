@@ -4,37 +4,61 @@
     <AssetTabs v-if="$vuetify.display.xs" :tabs="assetTabs">
       <template #articles>
         <AssetDisplayArticle
-          v-if="formattedArticles"
+          v-if="formattedArticles.length > 0"
           :articles="formattedArticles"
         />
       </template>
+
       <template #video>
-        <AssetVideo v-if="videoAssets.length > 0" :videoUrls="videoAssets[0]" />
+        <template v-if="videoHasError">
+          <VideoAssetError :asset="videoAsset" />
+        </template>
+        <AssetVideo
+          v-else-if="videoAssets.length > 0"
+          :videoUrls="videoAssets[0]"
+        />
       </template>
+
       <template #gallery>
+        <template v-if="galleryHasError">
+          <ImageAssetError :asset="imageAsset" />
+        </template>
         <AssetImageGallery
-          v-if="imageAssets.length > 0"
-          :imageUrls="imageAssets[0]"
+          v-else-if="imageAssets.length > 0"
+          :imageUrls="imageAssets"
         />
       </template>
     </AssetTabs>
 
+    <!-- Layout for non-xs screens -->
     <v-row v-else>
+      <!-- Video Column -->
       <v-col cols="12" sm="5" class="px-1">
-        <AssetVideo v-if="videoAssets.length > 0" :videoUrls="videoAssets[0]" />
+        <template v-if="videoHasError">
+          <VideoAssetError :asset="videoAsset" />
+        </template>
+        <AssetVideo
+          v-else-if="videoAssets.length > 0"
+          :videoUrls="videoAssets[0]"
+        />
       </v-col>
+
+      <!-- Article Column -->
       <v-col class="d-flex justify-start px-1" cols="12" sm="7">
         <AssetDisplayArticle
-          v-if="formattedArticles"
+          v-if="formattedArticles.length > 0"
           :articles="formattedArticles"
         />
       </v-col>
 
+      <!-- Image Gallery Column -->
       <v-col cols="12">
-        <!-- Display image gallery -->
+        <template v-if="galleryHasError">
+          <ImageAssetError :asset="imageAsset" />
+        </template>
         <AssetImageGallery
-          v-if="imageAssets.length > 0"
-          :imageUrls="imageAssets[0]"
+          v-else-if="imageAssets.length > 0"
+          :imageUrls="imageAssets"
         />
       </v-col>
     </v-row>
@@ -47,6 +71,9 @@ import AssetImageGallery from "./media/AssetImageGallery.vue";
 import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import { defineProps, computed } from "vue";
 import AssetTabs from "@/pages/asset/components/AssetTabs.vue";
+import VideoAssetError from "./errors/VideoAssetError.vue";
+import ImageAssetError from "./errors/ImageAssetError.vue";
+// import AIArticleError from "./errors/AIArticleError.vue";
 
 const props = defineProps({
   formattedAssets: {
@@ -59,26 +86,25 @@ const props = defineProps({
   },
 });
 
-// Extract video assets from formatted assets
+// Extract video assets and detect errors
+const videoAsset = computed(() => {
+  return props.formattedAssets.find((asset) => asset.category === "VIDEO");
+});
 const videoAssets = computed(() => {
-  // Check if formattedAssets is null or undefined
-  if (!props.formattedAssets) return [];
-
-  const filteredAssets = props.formattedAssets
-    .filter((asset) => asset && asset.category === "VIDEO" && asset.url)
-    .map((asset) => asset.url);
-
-  // Return an empty array if filteredAssets is empty
-  return filteredAssets.length > 0 ? [filteredAssets] : [];
+  return videoAsset.value ? videoAsset.value.downloads || [] : [];
 });
+const videoHasError = computed(() => videoAsset.value?.hasError || false);
 
-// Extract image assets from formatted assets
+// Extract image assets and detect errors
+const imageAsset = computed(() => {
+  return props.formattedAssets.find((asset) => asset.category === "IMAGE");
+});
 const imageAssets = computed(() => {
-  return props.formattedAssets
-    .filter((asset) => asset.category === "IMAGE")
-    .map((asset) => asset.url);
+  return imageAsset.value ? imageAsset.value.downloads || [] : [];
 });
+const galleryHasError = computed(() => imageAsset.value?.hasError || false);
 
+// Setup asset tabs for switching views
 const assetTabs = computed(() => [
   {
     value: "video",
