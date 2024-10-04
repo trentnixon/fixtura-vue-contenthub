@@ -4,6 +4,7 @@ import router from "./router";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import { createPinia } from "pinia";
+import { IconPlugin } from "./plugins/PluginIcons";
 import "@mdi/font/css/materialdesignicons.css";
 import "./assets/styles/variables.scss";
 import "./assets/styles/utilities.scss";
@@ -42,7 +43,7 @@ const pinia = createPinia();
 app.use(router);
 app.use(vuetify);
 app.use(pinia);
-
+app.use(IconPlugin);
 // Register the ECharts component globally
 app.component("v-chart", VChart);
 

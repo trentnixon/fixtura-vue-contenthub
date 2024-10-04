@@ -10,13 +10,14 @@
 
     <!-- Icon Buttons -->
     <IconButton
+      v-if="!$vuetify.display.smAndDown"
       icon="mdi-home"
       class="mx-1"
       color="cta1"
       @click="navigateTo('https://www.fixtura.com.au/', true)"
     />
 
-    <template v-if="accountId">
+    <template v-if="accountId && !$vuetify.display.smAndDown">
       <IconButton
         icon="mdi-package-variant-closed"
         class="mx-1"
@@ -25,8 +26,11 @@
       />
     </template>
     <v-spacer></v-spacer>
+    <QuickSelectAssetType />
+    <QuickSelectGrouping />
 
     <v-avatar
+      v-if="!$vuetify.display.smAndDown"
       size="36px"
       image="/img/icons/favicon-32x32.png"
       rounded="0"
@@ -38,6 +42,8 @@
 import { defineProps, defineEmits } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
+import QuickSelectAssetType from "@/pages/asset/components/QuickSelectAssetType.vue";
+import QuickSelectGrouping from "@/pages/render/components/QuickSelectGrouping.vue";
 // Router instance
 const router = useRouter();
 const route = useRoute();

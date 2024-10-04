@@ -41,6 +41,7 @@
             <CustomChip
               :color="getAssetCountColor(item.downloadCount)"
               :label="`${item.downloadCount} Downloads`"
+              :icon="icons.download"
             />
           </template>
 
@@ -48,6 +49,7 @@
             <CustomChip
               :color="getAssetCountColor(item.articleCount)"
               :label="`${item.articleCount} Articles`"
+              :icon="icons.file"
             />
           </template>
 
@@ -68,7 +70,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, inject } from "vue";
+const icons = inject("icons");
 import { useRoute } from "vue-router";
 import CustomChip from "@/components/primitives/chips/CustomChip.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
@@ -151,17 +154,16 @@ function getAssetCountColor(count) {
   else return "green";
 }
 
-// Function to return the correct icon based on the type
 function getIcon(type) {
-  const icons = {
-    WeekendResults: "mdi-calendar-check",
-    Ladder: "mdi-trophy",
-    Top5BowlingList: "mdi-bowling",
-    Top5BattingList: "mdi-baseball-bat",
-    UpComingFixtures: "mdi-calendar-multiple",
-    WeekendSingleGameResult: "mdi-calendar-weekend",
+  const iconMap = {
+    WeekendResults: icons.WeekendResults,
+    Ladder: icons.Ladder,
+    Top5BowlingList: icons.Top5BowlingList,
+    Top5BattingList: icons.Top5BattingList,
+    UpComingFixtures: icons.UpComingFixtures,
+    WeekendSingleGameResult: icons.WeekendSingleGameResult,
   };
-  return icons[type] || "mdi-file";
+  return iconMap[type] || icons.file;
 }
 
 watch(

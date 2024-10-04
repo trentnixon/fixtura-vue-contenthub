@@ -1,14 +1,4 @@
 <template>
-  <v-toolbar
-    class="px-0 py-0 my-0"
-    color="transparent"
-    rounded
-    density="compact"
-  >
-    <!--  Stats | Urls? -->
-    <v-spacer></v-spacer>
-    <QuickSelectAssetType />
-  </v-toolbar>
   <HeaderSection />
   <!-- Conditional renders for loading and error states -->
   <LoadingSpinner v-if="isLoading" type="table" />

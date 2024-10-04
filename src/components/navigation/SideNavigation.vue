@@ -68,6 +68,7 @@
                   :title="truncateText(item.category, 20)"
                   :subtitle="`Assets: ${item.assetCount} | Articles: ${item.articleCount}`"
                   :to="item.link"
+                  :active="isActiveCategory(item.category)"
                 >
                   <template v-slot:append>
                     <v-icon>{{ getIconForCategory(item.category) }}</v-icon>
@@ -85,7 +86,7 @@
 
 <script setup>
 // Import necessary modules
-import { defineProps, defineEmits, ref, watch } from "vue";
+import { defineProps, defineEmits, ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 
 // Import composables and components
@@ -93,7 +94,7 @@ import { useAccountData } from "@/pages/account/composables/useAccountData";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
 
 // Define props and emits
-const props = defineProps({
+defineProps({
   drawer: {
     type: Boolean,
     required: true,
@@ -103,12 +104,18 @@ const props = defineProps({
 
 // Routers
 const route = useRoute();
+const { getRenderDate, filteredCategoryItems } = useRenderData();
 
 const accountid = ref(Number(route.params.accountid));
 const renderId = ref(Number(route.params.renderid));
 const sport = ref(route.params.sport);
+const groupingcategory = ref(route.params.groupingcategory);
 
-const { getRenderDate, filteredCategoryItems } = useRenderData();
+// Function to check if a category is active
+const isActiveCategory = computed(() => (category) => {
+  return category.toLowerCase() === groupingcategory.value?.toLowerCase();
+});
+
 // Watch for changes in the route parameters
 watch(
   () => route.params,
@@ -116,6 +123,7 @@ watch(
     accountid.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
     sport.value = newParams.sport;
+    groupingcategory.value = newParams.groupingcategory;
   }
 );
 
