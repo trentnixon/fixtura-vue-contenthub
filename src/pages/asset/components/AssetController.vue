@@ -52,7 +52,6 @@ const formattedAssets = computed(() => {
     return [];
   }
 
-  console.log("[downloads]", downloads);
   // Return formatted assets with all download URLs, error markers, and metadata
   return downloads.map((download) => ({
     id: download.id,

@@ -19,3 +19,13 @@ export const getDownloadById = (id: number) => {
 export const getFullDownloadById = (id: number) => {
   return computed(() => usePrivateDownloadState().fullDownloads[id] || null);
 };
+
+// Access the rerender response
+export const rerenderResponse = computed(() => {
+  return usePrivateDownloadState().rerenderResponse;
+});
+
+// Check if the system is currently rerendering
+export const isRerendering = computed(() => {
+  return usePrivateDownloadState().isRerendering;
+});

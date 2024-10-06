@@ -1,5 +1,7 @@
 import { usePrivateDownloadState } from "./private";
 import {
+  triggerRerenderInService,
+  fetchRerenderStatusFromService,
   fetchDownloadFromService,
   fetchDownloadsByRenderIdFromService,
 } from "./service";
@@ -47,10 +49,12 @@ export async function fetchFullDownloadsByIds(ids: number[]) {
     state.loading = true;
 
     // Fetch all downloads in parallel
-    const responses = await Promise.all(ids.map(id => fetchDownloadFromService(id)));
+    const responses = await Promise.all(
+      ids.map((id) => fetchDownloadFromService(id))
+    );
 
     // Store each download in `fullDownloads` by its ID
-    responses.forEach(response => {
+    responses.forEach((response) => {
       if (response && response.data) {
         state.fullDownloads[response.data.id] = response.data as Download;
       }
@@ -59,5 +63,88 @@ export async function fetchFullDownloadsByIds(ids: number[]) {
     state.error = (error as Error).message;
   } finally {
     state.loading = false;
+  }
+}
+
+export interface RerenderResponse {
+  success: boolean;
+  message: string;
+  error: string | null; // Allow the error to be null
+}
+
+// Asset render and polling
+export async function triggerRerender(id: number) {
+  const state = usePrivateDownloadState();
+
+  try {
+    state.loading = true;
+    state.isRerendering = true; // Set the rerendering state
+
+    // Make the API call to trigger the rerender
+    const response = await triggerRerenderInService(id);
+    if (response) {
+      // Ensure response is treated as a single object
+      state.rerenderResponse = response as unknown as RerenderResponse;
+    } else {
+      throw new Error("Invalid response structure");
+    }
+  } catch (error) {
+    state.rerenderResponse = {
+      success: false,
+      message: "Failed to trigger rerender",
+      error: (error as Error).message, // Capture the error message
+    };
+    console.error("Error triggering rerender:", error);
+  } finally {
+    state.loading = false;
+    state.isRerendering = false; // Reset the rerendering state
+  }
+}
+
+export interface RerenderStatus {
+  hasBeenProcessed: boolean;
+  hasError: boolean;
+}
+
+export async function pollRerenderStatus(
+  id: number,
+  pollInterval = 5000,
+  maxAttempts = 20
+): Promise<RerenderStatus> {
+  const state = usePrivateDownloadState();
+  let attempts = 0;
+  state.isRerendering = true;
+
+  try {
+    while (attempts < maxAttempts) {
+      const response = await fetchRerenderStatusFromService(id);
+
+      if (response && response.data) {
+        const { hasBeenProcessed, hasError } = response.data;
+
+        if (hasBeenProcessed) {
+          state.isRerendering = false;
+
+          if (!hasError) {
+            // Fetch the updated download once the rerender is successful
+            await fetchDownload(id);
+          }
+
+          return { hasBeenProcessed, hasError };
+        }
+      }
+
+      // Wait for the pollInterval before polling again
+      await new Promise((resolve) => setTimeout(resolve, pollInterval));
+      attempts++;
+    }
+
+    state.isRerendering = false;
+    throw new Error("Max polling attempts reached");
+  } catch (error) {
+    state.error = (error as Error).message;
+    console.error("Error polling rerender status:", error);
+    state.isRerendering = false;
+    throw new Error("Error polling rerender status: " + error);
   }
 }

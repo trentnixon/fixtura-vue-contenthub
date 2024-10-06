@@ -9,24 +9,14 @@
         />
       </template>
 
+      <!-- Render video state for mobile -->
       <template #video>
-        <template v-if="videoHasError">
-          <VideoAssetError :asset="videoAsset" />
-        </template>
-        <AssetVideo
-          v-else-if="videoAssets.length > 0"
-          :videoUrls="videoAssets[0]"
-        />
+        <AssetStateRenderer :asset="videoAsset" :state="videoState" />
       </template>
 
+      <!-- Render gallery state for mobile -->
       <template #gallery>
-        <template v-if="galleryHasError">
-          <ImageAssetError :asset="imageAsset" />
-        </template>
-        <AssetImageGallery
-          v-else-if="imageAssets.length > 0"
-          :imageUrls="imageAssets"
-        />
+        <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
       </template>
     </AssetTabs>
 
@@ -34,13 +24,7 @@
     <v-row v-else>
       <!-- Video Column -->
       <v-col cols="12" sm="5" class="px-1">
-        <template v-if="videoHasError">
-          <VideoAssetError :asset="videoAsset" />
-        </template>
-        <AssetVideo
-          v-else-if="videoAssets.length > 0"
-          :videoUrls="videoAssets[0]"
-        />
+        <AssetStateRenderer :asset="videoAsset" :state="videoState" />
       </v-col>
 
       <!-- Article Column -->
@@ -53,27 +37,18 @@
 
       <!-- Image Gallery Column -->
       <v-col cols="12">
-        <template v-if="galleryHasError">
-          <ImageAssetError :asset="imageAsset" />
-        </template>
-        <AssetImageGallery
-          v-else-if="imageAssets.length > 0"
-          :imageUrls="imageAssets"
-        />
+        <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import AssetVideo from "./media/AssetVideo.vue";
-import AssetImageGallery from "./media/AssetImageGallery.vue";
-import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import { defineProps, computed } from "vue";
+import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import AssetTabs from "@/pages/asset/components/AssetTabs.vue";
-import VideoAssetError from "./errors/VideoAssetError.vue";
-import ImageAssetError from "./errors/ImageAssetError.vue";
-// import AIArticleError from "./errors/AIArticleError.vue";
+import { useAssetState } from "../composables/useAssetState";
+import AssetStateRenderer from "./AssetState/AssetStateRenderer.vue"; // New Component for State Rendering
 
 const props = defineProps({
   formattedAssets: {
@@ -87,39 +62,21 @@ const props = defineProps({
 });
 
 // Extract video assets and detect errors
-const videoAsset = computed(() => {
-  return props.formattedAssets.find((asset) => asset.category === "VIDEO");
-});
-const videoAssets = computed(() => {
-  return videoAsset.value ? videoAsset.value.downloads || [] : [];
-});
-const videoHasError = computed(() => videoAsset.value?.hasError || false);
+const videoAsset = computed(() => props.formattedAssets.find(asset => asset.category === "VIDEO"));
+const videoAssets = computed(() => videoAsset.value ? videoAsset.value.downloads || [] : []);
 
 // Extract image assets and detect errors
-const imageAsset = computed(() => {
-  return props.formattedAssets.find((asset) => asset.category === "IMAGE");
-});
-const imageAssets = computed(() => {
-  return imageAsset.value ? imageAsset.value.downloads || [] : [];
-});
-const galleryHasError = computed(() => imageAsset.value?.hasError || false);
+const imageAsset = computed(() => props.formattedAssets.find(asset => asset.category === "IMAGE"));
+const imageAssets = computed(() => imageAsset.value ? imageAsset.value.downloads || [] : []);
+
+// Use the composable to compute the states for video and gallery assets
+const { assetState: videoState } = useAssetState(videoAsset.value);
+const { assetState: galleryState } = useAssetState(imageAsset.value);
 
 // Setup asset tabs for switching views
 const assetTabs = computed(() => [
-  {
-    value: "video",
-    label: "Video",
-    condition: videoAssets.value.length > 0,
-  },
-  {
-    value: "gallery",
-    label: "Gallery",
-    condition: imageAssets.value.length > 0,
-  },
-  {
-    value: "articles",
-    label: "Articles",
-    condition: props.formattedArticles.length > 0,
-  },
+  { value: "video", label: "Video", condition: videoAssets.value.length > 0 },
+  { value: "gallery", label: "Gallery", condition: imageAssets.value.length > 0 },
+  { value: "articles", label: "Articles", condition: props.formattedArticles.length > 0 },
 ]);
 </script>

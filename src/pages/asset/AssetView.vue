@@ -16,7 +16,6 @@ import HeaderSection from "@/pages/asset/components/HeaderSection.vue";
 import LoadingSpinner from "@/components/UI/LoadingSpinner.vue";
 import ErrorMessage from "@/components/UI/ErrorMessage.vue";
 import AssetController from "@/pages/asset/components/AssetController.vue";
-import QuickSelectAssetType from "@/pages/asset/components/QuickSelectAssetType";
 import { useRendersStore } from "@/store/renders"; // Import the Pinia store
 import { useAccountData } from "@/pages/account/composables/useAccountData"; // Import the composable
 

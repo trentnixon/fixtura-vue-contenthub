@@ -27,7 +27,7 @@
           :active="isActiveAssetType(asset.type)"
         >
           <v-list-item-title>{{
-            getDisplayName(asset.type)
+            getDisplayName(asset.type.toLowerCase())
           }}</v-list-item-title>
         </v-list-item>
       </v-list>

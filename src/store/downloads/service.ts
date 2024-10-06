@@ -22,3 +22,24 @@ export async function fetchDownloadsByRenderIdFromService(
   );
   return response;
 }
+
+export async function triggerRerenderInService(
+  id: number
+): Promise<ApiResponse<boolean>> {
+  const response = await fetcher.post<ApiResponse<boolean>>(
+    `/download/ForceAssetRerender`,
+    {
+      data: { RerenderID: id },
+    }
+  );
+  return response;
+}
+
+export async function fetchRerenderStatusFromService(
+  id: number
+): Promise<ApiResponse<{ hasBeenProcessed: boolean; hasError: boolean }>> {
+  const response = await fetcher.get<
+    ApiResponse<{ hasBeenProcessed: boolean; hasError: boolean }>
+  >(`/download/rerender/status/${id}`);
+  return response;
+}
