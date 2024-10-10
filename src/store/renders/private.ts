@@ -1,12 +1,18 @@
 import { defineStore } from "pinia";
-import { GroupingDetails, Render, RenderAssetsResponse } from "@/types"; // Use the new Render type
+import {
+  GroupingDetails,
+  Render,
+  RenderFixture,
+  RenderAssetsResponse,
+} from "@/types"; // Use the new Render type
 
 export interface PrivateRendersState {
   selectedGrouping: GroupingDetails | null;
   selectedRender: Render | null;
   loading: boolean;
   error: string | null;
-  selectedFixturaAsset: RenderAssetsResponse | null; // Add assets state
+  selectedFixturaAsset: RenderAssetsResponse | null;
+  selectedFixturesForRosters: RenderFixture[] | null;
 }
 
 export const usePrivateRendersState = defineStore("renders-private", {
@@ -16,5 +22,6 @@ export const usePrivateRendersState = defineStore("renders-private", {
     loading: false,
     error: null,
     selectedFixturaAsset: null,
+    selectedFixturesForRosters: null,
   }),
 });

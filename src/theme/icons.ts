@@ -1,11 +1,12 @@
 export default {
   bundles: {
-    bundle: "mdi-package-variant-closed",
-    bundleDate: "mdi-text-box-outline",
+    bundle: "mdi-group",
+    bundleDate: "mdi-truck-delivery-outline",
   },
   grouping: {
-    seniors: "mdi-account-group",
-    juniors: "mdi-human-male-boy",
+    juniors: "mdi-human-child",
+    seniors: "mdi-human-handsup",
+    masters: "mdi-human-cane",
     other: "mdi-map-marker",
   },
   navigation: {
@@ -18,12 +19,13 @@ export default {
     articles: "mdi-newspaper",
   },
   categories: {
-    results: "mdi-calendar-check",
-    ladder: "mdi-trophy",
-    bowling: "mdi-bowling",
-    batting: "mdi-baseball-bat",
-    upcoming: "mdi-calendar-multiple",
-    singleResult: "mdi-calendar-weekend",
+    results: "mdi-scoreboard-outline",
+    ladder: "mdi-ladder",
+    bowling: "mdi-baseball",
+    batting: "mdi-cricket",
+    upcoming: "mdi-calendar-text-outline",
+    singleResult: "mdi-scoreboard",
+    roster: "mdi-format-list-bulleted-square",
   },
   ui: {
     tick: "mdi-check",

@@ -104,3 +104,9 @@ export const getTotalErrors = computed(() => {
 export const selectedFixturaAsset = computed(
   () => usePrivateRendersState().selectedFixturaAsset
 );
+
+/** Roster Poster Getters */
+
+export const getRosterPosterFixtures = computed(
+  () => usePrivateRendersState().selectedFixturesForRosters
+);

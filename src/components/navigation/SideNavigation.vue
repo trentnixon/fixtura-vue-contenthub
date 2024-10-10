@@ -144,6 +144,8 @@ function getIconForCategory(category) {
       return icons.grouping.seniors; // Example icon for senior
     case "junior":
       return icons.grouping.juniors; // Example icon for junior
+    case "masters":
+      return icons.grouping.masters;
     default:
       return icons.grouping.other; // Default icon
   }

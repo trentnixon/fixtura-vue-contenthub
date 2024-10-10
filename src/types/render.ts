@@ -160,3 +160,12 @@ export interface RenderAssetsResponse {
     };
   };
 }
+
+export interface RenderFixture {
+  id: number;
+  TeamRoster: string | null;
+  ageGroup: string;
+  urlToScoreCard: string;
+  teamHome: string;
+  teamAway: string;
+}

@@ -1,5 +1,10 @@
 import fetcher from "@/actions/fetcher";
-import { GroupingDetails, Render, RenderAssetsResponse } from "@/types";
+import {
+  GroupingDetails,
+  Render,
+  RenderAssetsResponse,
+  RenderFixture,
+} from "@/types";
 
 interface ApiResponse<T> {
   data: T;
@@ -72,5 +77,25 @@ export async function fetchAssetsByRender(
       error
     );
     throw new Error("Failed to fetch assets.");
+  }
+}
+
+export async function fetchFixturesByRenderForRoster(
+  userID: number,
+  renderID: number,
+  groupingCategory: string,
+  sport: string
+): Promise<ApiResponse<RenderFixture[]>> {
+  try {
+    const response = await fetcher.get<ApiResponse<RenderFixture[]>>(
+      `/render/fixturaGetFixturesFromRenderForRosters/${userID}/${renderID}/${groupingCategory}/${sport}`
+    );
+    return response;
+  } catch (error) {
+    console.error(
+      `Error fetching fixtures for user ${userID}, render ${renderID}, grouping ${groupingCategory}, sport ${sport}:`,
+      error
+    );
+    throw new Error("Failed to fetch fixtures.");
   }
 }

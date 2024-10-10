@@ -3,6 +3,7 @@ import { usePrivateRendersState } from "./private";
 import {
   fetchAssetsByRender,
   fetchFixturaRenderDetails,
+  fetchFixturesByRenderForRoster,
   fetchGroupingDetailsFromService,
 } from "./service";
 
@@ -88,6 +89,37 @@ export async function fetchAssetsByRenderAction(
     }
   } catch (error) {
     state.error = `Failed to fetch assets: ${(error as Error).message}`;
+  } finally {
+    state.loading = false;
+  }
+}
+
+export async function fetchFixturesByRenderForRosterPosters(
+  userID: number,
+  renderID: number,
+  groupingCategory: string,
+  sport: string
+) {
+  const state = usePrivateRendersState();
+
+  try {
+    state.loading = true;
+    state.error = null;
+
+    const response = await fetchFixturesByRenderForRoster(
+      userID,
+      renderID,
+      groupingCategory,
+      sport
+    );
+
+    if (response && response.data) {
+      state.selectedFixturesForRosters = response.data; // Set the fixtures in the state
+    } else {
+      throw new Error("Invalid fixtures data structure");
+    }
+  } catch (error) {
+    state.error = `Failed to fetch fixtures: ${(error as Error).message}`;
   } finally {
     state.loading = false;
   }

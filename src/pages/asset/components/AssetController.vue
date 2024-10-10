@@ -1,8 +1,16 @@
 <template>
   <!-- Dynamically load the asset component based on the selected asset type -->
-  <template v-if="formattedAssets.length === 0">
+  <template v-if="assetType.toLowerCase() === 'rosterposter'">
+    <component
+      :is="assetComponent"
+      :formattedAssets="formattedAssets"
+      :formattedArticles="aiArticles"
+    />
+  </template>
+  <template v-else-if="formattedAssets.length === 0">
     <div class="text-center">No assets found</div>
   </template>
+
   <template v-else>
     <component
       :is="assetComponent"

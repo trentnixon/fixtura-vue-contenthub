@@ -156,12 +156,12 @@ function getAssetCountColor(count) {
 
 function getIcon(type) {
   const iconMap = {
-    WeekendResults: icons.WeekendResults,
-    Ladder: icons.Ladder,
-    Top5BowlingList: icons.Top5BowlingList,
-    Top5BattingList: icons.Top5BattingList,
-    UpComingFixtures: icons.UpComingFixtures,
-    WeekendSingleGameResult: icons.WeekendSingleGameResult,
+    WeekendResults: icons.categories.results,
+    Ladder: icons.categories.ladder,
+    Top5BowlingList: icons.categories.bowling,
+    Top5BattingList: icons.categories.batting,
+    UpComingFixtures: icons.categories.upcoming,
+    WeekendSingleGameResult: icons.categories.singleResult,
   };
   return iconMap[type] || icons.file;
 }

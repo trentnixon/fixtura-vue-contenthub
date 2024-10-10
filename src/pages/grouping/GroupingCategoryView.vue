@@ -1,8 +1,12 @@
 <template>
   <HeaderSection />
   <v-divider class="my-4" />
+
   <!-- Display download stats for the grouping category -->
   <AssetTableByType />
+  <v-divider class="my-4" />
+  <CardHeader :title="`Team Rosters`" subtitle="" />
+  <CreateTeamRosterLink />
   <v-divider class="my-4" />
   <CardHeader
     :title="`${groupingCategory} render statistics`"
@@ -13,7 +17,7 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import HeaderSection from "@/pages/grouping/components/HeaderSection.vue";
 import CategoryDownloadsStats from "@/pages/grouping/components/CategoryDownloadsStats.vue";
 import AssetTableByType from "@/pages/grouping/components/AssetTableByType.vue";
@@ -21,7 +25,8 @@ import CardHeader from "@/components/primitives/headers/CardHeader.vue";
 import { useAccountData } from "@/pages/account/composables/useAccountData";
 import { fetchFixturaRenderById } from "@/store/renders/actions";
 import { useRendersStore } from "@/store/renders";
-
+import IconButton from "@/components/primitives/buttons/IconButton.vue";
+import CreateTeamRosterLink from "@/pages/grouping/components/CreateTeamRosterLink.vue";
 // Initialize composables
 const { fetchAccountById } = useAccountData();
 const { fetchGroupingDetails } = useRendersStore();
@@ -46,6 +51,16 @@ async function fetchData() {
 // Fetch data on component mount
 onMounted(() => {
   fetchData();
+});
+
+// Function to create rosters
+const rosterLink = computed(() => {
+  console.log("Create Rosters");
+  // vue link to  renderId/cricket/6852/senior/rosterposter
+  const accountId = Number(route.params.accountid);
+  const sport = route.params.sport;
+  const renderId = Number(route.params.renderid);
+  return `/${accountId}/${sport}/${renderId}/${groupingCategory.value}/rosterposter`;
 });
 
 // Watch for route changes and refetch data
