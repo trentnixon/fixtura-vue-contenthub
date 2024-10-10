@@ -42,7 +42,7 @@
           <div class="d-flex justify-start align-center pa-4">
             <v-icon color="error" class="mr-4">mdi-video-off</v-icon>
             <div class="text-body">
-              Video failed to render for {{ asset.name }}.
+              Asset failed to render for {{ asset.name }}.
             </div>
           </div>
         </div>

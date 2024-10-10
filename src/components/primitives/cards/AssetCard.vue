@@ -6,7 +6,7 @@
       <IconButton
         size="x-small"
         color="accent-lighten1"
-        icon="mdi-eye"
+        :icon="icons.navigation.eye"
         variant="elevated"
         class="my-1"
         @click="$emit('view', image)"
@@ -16,7 +16,7 @@
       <IconButton
         size="x-small"
         color="accent-darken1"
-        icon="mdi-download"
+        :icon="icons.assets.download"
         variant="elevated"
         class="my-1"
         @click="$emit('download', image)"
@@ -27,8 +27,8 @@
 
 <script setup>
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
-import { defineProps } from "vue";
-
+import { defineProps, inject } from "vue";
+const icons = inject("icons");
 const props = defineProps({
   title: {
     type: String,

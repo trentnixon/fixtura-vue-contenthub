@@ -7,8 +7,8 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from "vue";
-
+import { defineProps, computed, inject } from "vue";
+const icons = inject("icons");
 const props = defineProps({
   label: {
     type: String,
@@ -30,7 +30,7 @@ const props = defineProps({
 
 const icon = computed(() => {
   if (props.type === "boolean") {
-    return props.value ? "mdi-check" : "mdi-close";
+    return props.value ? icons.ui.tick : icons.ui.cross;
   }
   return props.icon;
 });

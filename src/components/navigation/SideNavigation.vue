@@ -36,7 +36,7 @@
             subtitle="Your seasons Assets"
           >
             <template v-slot:append>
-              <v-icon>mdi-package-variant-closed</v-icon>
+              <v-icon>{{ icons.bundles.bundle }}</v-icon>
             </template>
           </v-list-item>
           <v-divider class="mt-2"></v-divider>
@@ -50,7 +50,7 @@
               active-class="active-nav-item"
             >
               <template v-slot:append>
-                <v-icon>mdi-text-box-outline</v-icon>
+                <v-icon>{{ icons.bundles.bundleDate }} </v-icon>
               </template>
             </v-list-item>
             <template v-if="renderId">
@@ -86,9 +86,9 @@
 
 <script setup>
 // Import necessary modules
-import { defineProps, defineEmits, ref, watch, computed } from "vue";
+import { defineProps, defineEmits, ref, watch, computed, inject } from "vue";
 import { useRoute } from "vue-router";
-
+const icons = inject("icons");
 // Import composables and components
 import { useAccountData } from "@/pages/account/composables/useAccountData";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
@@ -141,11 +141,11 @@ const { getAccountName, getOrganizationDetails } = useAccountData();
 function getIconForCategory(category) {
   switch (category.toLowerCase()) {
     case "senior":
-      return "mdi-account-group"; // Example icon for senior
+      return icons.grouping.seniors; // Example icon for senior
     case "junior":
-      return "mdi-human-male-boy"; // Example icon for junior
+      return icons.grouping.juniors; // Example icon for junior
     default:
-      return "mdi-map-marker"; // Default icon
+      return icons.grouping.other; // Default icon
   }
 }
 

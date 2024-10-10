@@ -17,12 +17,9 @@ import { computed, ref } from "vue";
 import { useRenderAssets } from "@/pages/asset/composables/useRenderAssets"; // Import the composable
 import { useRoute } from "vue-router";
 
-import WeekendResults from "../assets/WeekendResults.vue";
-import TopFive from "../assets/TopFive.vue";
-import GradeLadder from "@/pages/asset/assets/GradeLadder.vue";
-import Upcomingfixtures from "@/pages/asset/assets/UpcomingFixtures.vue";
 import Weekendsinglegameresult from "@/pages/asset/assets/WeekendSingleGameResult.vue";
 import Rosterposter from "@/pages/asset/assets/RosterPoster.vue";
+import AssetDefaultView from "@/pages/asset/assets/AssetDefaultView.vue";
 
 // Fetch the route to get the renderID
 const route = useRoute();
@@ -80,15 +77,15 @@ const aiArticles = computed(() => {
 const assetComponent = computed(() => {
   switch (assetType.value.toLowerCase()) {
     case "weekendresults":
-      return WeekendResults;
+      return AssetDefaultView;
     case "top5bowlinglist":
-      return TopFive;
+      return AssetDefaultView;
     case "top5battinglist":
-      return TopFive;
+      return AssetDefaultView;
     case "ladder":
-      return GradeLadder;
+      return AssetDefaultView;
     case "upcomingfixtures":
-      return Upcomingfixtures;
+      return AssetDefaultView;
     case "weekendsinglegameresult":
       return Weekendsinglegameresult;
     case "rosterposter":

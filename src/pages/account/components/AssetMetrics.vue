@@ -10,7 +10,7 @@
       <!-- Total Digital Assets Card with Pie Chart -->
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-chart-pie"
+          :icon="icons.charts.pieChart"
           buttonText=""
           :value="totalDigitalAssets"
           subtitle="Digital Assets Created"
@@ -25,7 +25,7 @@
       <!-- Total Downloads Card -->
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-download"
+          :icon="icons.assets.download"
           buttonText=""
           :value="totalDownloads"
           subtitle="Total Downloads"
@@ -48,7 +48,7 @@
       <!-- AI Articles Card -->
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-newspaper"
+          :icon="icons.assets.articles"
           buttonText=""
           :value="totalAiArticles"
           subtitle="Articles written"
@@ -71,7 +71,7 @@
       <!-- Average Price per Asset Card with Bar Chart -->
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-currency-usd"
+          :icon="icons.ui.currency"
           buttonText=""
           :value="`$${averageCostPerDigitalAsset.toFixed(2)}`"
           subtitle="Price per Asset"
@@ -91,7 +91,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, inject } from "vue";
+const icons = inject("icons");
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
 import PieChartMini from "@/components/charts/mini/PieChart.vue";
 import BarChartMini from "@/components/charts/mini/BarChart.vue";

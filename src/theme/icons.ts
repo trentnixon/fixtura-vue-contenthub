@@ -1,12 +1,43 @@
 export default {
-  download: "mdi-download",
-  file: "mdi-file",
-  WeekendResults: "mdi-calendar-check",
-  Ladder: "mdi-trophy",
-  Top5BowlingList: "mdi-bowling",
-  Top5BattingList: "mdi-baseball-bat",
-  UpComingFixtures: "mdi-calendar-multiple",
-  WeekendSingleGameResult: "mdi-calendar-weekend",
+  bundles: {
+    bundle: "mdi-package-variant-closed",
+    bundleDate: "mdi-text-box-outline",
+  },
+  grouping: {
+    seniors: "mdi-account-group",
+    juniors: "mdi-human-male-boy",
+    other: "mdi-map-marker",
+  },
+  navigation: {
+    home: "mdi-home",
+    eye: "mdi-eye",
+  },
+  assets: {
+    download: "mdi-download",
+    file: "mdi-file",
+    articles: "mdi-newspaper",
+  },
+  categories: {
+    results: "mdi-calendar-check",
+    ladder: "mdi-trophy",
+    bowling: "mdi-bowling",
+    batting: "mdi-baseball-bat",
+    upcoming: "mdi-calendar-multiple",
+    singleResult: "mdi-calendar-weekend",
+  },
+  ui: {
+    tick: "mdi-check",
+    cross: "mdi-close",
+    table: "mdi-table",
+    currency: "mdi-currency-usd",
+    date: "mdi-calendar",
+    grades: "mdi-school",
+  },
+  charts: {
+    chart: "mdi-chart-bar",
+    pieChart: "mdi-chart-pie",
+    lineChart: "mdi-chart-line",
+  },
   arrowRight: "mdi-arrow-right",
   plus: "mdi-plus",
   minus: "mdi-minus",
@@ -23,7 +54,7 @@ export default {
   save: "mdi-content-save",
   cancel: "mdi-cancel",
   refresh: "mdi-refresh",
-  home: "mdi-home",
+
   dashboard: "mdi-view-dashboard",
   calendar: "mdi-calendar",
   clock: "mdi-clock",
@@ -49,7 +80,7 @@ export default {
   print: "mdi-printer",
   lock: "mdi-lock",
   unlock: "mdi-lock-open",
-  eye: "mdi-eye",
+
   eyeOff: "mdi-eye-off",
   arrowLeft: "mdi-arrow-left",
   arrowUp: "mdi-arrow-up",
@@ -123,8 +154,4 @@ export default {
   formatAlignRight: "mdi-format-align-right",
   formatAlignJustify: "mdi-format-align-justify",
   unlink: "mdi-link-off",
-  table: "mdi-table",
-  chart: "mdi-chart-bar",
-  pieChart: "mdi-chart-pie",
-  lineChart: "mdi-chart-line",
 };

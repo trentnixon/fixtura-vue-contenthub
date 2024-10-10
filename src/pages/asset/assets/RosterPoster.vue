@@ -1,29 +1,33 @@
 <template>
-    <v-row>
-        <v-col cols="12">
-            <AssetImageGallery v-if="imageAssets.length > 0" :imageUrls="imageAssets[0]" />
-        </v-col>
-    </v-row>
+  <v-row>
+    <template v-if="!imageAsset"> Error </template>
+    <template v-else>
+      <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
+    </template>
+    <v-col cols="12"> </v-col>
+  </v-row>
 </template>
 
 <script setup>
-import AssetImageGallery from './media/AssetImageGallery.vue';
-import { defineProps, computed } from 'vue';
+import { useAssetState } from "@/pages/asset/composables/useAssetState";
+import { defineProps, computed } from "vue";
+import AssetStateRenderer from "@/pages/asset/assets/AssetState/AssetStateRenderer.vue";
 
 const props = defineProps({
-    formattedAssets: {
-        type: Array,
-        required: true
-    },
-    aiArticles: {
-        type: Array,
-        required: true
-    }
+  formattedAssets: {
+    type: Array,
+    required: true,
+  },
+  aiArticles: {
+    type: Array,
+    required: true,
+  },
 });
 
 // Extract image assets from formatted assets
-const imageAssets = computed(() => {
-    return props.formattedAssets.filter(asset => asset.category === 'IMAGE').map(asset => asset.url);
-});
+const imageAsset = computed(() =>
+  props.formattedAssets.find((asset) => asset.category === "IMAGE")
+);
 
+const { assetState: galleryState } = useAssetState(imageAsset.value);
 </script>

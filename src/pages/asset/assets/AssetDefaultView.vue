@@ -3,20 +3,20 @@
     <!-- Tabs for xs screens -->
     <AssetTabs v-if="$vuetify.display.xs" :tabs="assetTabs">
       <template #articles>
-        <!-- Display the articles when available -->
         <AssetDisplayArticle
           v-if="formattedArticles.length > 0"
           :articles="formattedArticles"
         />
       </template>
+
+      <!-- Render video state for mobile -->
       <template #video>
-        <AssetVideo v-if="videoAssets.length > 0" :videoUrls="videoAssets[0]" />
+        <AssetStateRenderer :asset="videoAsset" :state="videoState" />
       </template>
+
+      <!-- Render gallery state for mobile -->
       <template #gallery>
-        <AssetImageGallery
-          v-if="imageAssets.length > 0"
-          :imageUrls="imageAssets"
-        />
+        <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
       </template>
     </AssetTabs>
 
@@ -24,7 +24,7 @@
     <v-row v-else>
       <!-- Video Column -->
       <v-col cols="12" sm="5" class="px-1">
-        <AssetVideo v-if="videoAssets.length > 0" :videoUrls="videoAssets[0]" />
+        <AssetStateRenderer :asset="videoAsset" :state="videoState" />
       </v-col>
 
       <!-- Article Column -->
@@ -37,23 +37,19 @@
 
       <!-- Image Gallery Column -->
       <v-col cols="12">
-        <AssetImageGallery
-          v-if="imageAssets.length > 0"
-          :imageUrls="imageAssets"
-        />
+        <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import AssetVideo from "./media/AssetVideo.vue";
-import AssetImageGallery from "./media/AssetImageGallery.vue";
-import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import { defineProps, computed } from "vue";
+import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import AssetTabs from "@/pages/asset/components/AssetTabs.vue";
+import { useAssetState } from "../composables/useAssetState";
+import AssetStateRenderer from "./AssetState/AssetStateRenderer.vue";
 
-// Props
 const props = defineProps({
   formattedAssets: {
     type: Array,
@@ -65,27 +61,29 @@ const props = defineProps({
   },
 });
 
-// Extract video assets from formatted assets
-const videoAssets = computed(() => {
-  return props.formattedAssets
-    .filter((asset) => asset.category === "VIDEO")
-    .flatMap((asset) => asset.downloads.map((download) => download)); // Map all video URLs
-});
+// Extract video assets and detect errors
+const videoAsset = computed(() =>
+  props.formattedAssets.find((asset) => asset.category === "VIDEO")
+);
+const videoAssets = computed(() =>
+  videoAsset.value ? videoAsset.value.downloads || [] : []
+);
 
-// Extract image assets from formatted assets
-const imageAssets = computed(() => {
-  return props.formattedAssets
-    .filter((asset) => asset.category === "IMAGE")
-    .flatMap((asset) => asset.downloads.map((download) => download)); // Map all image URLs
-});
+// Extract image assets and detect errors
+const imageAsset = computed(() =>
+  props.formattedAssets.find((asset) => asset.category === "IMAGE")
+);
+const imageAssets = computed(() =>
+  imageAsset.value ? imageAsset.value.downloads || [] : []
+);
+
+// Use the composable to compute the states for video and gallery assets
+const { assetState: videoState } = useAssetState(videoAsset.value);
+const { assetState: galleryState } = useAssetState(imageAsset.value);
 
 // Setup asset tabs for switching views
 const assetTabs = computed(() => [
-  {
-    value: "video",
-    label: "Video",
-    condition: videoAssets.value.length > 0,
-  },
+  { value: "video", label: "Video", condition: videoAssets.value.length > 0 },
   {
     value: "gallery",
     label: "Gallery",

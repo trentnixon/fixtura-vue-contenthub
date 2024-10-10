@@ -32,7 +32,7 @@
               :color="item.Complete ? 'success' : 'error'"
               v-if="$vuetify.display.smAndUp"
             >
-              {{ item.Complete ? "mdi-check-circle" : "mdi-close-circle" }}
+              {{ item.Complete ? "mdi-check-circle" : "mdi-close-circle" }} ...
             </v-icon>
           </template>
 

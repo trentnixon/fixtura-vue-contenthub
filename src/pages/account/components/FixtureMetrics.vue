@@ -9,7 +9,7 @@
     <v-row class="d-flex justify-center">
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-calendar"
+          :icon="icons.ui.date"
           buttonText=""
           :value="totalGameResults + totalUpcomingGames"
           subtitle="Total Fixtures"
@@ -27,7 +27,7 @@
 
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-clock"
+          :icon="icons.categories.upcoming"
           buttonText=""
           :value="totalUpcomingGames"
           subtitle="Upcoming Games"
@@ -41,7 +41,7 @@
 
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-soccer"
+          :icon="icons.categories.results"
           buttonText=""
           :value="totalGameResults"
           subtitle="Game Results"
@@ -55,7 +55,7 @@
 
       <v-col cols="4" md="3">
         <CardSmall1DataPoint
-          icon="mdi-school"
+          :icon="icons.ui.grades"
           buttonText=""
           :value="totalGrades"
           subtitle="Total Grades"
@@ -76,7 +76,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, inject } from "vue";
+const icons = inject("icons");
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
 import PieChartMini from "@/components/charts/mini/PieChart.vue";
 import BarChartMini from "@/components/charts/mini/BarChart.vue";

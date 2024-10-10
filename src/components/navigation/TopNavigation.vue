@@ -11,7 +11,7 @@
     <!-- Icon Buttons -->
     <IconButton
       v-if="!$vuetify.display.smAndDown"
-      icon="mdi-home"
+      :icon="icons.navigation.home"
       class="mx-1"
       color="cta1"
       @click="navigateTo('https://www.fixtura.com.au/', true)"
@@ -19,7 +19,7 @@
 
     <template v-if="accountId && !$vuetify.display.smAndDown">
       <IconButton
-        icon="mdi-package-variant-closed"
+        :icon="icons.bundles.bundle"
         class="mx-1"
         color="cta1"
         @click="navigateTo()"
@@ -39,7 +39,8 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, inject } from "vue";
+const icons = inject("icons");
 import { useRouter, useRoute } from "vue-router";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import QuickSelectAssetType from "@/pages/asset/components/QuickSelectAssetType.vue";

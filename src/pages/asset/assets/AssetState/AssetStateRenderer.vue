@@ -32,6 +32,7 @@ const props = defineProps({
   state: String,
 });
 
+console.group("[Renderer]", props.asset, props.state);
 // Determine if the asset is a video or image
 const isVideo = computed(() => props.asset?.category === "VIDEO");
 </script>

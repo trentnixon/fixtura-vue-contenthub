@@ -49,10 +49,12 @@
 
             <!-- Action Column -->
             <template v-slot:[`item.action`]="{ index }">
-              <SecondaryButton
-                :label="'View Fixture'"
-                :icon="'mdi-eye'"
+              <IconButton
                 @click="selectFixture(index)"
+                color="accent"
+                icon="mdi-arrow-right"
+                size="small"
+                variant="tonal"
               />
             </template>
           </v-data-table>
@@ -70,6 +72,7 @@
           @click="backToList"
         />
       </div>
+
       <v-divider class="my-2 py-0 px-4" />
       <v-row>
         <v-col cols="12" md="5">
@@ -97,7 +100,7 @@ import { ref, defineProps, computed } from "vue";
 import AssetImageGallery from "./media/AssetImageGallery.vue";
 import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
-
+import IconButton from "@/components/primitives/buttons/IconButton.vue";
 // Define component props
 const props = defineProps({
   formattedAssets: Array, // Images related to the fixtures
@@ -116,15 +119,15 @@ const headers = [
 
 // Prepare fixtures data for the table
 const fixtures = computed(() => {
+  console.log("[props.formattedAssets]", props.formattedAssets[0].downloads);
   return props.formattedArticles.map((article, index) => ({
     teams: `${article.structuredOutput.team1} vs ${article.structuredOutput.team2}`,
     scores: `${article.structuredOutput.score1} | ${article.structuredOutput.score2}`,
-    avatar:
-      props.formattedAssets && props.formattedAssets[0]
-        ? props.formattedAssets[0].url
-        : "", // Handle possible undefined values
+    avatar: props.formattedAssets[0].downloads[index],
   }));
 });
+
+console.log("[fixtures]", fixtures);
 
 // Filtered fixtures based on search input
 const filteredFixtures = computed(() => {
