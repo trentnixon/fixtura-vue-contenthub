@@ -31,7 +31,7 @@ const myTheme = {
     "success-lighten1": "#82c7b6",
     "success-darken1": "#3d9272",
 
-    surface: "#e0dede", // light grey
+    surface: "#f7f7f7", // light grey
     cardNeutral: "#fafafa", // white
     carderror: "#a9406c", // error color
     cardwarning: "#ff8d3e", // warning color
