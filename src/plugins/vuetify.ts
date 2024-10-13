@@ -31,12 +31,12 @@ const myTheme = {
     "success-lighten1": "#82c7b6",
     "success-darken1": "#3d9272",
 
-    surface: "#f7f9ff", // light grey
-    cardNeutral: "#f6f8fb", // white
-    carderror: "#A9406C", // error color
-    cardwarning: "#FF8D3E", // warning color
-    cardinfo: "#EEE8A9", // info color
-    cardsuccess: "#61B29D", // success color
+    surface: "#e0dede", // light grey
+    cardNeutral: "#fafafa", // white
+    carderror: "#a9406c", // error color
+    cardwarning: "#ff8d3e", // warning color
+    cardinfo: "#f3f2c9", // info color
+    cardsuccess: "#6baa75ff", // success color
     cta1: "#3a3f55",
     header1: "#f7f9ff",
   },
