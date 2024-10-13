@@ -1,21 +1,36 @@
-import { Render, RenderAttributes } from "@/types";
+import { Render } from "@/types";
 import { usePrivateRendersState } from "./private";
 import {
   fetchAssetsByRender,
   fetchFixturaRenderDetails,
   fetchFixturesByRenderForRoster,
   fetchGroupingDetailsFromService,
+  fetchRenderFromService,
+  requestTeamRoster,
+  saveRosterToCMS,
 } from "./service";
 
-export async function fetchFixturaRenderById(userID: number, renderID: number) {
+export async function fetchRenderAction(renderId: number) {
+  try {
+    const response = await fetchRenderFromService(renderId);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch render:", error);
+    throw error;
+  }
+}
+
+export async function fetchFixturaRenderById(
+  userID: number,
+  renderID: number,
+  loading = true
+) {
   const state = usePrivateRendersState();
   try {
-    state.loading = true;
+    state.loading = loading;
     const response = await fetchFixturaRenderDetails(userID, renderID);
 
     if (response && response.data) {
-      console.log("[response]", response.data);
-
       // Validate that the response matches the expected structure
       const render: Render = response.data;
       state.selectedRender = render; // Set the selected render in the state
@@ -103,8 +118,9 @@ export async function fetchFixturesByRenderForRosterPosters(
   const state = usePrivateRendersState();
 
   try {
-    state.loading = true;
-    state.error = null;
+    // change these loading states to be more specific
+    //state.loading = true;
+    //state.error = null;
 
     const response = await fetchFixturesByRenderForRoster(
       userID,
@@ -121,6 +137,37 @@ export async function fetchFixturesByRenderForRosterPosters(
   } catch (error) {
     state.error = `Failed to fetch fixtures: ${(error as Error).message}`;
   } finally {
+    //state.loading = false;
+  }
+}
+
+export async function requestTeamRosterAction(renderID: number) {
+  const state = usePrivateRendersState();
+
+  try {
+    state.loading = true;
+    //state.error = null;
+
+    const response = await requestTeamRoster(renderID);
+    console.log("[response]", response);
+    if (response && response.data && response.data.status) {
+      //state.requestStatus = "success";
+      //state.selectedRenderId = response.data.renderId;
+    } else {
+      //throw new Error(response?.data?.message || "An unknown error occurred");
+    }
+  } catch (error) {
+    //state.error = (error as Error).message;
+    //state.requestStatus = "fail";
+  } finally {
     state.loading = false;
+  }
+}
+
+export async function saveRosterChanges(gameId: number, updatedRoster: object) {
+  try {
+    const response = await saveRosterToCMS(gameId, updatedRoster);
+  } catch (error) {
+    console.error("Error in saveRosterChanges action:", error);
   }
 }

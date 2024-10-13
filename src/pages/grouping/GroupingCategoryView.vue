@@ -25,7 +25,6 @@ import CardHeader from "@/components/primitives/headers/CardHeader.vue";
 import { useAccountData } from "@/pages/account/composables/useAccountData";
 import { fetchFixturaRenderById } from "@/store/renders/actions";
 import { useRendersStore } from "@/store/renders";
-import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import CreateTeamRosterLink from "@/pages/grouping/components/CreateTeamRosterLink.vue";
 // Initialize composables
 const { fetchAccountById } = useAccountData();

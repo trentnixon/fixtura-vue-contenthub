@@ -1,6 +1,14 @@
 <template>
-    <v-btn icon :color="color" :disabled="disabled" :loading="loading" @click="handleClick" class="icon-button"
-        variant="flat" :size="size">
+    <v-tooltip v-if="tooltip" :text="tooltip" location="top">
+        <template v-slot:activator="{ props }">
+            <v-btn icon :color="color" :disabled="disabled" :loading="loading" @click="handleClick" class="icon-button"
+                :variant="variant" :size="size" v-bind="props">
+                <v-icon>{{ icon }}</v-icon>
+            </v-btn>
+        </template>
+    </v-tooltip>
+    <v-btn v-else icon :color="color" :disabled="disabled" :loading="loading" @click="handleClick" class="icon-button"
+        :variant="variant" :size="size">
         <v-icon>{{ icon }}</v-icon>
     </v-btn>
 </template>
@@ -28,6 +36,14 @@ const props = defineProps({
     size: {
         type: String,
         default: 'small',
+    },
+    tooltip: {
+        type: String,
+        default: null,
+    },
+    variant: {
+        type: String,
+        default: 'tonal',
     }
 });
 

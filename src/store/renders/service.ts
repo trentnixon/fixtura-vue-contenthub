@@ -99,3 +99,46 @@ export async function fetchFixturesByRenderForRoster(
     throw new Error("Failed to fetch fixtures.");
   }
 }
+
+// ROSTERS
+export async function requestTeamRoster(
+  renderID: number
+): Promise<ApiResponse<{ status: string; renderId: number }>> {
+  try {
+    const response = await fetcher.post<
+      ApiResponse<{ status: string; renderId: number }>
+    >(`/render/RequestTeamRoster`, { ID: renderID });
+    return response;
+  } catch (error) {
+    console.error(
+      `Error requesting team roster for render ID ${renderID}:`,
+      error
+    );
+    throw new Error("Failed to request team roster.");
+  }
+}
+
+interface SaveRosterResponse {
+  success: boolean; // Example property, update it according to your actual response structure
+  message?: string; // Optional message property
+}
+
+export async function saveRosterToCMS(
+  gameId: number,
+  updatedRoster: object
+): Promise<ApiResponse<SaveRosterResponse>> {
+  try {
+    const response = await fetcher.put<ApiResponse<SaveRosterResponse>>(
+      `/game-meta-datas/${gameId}`,
+      {
+        data: {
+          TeamRoster: updatedRoster,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error(`Failed to save roster for game ID ${gameId}:`, error);
+    throw new Error("Failed to save roster.");
+  }
+}

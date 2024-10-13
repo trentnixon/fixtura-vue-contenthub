@@ -27,6 +27,11 @@ export default {
     singleResult: "mdi-scoreboard",
     roster: "mdi-format-list-bulleted-square",
   },
+  media: {
+    video: "mdi-video",
+    videoOff: "mdi-video-off",
+    createImage: " mdi-image-plus",
+  },
   ui: {
     tick: "mdi-check",
     cross: "mdi-close",
@@ -34,6 +39,14 @@ export default {
     currency: "mdi-currency-usd",
     date: "mdi-calendar",
     grades: "mdi-school",
+    add: "mdi-plus",
+    sync: "mdi-sync",
+    extLink: "mdi-link",
+    save: "mdi-content-save",
+    edit: "mdi-pencil",
+    delete: "mdi-delete",
+    addPlayer: "mdi-account-plus",
+    player: "mdi-account",
   },
   charts: {
     chart: "mdi-chart-bar",
@@ -41,11 +54,11 @@ export default {
     lineChart: "mdi-chart-line",
   },
   arrowRight: "mdi-arrow-right",
-  plus: "mdi-plus",
+
   minus: "mdi-minus",
   close: "mdi-close",
   menu: "mdi-menu",
-  account: "mdi-account",
+
   logout: "mdi-logout",
   settings: "mdi-cog",
   search: "mdi-magnify",
@@ -53,7 +66,7 @@ export default {
   sort: "mdi-sort",
   edit: "mdi-pencil",
   delete: "mdi-delete",
-  save: "mdi-content-save",
+
   cancel: "mdi-cancel",
   refresh: "mdi-refresh",
 
@@ -62,7 +75,7 @@ export default {
   clock: "mdi-clock",
   email: "mdi-email",
   phone: "mdi-phone",
-  link: "mdi-link",
+
   share: "mdi-share-variant",
   info: "mdi-information",
   warning: "mdi-alert",
@@ -117,7 +130,7 @@ export default {
   cloud: "mdi-cloud",
   cloudUpload: "mdi-cloud-upload",
   cloudDownload: "mdi-cloud-download",
-  sync: "mdi-sync",
+
   history: "mdi-history",
   undo: "mdi-undo",
   redo: "mdi-redo",
