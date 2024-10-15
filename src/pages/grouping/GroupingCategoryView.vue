@@ -1,23 +1,17 @@
 <template>
   <HeaderSection />
   <v-divider class="my-4" />
-
   <!-- Display download stats for the grouping category -->
   <AssetTableByType />
   <v-divider class="my-4" />
-  <CardHeader :title="`Team Rosters`" subtitle="" />
   <CreateTeamRosterLink />
-  <v-divider class="my-4" />
-  <CardHeader
-    :title="`${groupingCategory} render statistics`"
-    subtitle="Download breakdown"
-  />
+  <CardHeader :title="`${groupingCategory} render statistics`" subtitle="Download breakdown" />
   <CategoryDownloadsStats :groupingCategory="groupingCategory" />
 </template>
 
 <script setup>
 import { useRoute } from "vue-router";
-import { computed, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import HeaderSection from "@/pages/grouping/components/HeaderSection.vue";
 import CategoryDownloadsStats from "@/pages/grouping/components/CategoryDownloadsStats.vue";
 import AssetTableByType from "@/pages/grouping/components/AssetTableByType.vue";
@@ -53,14 +47,13 @@ onMounted(() => {
 });
 
 // Function to create rosters
-const rosterLink = computed(() => {
-  console.log("Create Rosters");
+/* const rosterLink = computed(() => {
   // vue link to  renderId/cricket/6852/senior/rosterposter
   const accountId = Number(route.params.accountid);
   const sport = route.params.sport;
   const renderId = Number(route.params.renderid);
   return `/${accountId}/${sport}/${renderId}/${groupingCategory.value}/rosterposter`;
-});
+}); */
 
 // Watch for route changes and refetch data
 watch(

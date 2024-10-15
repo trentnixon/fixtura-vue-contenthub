@@ -47,6 +47,8 @@ export default {
     delete: "mdi-delete",
     addPlayer: "mdi-account-plus",
     player: "mdi-account",
+    instructions: "mdi-alphabetical-variant",
+    instructionsOff: "mdi-alphabetical-variant-off",
   },
   charts: {
     chart: "mdi-chart-bar",

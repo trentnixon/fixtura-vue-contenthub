@@ -1,23 +1,11 @@
 <template>
   <v-row>
     <v-col cols="12" sm="8">
-      <MainHeader
-        :title="getDisplayName(asset)"
-        :subtitle="`Render ${renderId}`"
-      />
+      <MainHeader :title="getDisplayName(asset)" :subtitle="`Render ${renderId}`" />
     </v-col>
 
-    <v-col
-      class="d-flex justify-end"
-      cols="12"
-      sm="4"
-      v-if="!$vuetify.display.xs"
-    >
-      <CustomChip
-        :label="groupingCategory"
-        :value="groupingCategory"
-        type="boolean"
-      />
+    <v-col class="d-flex justify-end" cols="12" sm="4" v-if="!$vuetify.display.xs">
+      <CustomChip :label="groupingCategory" :value="groupingCategory" type="boolean" />
       <CustomChip :label="sport" :value="sport" type="boolean" />
     </v-col>
   </v-row>
@@ -56,7 +44,7 @@ function getDisplayName(type) {
     top5battinglist: "Top 5 Batting",
     upcomingfixtures: "Upcoming Fixtures",
     weekendsinglegameresult: "Single Game Result",
-    rosterposter: "Roster Poster",
+    rosterposter: "Team Rosters",
   };
   return names[type] || type;
 }

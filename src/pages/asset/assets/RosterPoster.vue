@@ -1,51 +1,30 @@
 <template>
   <!-- View Toggle Button Group -->
   <template v-if="rosterFixtures">
+
     <v-divider class="my-2"></v-divider>
     <div class="d-flex justify-space-between pa-0 w-100">
+
       <div class="d-flex justify-end">
         <v-btn-toggle v-model="currentView" class="my-4" mandatory>
-          <PrimaryButton value="rosterPoster" color="primary" label="Edit Rosters">Roster Poster</PrimaryButton>
-          <PrimaryButton value="imageAsset" color="primary" label="View Downloads" />
+          <PrimaryButton value="imageAsset" color="primary" label="View Downloads" :disabled="!rosterFixtures.length" />
+          <PrimaryButton value="rosterPoster" color="primary" label="Edit Rosters" :disabled="!rosterFixtures.length" />
         </v-btn-toggle>
       </div>
 
       <v-btn-toggle class="my-4 d-flex justify-end">
         <IconButton :icon="icons.ui.sync" color="primary" @click="openConfirmModal" variant="outlined" size="small"
-          tooltip="Sync with PlayHQ" :loading="loading || isPolling" :disabled="loading || isPolling" />
-        <IconButton :icon="icons.media.createImage" color="primary" @click="openConfirmModal" variant="outlined"
-          size="small" tooltip="Create Rosters" :loading="loading || isPolling" :disabled="loading || isPolling" />
+          tooltip="Sync with PlayHQ" :loading="loading || isPolling || isCreatingRoster"
+          :disabled="loading || isPolling" />
+        <IconButton :icon="icons.media.createImage" color="primary" @click="openCreateRosterModal" variant="outlined"
+          size="small" tooltip="Create Rosters" :loading="loading || isPolling || isCreatingRoster"
+          :disabled="isCreatingRoster" />
+        <IconButton :icon="showInstructions ? icons.ui.instructionsOff : icons.ui.instructions" color="primary"
+          @click="toggleInstructions" variant="outlined" size="small" tooltip="Toggle Instructions"
+          :loading="loading || isPolling || isCreatingRoster" />
       </v-btn-toggle>
     </div>
     <v-divider class="my-2"></v-divider>
-
-    <div>
-      How to Create your Rosters
-      <div class="body-text">
-        <!-- Instructions for Syncing Team Rosters -->
-        To sync your team rosters with the latest data from PlayHQ, click the <v-icon>{{ icons.ui.sync }}</v-icon> icon.
-        This will ensure your rosters are up to date. Please note that syncing may overwrite any manual changes made.
-      </div>
-      <div class="body-text">
-        <!-- Instructions for Creating Images -->
-        To create images for your team roster, click the <v-icon>{{ icons.media.createImage }}</v-icon> icon. This will
-        generate visual assets for your team.
-      </div>
-      <div class="body-text">
-        <!-- Instructions for Editing Features -->
-        Use the edit buttons next to each player to modify their details.
-        - Click the <v-icon>{{ icons.ui.edit }}</v-icon> icon to edit a player's name.
-        - Click the <v-icon>{{ icons.ui.delete }}</v-icon> icon to remove a player from the roster.
-      </div>
-      <div class="body-text">
-        <!-- Instructions for Adding, Saving, and Viewing -->
-        To manage your roster effectively:
-        - Click the <v-icon>{{ icons.ui.extLink }}</v-icon> icon to view the fixture details on PlayHQ.
-        - To add a new player to the roster, click the <v-icon>{{ icons.ui.add }}</v-icon> icon.
-        - After making any changes, click the <v-icon>{{ icons.ui.save }}</v-icon> icon to save your roster updates. If
-        there are unsaved changes, a red badge will appear on the save button to remind you.
-      </div>
-    </div>
 
   </template>
 
@@ -61,7 +40,7 @@
         </template>
       </MediaLayout>
     </template>
-    <template v-else-if="isPolling">
+    <template v-else-if="isPolling || isPollingCreation">
       <MediaLayout>
         <template v-slot:header>
           <CategoryHeader
@@ -77,9 +56,14 @@
       {{ error }}
     </template>
     <template v-else-if="!rosterFixtures.length">
-      No fixtures available.
+      <div class="text-body my-4">No fixtures available.</div>
     </template>
     <template v-else>
+      <div class="d-flex justify-space-between pa-0 mt-4 w-100">
+        <span class="card-title">Team Rosters</span>
+        <span class="card-title">Fixtures Found: {{ rosterFixtures.length }}</span>
+      </div>
+      <HowToGuide :showInstructions="showInstructions" :loading="loading" :isPolling="isPolling" />
       <v-container>
         <v-row>
           <RosterFixtureItem v-for="fixture in rosterFixtures" :key="fixture.id" :fixture="fixture" />
@@ -89,14 +73,29 @@
   </template>
 
   <template v-else>
-
-    <template v-if="galleryState === 'unknown'">
-      {{ galleryState }}
+    <template v-if="isPollingCreation">
+      <MediaLayout>
+        <template v-slot:header>
+          <CategoryHeader title="Creating Assets... Please Wait" icon="mdi-text-search" />
+        </template>
+        <template v-slot:body>
+          <v-skeleton-loader type="card" class="my-2" />
+        </template>
+      </MediaLayout>
+    </template>
+    <template v-else-if="galleryState === 'unknown'">
+      <div>Team Rosters yet to be Created</div>
     </template>
     <template v-else>
+      <template v-if="versionOptions.length > 1">
+        <div class="d-flex justify-space-between align-center pa-0 w-100">
+          <v-spacer></v-spacer>
+          <v-select v-model="rosterVersion" :items="versionOptions" item-title="name" item-value="value"
+            label="Select Roster Version" variant="solo" />
+        </div>
+      </template>
       <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
     </template>
-
   </template>
 
   <!-- Confirmation Modal for Sync with PlayHQ -->
@@ -107,8 +106,7 @@
       </v-card-title>
       <v-card-text>
         Syncing with PlayHQ will update Fixtura with the latest player rosters, which may overwrite any recent changes
-        you
-        have made. Are you sure you want to continue?
+        you have made. Are you sure you want to continue?
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -117,12 +115,30 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <!-- Confirmation Modal for Create Team Rosters -->
+  <v-dialog v-model="isCreateRosterModalOpen" max-width="500px">
+    <v-card>
+      <v-card-title>
+        <span class="headline">Create Team Rosters</span>
+      </v-card-title>
+      <v-card-text>
+        Click to create the team rosters for this week. Please ensure any changes are saved before proceeding.
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <SecondaryButton color="error" label="Cancel" @click="closeCreateRosterModal" />
+        <PrimaryButton color="success" label="Create" @click="confirmCreateRoster" />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { defineProps, computed, ref, watch, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRoute } from "vue-router";
-const icons = inject("icons");
+import { useStorage } from '@vueuse/core';
+import { useCreateRoster } from "../composables/useCreateRoster";
 import { useAssetState } from "@/pages/asset/composables/useAssetState";
 import AssetStateRenderer from "@/pages/asset/assets/AssetState/AssetStateRenderer.vue";
 import { useRosterFixtures } from "../composables/useRenderFixturesForRosters";
@@ -132,6 +148,7 @@ import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue
 import MediaLayout from "@/components/containers/media/mediaLayout.vue";
 import CategoryHeader from "@/components/primitives/headers/CategoryHeader.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
+import HowToGuide from "@/pages/asset/assets/components/HowToGuide.vue";
 
 const props = defineProps({
   formattedAssets: {
@@ -140,10 +157,15 @@ const props = defineProps({
   },
 });
 
+const icons = inject("icons");
 const route = useRoute();
 const renderId = ref(Number(route.params.renderid));
 const groupingCategory = ref(route.params.groupingcategory);
 
+// Determine initial version of the roster based on props
+const rosterVersion = ref(props.formattedAssets.length > 0 ? props.formattedAssets.length - 1 : 0);
+
+// Initialize state and composable usage
 const {
   resumePollingIfNeeded,
   rosterFixtures,
@@ -155,19 +177,37 @@ const {
   requestTeamRoster,
 } = useRosterFixtures();
 
-const imageAsset = computed(() =>
-  props.formattedAssets.find((asset) => asset.category === "IMAGE")
-);
+const {
+  createRoster,
+  loading: isCreatingRoster,
+  isPolling: isPollingCreation,
+  resumeCreationPollingIfNeeded,
+} = useCreateRoster();
 
-const { assetState: galleryState } = useAssetState(imageAsset.value);
-const currentView = ref("rosterPoster");
+// Computed value for current image asset
+const imageAsset = computed(() => props.formattedAssets[rosterVersion.value] || null);
+
+// State management for UI views
+const currentView = ref(props.formattedAssets.length > 0 ? "imageAsset" : "rosterPoster");
 const isConfirmModalOpen = ref(false);
+const isCreateRosterModalOpen = ref(false);
+const galleryState = ref("unknown");
+const showInstructions = useStorage("showInstructions", true);
+
+// Computed options for selecting roster versions
+const versionOptions = computed(() => {
+  return props.formattedAssets.map((_, index) => ({
+    value: index, // Aligns with the index of `formattedAssets` array
+    name: `Version ${index + 1}`,
+  })).reverse(); // Reverse to make the latest version appear first
+});
 
 // Fetch fixtures when the component is mounted
 onMounted(() => {
   if (currentView.value === "rosterPoster") {
     fetchFixtures();
     resumePollingIfNeeded();
+    resumeCreationPollingIfNeeded();
   }
 });
 
@@ -176,10 +216,57 @@ onBeforeUnmount(() => {
   stopPolling();
 });
 
-// Watch for changes in renderId and groupingCategory, and refetch fixtures if they change
+// Watch for changes in `imageAsset` and update `galleryState`
+watch(
+  imageAsset,
+  (newAsset) => {
+    if (newAsset) {
+      console.log("[watch: imageAsset] Updated imageAsset:", newAsset);
+      const { assetState } = useAssetState(newAsset);
+      galleryState.value = assetState;
+    } else {
+      console.warn("[watch: imageAsset] Image asset is undefined.");
+      galleryState.value = "unknown"; // Set galleryState to unknown if no asset is found
+    }
+  },
+  { immediate: true }
+);
+
+// Watch for changes in `renderId` and `groupingCategory`, and refetch fixtures if they change
 watch([renderId, groupingCategory], () => {
   fetchFixtures();
 });
+
+// Watch for changes in `formattedAssets` and update relevant state
+watch(
+  () => props.formattedAssets,
+  (newAssets) => {
+    if (newAssets.length > 0 && rosterVersion.value !== newAssets.length - 1) {
+      rosterVersion.value = newAssets.length - 1; // Set to the latest version if it hasn't been set already
+      console.log("[watch: formattedAssets] Updated rosterVersion to:", rosterVersion.value);
+    }
+
+    currentView.value = newAssets.length > 0 ? "imageAsset" : "rosterPoster";
+  },
+  { immediate: true }
+);
+
+// Watch for changes in `rosterVersion` and update `imageAsset` and `galleryState`
+watch(
+  rosterVersion,
+  (newVersion) => {
+    console.log("Roster version changed:", newVersion);
+    if (props.formattedAssets.length > 0) {
+      const newAsset = props.formattedAssets[newVersion];
+      if (newAsset && typeof newAsset === 'object' && 'id' in newAsset) {
+        console.log("[watch: rosterVersion] Updated imageAsset:", newAsset);
+        const { assetState } = useAssetState(newAsset as any);
+        galleryState.value = assetState.value;
+      }
+    }
+  },
+  { immediate: true }
+);
 
 // Open confirmation modal
 const openConfirmModal = () => {
@@ -195,5 +282,26 @@ const closeConfirmModal = () => {
 const confirmSync = () => {
   closeConfirmModal();
   requestTeamRoster();
+};
+
+// Open create roster modal
+const openCreateRosterModal = () => {
+  isCreateRosterModalOpen.value = true;
+};
+
+// Close create roster modal
+const closeCreateRosterModal = () => {
+  isCreateRosterModalOpen.value = false;
+};
+
+// Confirm create roster action
+const confirmCreateRoster = () => {
+  closeCreateRosterModal();
+  createRoster();
+};
+
+// Toggle instructions panel
+const toggleInstructions = () => {
+  showInstructions.value = !showInstructions.value;
 };
 </script>

@@ -5,15 +5,10 @@
   <template v-else>
     <v-row>
       <v-col class="d-flex justify-end py-0 px-1 my-0" cols="12">
-        <CustomChip
-          :label="
-            !getSelectedCategoryStats?.hasErrors
-              ? 'No Errors Detected'
-              : 'Errors'
-          "
-          :value="!getSelectedCategoryStats?.hasErrors"
-          type="boolean"
-        />
+        <CustomChip :label="!getSelectedCategoryStats?.hasErrors
+          ? 'No Errors Detected'
+          : 'Errors'
+          " :value="!getSelectedCategoryStats?.hasErrors" type="boolean" />
       </v-col>
     </v-row>
 
@@ -21,15 +16,8 @@
     <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-2">
       <div class="text-body py-2 px-4"></div>
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
-        <v-data-table
-          :headers="headers"
-          :items="filteredItems"
-          class="mx-auto"
-          fixed-header
-          color="cardNeutral"
-          variant="flat"
-          rounded
-        >
+        <v-data-table :headers="headers" :items="filteredItems" class="mx-auto" fixed-header color="cardNeutral"
+          variant="flat" rounded>
           <!-- Slot for the asset type display (with icon and name) -->
           <template v-slot:[`item.type`]="{ item }">
             <v-icon :icon="getIcon(item.type)" class="mr-2" />
@@ -38,30 +26,18 @@
 
           <!-- Slot for the download and article count display -->
           <template v-slot:[`item.downloads`]="{ item }">
-            <CustomChip
-              :color="getAssetCountColor(item.downloadCount)"
-              :label="`${item.downloadCount} Downloads`"
-              :icon="icons.download"
-            />
+            <CustomChip :color="getAssetCountColor(item.downloadCount)" :label="`${item.downloadCount} Downloads`"
+              :icon="icons.assets.download" />
           </template>
 
           <template v-slot:[`item.aiArticles`]="{ item }">
-            <CustomChip
-              :color="getAssetCountColor(item.articleCount)"
-              :label="`${item.articleCount} Articles`"
-              :icon="icons.file"
-            />
+            <CustomChip :color="getAssetCountColor(item.articleCount)" :label="`${item.articleCount} Articles`"
+              :icon="icons.assets.file" />
           </template>
 
           <!-- Slot for the Action button -->
           <template v-slot:[`item.link`]="{ item }">
-            <IconButton
-              :to="item.link"
-              color="accent"
-              icon="mdi-arrow-right"
-              size="small"
-              variant="tonal"
-            />
+            <IconButton :to="item.link" color="accent" icon="mdi-arrow-right" size="small" variant="tonal" />
           </template>
         </v-data-table>
       </v-card>
@@ -129,9 +105,8 @@ function getCategoryLink(type) {
   const accountId = Number(route.params.accountid);
   const sport = route.params.sport;
   const renderId = Number(route.params.renderid);
-  return `/${accountId}/${sport}/${renderId}/${
-    groupingCategory.value
-  }/${type.toLowerCase()}`;
+  return `/${accountId}/${sport}/${renderId}/${groupingCategory.value
+    }/${type.toLowerCase()}`;
 }
 
 // Function to return a display name for the type (enum guide)
@@ -143,6 +118,7 @@ function getDisplayName(type) {
     Top5BattingList: "Top 5 Batting",
     UpComingFixtures: "Upcoming Fixtures",
     WeekendSingleGameResult: "Single Game Result",
+    RosterPoster: "Team Rosters"
   };
   return names[type] || type;
 }
@@ -162,6 +138,8 @@ function getIcon(type) {
     Top5BattingList: icons.categories.batting,
     UpComingFixtures: icons.categories.upcoming,
     WeekendSingleGameResult: icons.categories.singleResult,
+    RosterPoster: icons.categories.roster,
+
   };
   return iconMap[type] || icons.file;
 }

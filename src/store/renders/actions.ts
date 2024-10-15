@@ -1,6 +1,7 @@
 import { Render } from "@/types";
 import { usePrivateRendersState } from "./private";
 import {
+  createRosterService,
   fetchAssetsByRender,
   fetchFixturaRenderDetails,
   fetchFixturesByRenderForRoster,
@@ -169,5 +170,27 @@ export async function saveRosterChanges(gameId: number, updatedRoster: object) {
     const response = await saveRosterToCMS(gameId, updatedRoster);
   } catch (error) {
     console.error("Error in saveRosterChanges action:", error);
+  }
+}
+
+export async function createTeamRosterAction(
+  renderId: number,
+  groupingId: string
+) {
+  const state = usePrivateRendersState();
+
+  try {
+    //state.loading = true;
+    state.error = null;
+    const response = await createRosterService(renderId, groupingId);
+    if (response) {
+      console.log("Roster creation job added successfully:", response);
+    } else {
+      throw new Error("Failed to add roster creation job");
+    }
+  } catch (error) {
+    state.error = `Failed to create team roster: ${(error as Error).message}`;
+  } finally {
+    //state.loading = false;
   }
 }

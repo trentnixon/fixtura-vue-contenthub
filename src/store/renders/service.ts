@@ -142,3 +142,21 @@ export async function saveRosterToCMS(
     throw new Error("Failed to save roster.");
   }
 }
+
+export async function createRosterService(
+  renderId: number,
+  groupingId: string
+): Promise<ApiResponse<{ status: string; renderId: number }>> {
+  try {
+    const response = await fetcher.get<
+      ApiResponse<{ status: string; renderId: number }>
+    >(`/render/fixturaCreateTeamRosters/${renderId}/${groupingId}`);
+    return response;
+  } catch (error) {
+    console.error(
+      `Error creating team roster for render ID ${renderId} and grouping ID ${groupingId}:`,
+      error
+    );
+    throw new Error("Failed to create team roster.");
+  }
+}

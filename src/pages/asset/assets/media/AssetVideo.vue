@@ -4,13 +4,8 @@
     <template v-slot:header>
       <CategoryHeader title="VIDEO" icon="mdi-video" />
       <v-spacer></v-spacer>
-      <SecondaryButton
-        color="accent"
-        label="Download Video"
-        @click="downloadVideo(videoUrl)"
-        :loading="isDownloading"
-        :disabled="isDownloading"
-      />
+      <SecondaryButton color="accent" label="Download Video" @click="downloadVideo(videoUrl)" :loading="isDownloading"
+        :disabled="isDownloading" />
     </template>
 
     <!-- Video Body -->
@@ -38,8 +33,6 @@ const props = defineProps({
 
 // Since we only expect one video URL, extract it directly
 const videoUrl = ref(props.videoUrls);
-console.log("[videoUrl]", videoUrl.value);
-
 // Destructure the video download composable
 const { isDownloading, downloadVideo } = useVideoDownload();
 </script>

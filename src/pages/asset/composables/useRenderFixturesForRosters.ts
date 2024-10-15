@@ -90,12 +90,6 @@ export function useRosterFixtures() {
     try {
       while (attempts < maxAttempts) {
         await rendersStore.fetchFixturaRenderById(accountId, renderId, false);
-        console.log(
-          `Polling attempt ${attempts + 1}...`,
-          `hasTeamRosterRequest === `,
-          selectedRender.value?.hasTeamRosterRequest
-        );
-
         if (!selectedRender.value?.hasTeamRosterRequest) {
           isPolling.value = false;
           // Fetch the fixtures once sync is complete

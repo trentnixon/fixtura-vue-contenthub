@@ -3,7 +3,7 @@
     <MediaLayout>
       <!-- Header Slot -->
       <template v-slot:header>
-        <div class="text-leading">
+        <div class="card-title">
           <template v-if="fixture.isUserHomeTeam">
             {{ fixture.teamHome }}
           </template>
@@ -31,7 +31,8 @@
                 <ul>
                   <li v-for="(player, index) in userTeam?.players" :key="'player-' + index"
                     :class="['d-flex', 'align-center', 'justify-space-between', 'py-1', 'px-2', 'border-b-thin']">
-                    <v-icon :icon="icons.ui.player" />
+                    <v-icon :icon="icons.ui.player"
+                      :class="['rounded-md', { 'bg-error-lighten1': player === 'Fill-in' || player === 'Private Player' }]" />
                     <div class="text-body">
                       {{ player }}
                     </div>
@@ -74,7 +75,7 @@
     <v-dialog v-model="isModalOpen" max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="headline">Edit Player</span>
+          <span class="card-title">Edit Player</span>
         </v-card-title>
         <v-card-text>
           <v-text-field v-model="editedPlayerName" label="Player Name"></v-text-field>

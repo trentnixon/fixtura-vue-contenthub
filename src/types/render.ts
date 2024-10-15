@@ -94,6 +94,7 @@ export interface Render {
   forceRerender: boolean;
   forceRerenderEmail: boolean;
   hasTeamRosterRequest: boolean;
+  isCreatingRoster: boolean;
   hasTeamRosters: boolean;
   hasTeamRosterEmail: boolean;
   date: string;

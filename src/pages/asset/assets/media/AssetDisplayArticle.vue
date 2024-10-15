@@ -5,23 +5,13 @@
       <CategoryHeader title="ARTICLES" icon="mdi-newspaper-variant-outline" />
       <v-spacer></v-spacer>
       <!-- Copy Button in the Header -->
-      <SecondaryButton
-        color="accent"
-        :icon="copyIcon"
-        label="Copy"
-        @click="handleCopy"
-        :loading="copyLoading"
-      />
+      <SecondaryButton color="accent" :icon="copyIcon" label="Copy" @click="handleCopy" :loading="copyLoading" />
     </template>
 
     <!-- Conditionally rendering named slots -->
     <!-- Loading State -->
     <template v-slot:loading v-if="loading">
-      <v-progress-linear
-        indeterminate
-        color="primary"
-        class="mt-4"
-      ></v-progress-linear>
+      <v-progress-linear indeterminate color="primary" class="mt-4"></v-progress-linear>
       <p class="mt-2">Loading articles...</p>
     </template>
 
@@ -29,12 +19,8 @@
     <template v-slot:body v-else-if="articles.length > 0">
       <!-- Assign a ref to the child component -->
       <v-sheet class="overflow-y-auto" :max-height="maxHeight">
-        <component
-          :is="assetComponent"
-          :articles="Array.isArray(articles) ? articles : []"
-          :copyID="generateCopyID()"
-          ref="articleComponent"
-        />
+        <component :is="assetComponent" :articles="Array.isArray(articles) ? articles : []" :copyID="generateCopyID()"
+          ref="articleComponent" />
       </v-sheet>
     </template>
 
@@ -150,5 +136,4 @@ const maxHeight = computed(() => {
   }
 });
 
-console.log("[props.articles ]", props.articles);
 </script>
