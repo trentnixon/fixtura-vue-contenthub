@@ -33,7 +33,7 @@
     <template v-if="loading || !rosterFixtures">
       <MediaLayout>
         <template v-slot:header>
-          <CategoryHeader :title="'Searching for Fixtures'" icon="mdi-text-search" />
+          <CategoryHeader :title="'Searching for Fixtures'" :icon="icons.ui.fetching" fetching />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -45,7 +45,7 @@
         <template v-slot:header>
           <CategoryHeader
             :title="`Scouting team line-up${rosterFixtures.length > 1 ? 's' : ''} for ${rosterFixtures.length} upcoming match${rosterFixtures.length > 1 ? 'es' : ''}... `"
-            icon="mdi-text-search" />
+            :icon="icons.ui.fetching" />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -76,7 +76,7 @@
     <template v-if="isPollingCreation">
       <MediaLayout>
         <template v-slot:header>
-          <CategoryHeader title="Creating Assets... Please Wait" icon="mdi-text-search" />
+          <CategoryHeader title="Creating Assets... Please Wait" :icon="icons.ui.fetching" />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -91,7 +91,7 @@
         <div class="d-flex justify-space-between align-center pa-0 w-100">
           <v-spacer></v-spacer>
           <v-select v-model="rosterVersion" :items="versionOptions" item-title="name" item-value="value"
-            label="Select Roster Version" variant="solo" />
+            label="Select Roster Version" variant="outlined" />
         </div>
       </template>
       <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
@@ -134,7 +134,7 @@
   </v-dialog>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { defineProps, computed, ref, watch, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRoute } from "vue-router";
 import { useStorage } from '@vueuse/core';
@@ -221,7 +221,7 @@ watch(
   imageAsset,
   (newAsset) => {
     if (newAsset) {
-      console.log("[watch: imageAsset] Updated imageAsset:", newAsset);
+      //console.log("[watch: imageAsset] Updated imageAsset:", newAsset);
       const { assetState } = useAssetState(newAsset);
       galleryState.value = assetState;
     } else {
@@ -243,7 +243,7 @@ watch(
   (newAssets) => {
     if (newAssets.length > 0 && rosterVersion.value !== newAssets.length - 1) {
       rosterVersion.value = newAssets.length - 1; // Set to the latest version if it hasn't been set already
-      console.log("[watch: formattedAssets] Updated rosterVersion to:", rosterVersion.value);
+      //console.log("[watch: formattedAssets] Updated rosterVersion to:", rosterVersion.value);
     }
 
     currentView.value = newAssets.length > 0 ? "imageAsset" : "rosterPoster";
@@ -255,12 +255,12 @@ watch(
 watch(
   rosterVersion,
   (newVersion) => {
-    console.log("Roster version changed:", newVersion);
+    //console.log("Roster version changed:", newVersion);
     if (props.formattedAssets.length > 0) {
       const newAsset = props.formattedAssets[newVersion];
       if (newAsset && typeof newAsset === 'object' && 'id' in newAsset) {
-        console.log("[watch: rosterVersion] Updated imageAsset:", newAsset);
-        const { assetState } = useAssetState(newAsset as any);
+        //console.log("[watch: rosterVersion] Updated imageAsset:", newAsset);
+        const { assetState } = useAssetState(newAsset);
         galleryState.value = assetState.value;
       }
     }

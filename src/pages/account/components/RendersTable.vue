@@ -1,7 +1,6 @@
 <template>
   <!-- Show Loading Spinner when there are no renders -->
   <LoadingSpinner v-if="loading" />
-
   <!-- Show Error Alert if there's an error -->
   <ErrorAlert v-else-if="error" :message="error" />
   <template v-else>
@@ -11,16 +10,8 @@
       </div>
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
         <!-- Display the renders data in a data table when renders are available -->
-        <v-data-table
-          :headers="computedHeaders"
-          :items="filteredRenders"
-          class="mx-auto"
-          fixed-header
-          color="cardNeutral"
-          variant="flat"
-          rounded
-          :sort-by="[{ key: 'id', order: 'desc' }]"
-        >
+        <v-data-table :headers="computedHeaders" :items="filteredRenders" class="mx-auto" fixed-header
+          color="cardNeutral" variant="flat" rounded :sort-by="[{ key: 'id', order: 'desc' }]">
           <!-- Slot for the name -->
           <template v-slot:[`item.name`]="{ item }">
             <span v-if="item.Name" class="table-copy">{{ item.Name }}</span>
@@ -28,21 +19,16 @@
 
           <!-- Modify the Complete status slot -->
           <template v-slot:[`item.Complete`]="{ item }">
-            <v-icon
-              :color="item.Complete ? 'success' : 'error'"
-              v-if="$vuetify.display.smAndUp"
-            >
-              {{ item.Complete ? "mdi-check-circle" : "mdi-close-circle" }} ...
+            <v-icon :color="item.Complete ? 'success' : 'error'" v-if="$vuetify.display.smAndUp">
+              {{ item.Complete ? icons.ui.tick : icons.ui.cross }} ...
             </v-icon>
+
           </template>
 
           <!-- Modify the Email Sent status slot -->
           <template v-slot:[`item.EmailSent`]="{ item }">
-            <v-icon
-              :color="item.EmailSent ? 'success' : 'error'"
-              v-if="$vuetify.display.smAndUp"
-            >
-              {{ item.EmailSent ? "mdi-check-circle" : "mdi-close-circle" }}
+            <v-icon :color="item.EmailSent ? 'success' : 'error'" v-if="$vuetify.display.smAndUp">
+              {{ item.EmailSent ? icons.ui.tick : icons.ui.cross }}
             </v-icon>
           </template>
 
@@ -91,14 +77,8 @@
           <!-- Slot for the action button -->
           <template v-slot:[`item.actions`]="{ item }">
             <div class="table-copy">
-              <IconButton
-                v-if="item.id"
-                @click="viewRender(item.id)"
-                color="accent"
-                icon="mdi-arrow-right"
-                size="small"
-                variant="tonal"
-              />
+              <IconButton v-if="item.id" @click="viewRender(item.id)" color="accent"
+                :icon="icons.navigation.internalLink" size="small" variant="tonal" />
             </div>
           </template>
 
@@ -106,16 +86,8 @@
           <template #top>
             <v-toolbar flat class="px-4" color="secondary" rounded>
               <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                density="compact"
-                label="Search"
-                prepend-inner-icon="mdi-magnify"
-                variant="solo-filled"
-                flat
-                hide-details
-                single-line
-              ></v-text-field>
+              <v-text-field v-model="search" density="compact" label="Search" :prepend-inner-icon="icons.bundles.bundle"
+                variant="solo-filled" flat hide-details single-line></v-text-field>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -125,8 +97,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
+const icons = inject("icons");
 import LoadingSpinner from "@/components/UI/LoadingSpinner.vue";
 import ErrorAlert from "@/components/UI/ErrorMessage.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
@@ -134,7 +107,7 @@ import { useDisplay } from "vuetify";
 import { useAccountData } from "@/pages/account/composables/useAccountData";
 
 // Vuetify display
-const { smAndUp, mdAndUp, lgAndUp } = useDisplay();
+const { mdAndUp, lgAndUp } = useDisplay();
 
 // Initialize router and route
 const router = useRouter();

@@ -46,15 +46,6 @@ onMounted(() => {
   fetchData();
 });
 
-// Function to create rosters
-/* const rosterLink = computed(() => {
-  // vue link to  renderId/cricket/6852/senior/rosterposter
-  const accountId = Number(route.params.accountid);
-  const sport = route.params.sport;
-  const renderId = Number(route.params.renderid);
-  return `/${accountId}/${sport}/${renderId}/${groupingCategory.value}/rosterposter`;
-}); */
-
 // Watch for route changes and refetch data
 watch(
   () => route.params,

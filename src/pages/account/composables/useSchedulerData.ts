@@ -12,11 +12,11 @@ export function useSchedulerData() {
 
   // Fetch the scheduler by ID
   async function fetchSchedulerById(id: number) {
-    console.log(`[fetchSchedulerById] Fetching scheduler with ID: ${id}`);
+    //console.log(`[fetchSchedulerById] Fetching scheduler with ID: ${id}`);
     try {
       await fetchScheduler(id); // Fetch scheduler using the action from the store
-      console.log(`[fetchSchedulerById] Scheduler fetched successfully.`);
-      console.log("Scheduler Data after fetch:", scheduler.value); // Log the value after fetch
+      //console.log(`[fetchSchedulerById] Scheduler fetched successfully.`);
+      //console.log("Scheduler Data after fetch:", scheduler.value); // Log the value after fetch
     } catch (err) {
       console.error("[fetchSchedulerById] Failed to fetch scheduler:", err);
     }
@@ -25,7 +25,7 @@ export function useSchedulerData() {
   // Computed property for renders
   // Computed property for renders (use schedulerRef directly)
   const renders = computed(() => {
-    console.log("Scheduler in renders computed:", scheduler.value); // Remove toValue, use scheduler.value directly
+    //console.log("Scheduler in renders computed:", scheduler.value); // Remove toValue, use scheduler.value directly
     return scheduler.value?.attributes?.renders?.data || []; // Optional chaining to handle null or undefined
   });
 

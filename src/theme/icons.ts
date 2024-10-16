@@ -12,10 +12,12 @@ export default {
   navigation: {
     home: "mdi-home",
     eye: "mdi-eye",
+    internalLink: "mdi-arrow-right",
   },
   assets: {
     download: "mdi-download",
     file: "mdi-file",
+    image: "mdi-image",
     articles: "mdi-newspaper",
   },
   categories: {
@@ -35,6 +37,7 @@ export default {
   ui: {
     tick: "mdi-check",
     cross: "mdi-close",
+    error: "mdi-alert-circle",
     table: "mdi-table",
     currency: "mdi-currency-usd",
     date: "mdi-calendar",
@@ -49,13 +52,14 @@ export default {
     player: "mdi-account",
     instructions: "mdi-alphabetical-variant",
     instructionsOff: "mdi-alphabetical-variant-off",
+    search: "mdi-magnify",
+    fetching: "mdi-text-search",
   },
   charts: {
     chart: "mdi-chart-bar",
     pieChart: "mdi-chart-pie",
     lineChart: "mdi-chart-line",
   },
-  arrowRight: "mdi-arrow-right",
 
   minus: "mdi-minus",
   close: "mdi-close",

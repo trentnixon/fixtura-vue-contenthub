@@ -1,66 +1,38 @@
 <!-- src/components/render/FixtureStats.vue -->
 <template>
-  <v-row
-    class="d-flex justify-center"
-    v-if="renderMetrics && renderMetrics.summary"
-  >
-    <v-col cols="4" md="3">
-      <CardSmall1DataPoint
-        icon="mdi-calendar"
-        buttonText=""
-        :value="renderMetrics.summary.totalFixtures"
-        subtitle="Total Fixtures"
-        theme="cardNeutral"
-      >
+  <v-row class="d-flex justify-center" v-if="renderMetrics && renderMetrics.summary">
+    <v-col cols="6" md="3">
+      <CardSmall1DataPoint icon="mdi-calendar" buttonText="" :value="renderMetrics.summary.totalFixtures"
+        subtitle="Total Fixtures" theme="cardNeutral">
         <template v-slot:chart>
           <PieChartMini :data="TotalFixturesData" width="50px" height="50px" />
         </template>
       </CardSmall1DataPoint>
     </v-col>
 
-    <v-col cols="4" md="3">
-      <CardSmall1DataPoint
-        icon="mdi-clock"
-        buttonText=""
-        :value="renderMetrics.summary.totalUpcomingGames"
-        subtitle="Upcoming Games"
-        theme="cardNeutral"
-      >
+    <v-col cols="6" md="3">
+      <CardSmall1DataPoint icon="mdi-clock" buttonText="" :value="renderMetrics.summary.totalUpcomingGames"
+        subtitle="Upcoming Games" theme="cardNeutral">
         <template v-slot:chart>
           <BarChartMini :data="upcomingData" width="50px" height="30px" />
         </template>
       </CardSmall1DataPoint>
     </v-col>
 
-    <v-col cols="4" md="3">
-      <CardSmall1DataPoint
-        icon="mdi-soccer"
-        buttonText=""
-        :value="renderMetrics.summary.totalGameResults"
-        subtitle="Game Results"
-        theme="cardNeutral"
-      >
+    <v-col cols="6" md="3">
+      <CardSmall1DataPoint icon="mdi-soccer" buttonText="" :value="renderMetrics.summary.totalGameResults"
+        subtitle="Game Results" theme="cardNeutral">
         <template v-slot:chart>
           <BarChartMini :data="resultsData" width="50px" height="30px" />
         </template>
       </CardSmall1DataPoint>
     </v-col>
 
-    <v-col cols="4" md="3">
-      <CardSmall1DataPoint
-        icon="mdi-school"
-        buttonText=""
-        :value="renderMetrics.summary.totalGrades"
-        subtitle="Total Grades"
-        theme="cardNeutral"
-      >
+    <v-col cols="6" md="3">
+      <CardSmall1DataPoint icon="mdi-school" buttonText="" :value="renderMetrics.summary.totalGrades"
+        subtitle="Total Grades" theme="cardNeutral">
         <template v-slot:chart>
-          <BarChartMini
-            :data="totalGradesData"
-            width="50px"
-            height="30px"
-            barColor="#4CAF50"
-          />
+          <BarChartMini :data="totalGradesData" width="50px" height="30px" barColor="#4CAF50" />
         </template>
       </CardSmall1DataPoint>
     </v-col>

@@ -75,7 +75,7 @@ ${scorer.article_body}
       .join("\n")}`;
 
     await navigator.clipboard.writeText(content);
-    console.log("Top 5 article copied to clipboard.");
+    //console.log("Top 5 article copied to clipboard.");
   } catch (err) {
     console.error("Failed to copy Top 5 article:", err);
     throw err;

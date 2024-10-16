@@ -24,7 +24,7 @@ import TopNavigation from "@/components/navigation/TopNavigation.vue";
 import SideNavigation from "@/components/navigation/SideNavigation.vue";
 
 function toggleDrawer() {
-  console.log("Drawer toggled");
+  //console.log("Drawer toggled");
 }
 </script>
 

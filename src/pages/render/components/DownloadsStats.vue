@@ -1,41 +1,22 @@
 <template>
-  <v-row
-    class="d-flex justify-center"
-    v-if="renderMetrics && renderMetrics.summary"
-  >
+  <v-row class="d-flex justify-center" v-if="renderMetrics && renderMetrics.summary">
     <!-- Total Downloads -->
-    <v-col cols="4" md="4">
-      <CardSmall1DataPoint
-        icon="mdi-download"
-        buttonText=""
-        :value="renderMetrics.summary.totalDownloads"
-        subtitle="Total Downloads"
-        theme="cardNeutral"
-      />
+    <v-col cols="6" md="4">
+      <CardSmall1DataPoint icon="mdi-download" buttonText="" :value="renderMetrics.summary.totalDownloads"
+        subtitle="Total Downloads" theme="cardNeutral" />
     </v-col>
 
     <!-- Total AI Articles -->
-    <v-col cols="4" md="4">
-      <CardSmall1DataPoint
-        icon="mdi-file-document"
-        buttonText=""
-        :value="renderMetrics.summary.totalAiArticles"
-        subtitle="Total Articles"
-        theme="cardNeutral"
-      />
+    <v-col cols="6" md="4">
+      <CardSmall1DataPoint icon="mdi-file-document" buttonText="" :value="renderMetrics.summary.totalAiArticles"
+        subtitle="Total Articles" theme="cardNeutral" />
     </v-col>
 
     <!-- Errors -->
-    <v-col cols="4" md="4">
-      <CardSmall1DataPoint
-        icon="mdi-alert-circle"
-        buttonText=""
-        :value="renderMetrics.summary.totalErrors"
-        subtitle="Errors"
-        :theme="
-          renderMetrics.summary.totalErrors > 0 ? 'cardError' : 'cardNeutral'
-        "
-      />
+    <v-col cols="12" md="4">
+      <CardSmall1DataPoint icon="mdi-alert-circle" buttonText="" :value="renderMetrics.summary.totalErrors"
+        subtitle="Errors" :theme="renderMetrics.summary.totalErrors > 0 ? 'cardError' : 'cardNeutral'
+          " />
     </v-col>
   </v-row>
 

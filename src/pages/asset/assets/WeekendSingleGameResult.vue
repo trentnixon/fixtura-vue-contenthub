@@ -4,39 +4,21 @@
     <template v-if="selectedFixtureIndex === null">
       <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4">
         <v-card class="pa-2 elevation-0 bg-surface rounded-md">
-          <v-data-table
-            :headers="headers"
-            :items="filteredFixtures"
-            :items-per-page="5"
-            class="elevation-0 mx-auto"
-            hover
-          >
+          <v-data-table :headers="headers" :items="filteredFixtures" :items-per-page="5" class="elevation-0 mx-auto"
+            hover>
             <!-- Search Bar -->
             <template #top>
               <v-toolbar flat class="px-4" color="secondary" rounded>
                 <div class="text-leading">Fixtures</div>
                 <v-spacer></v-spacer>
-                <v-text-field
-                  v-model="search"
-                  density="compact"
-                  label="Search Teams"
-                  prepend-inner-icon="mdi-magnify"
-                  variant="solo-filled"
-                  flat
-                  hide-details
-                  single-line
-                ></v-text-field>
+                <v-text-field v-model="search" density="compact" label="Search Teams" prepend-inner-icon="mdi-magnify"
+                  variant="solo-filled" flat hide-details single-line></v-text-field>
               </v-toolbar>
             </template>
 
             <!-- Avatar Column -->
             <template v-slot:[`item.avatar`]="{ item }">
-              <v-img
-                :width="50"
-                aspect-ratio="16/9"
-                cover
-                :src="item.avatar"
-              ></v-img>
+              <v-img :width="50" aspect-ratio="16/9" cover :src="item.avatar"></v-img>
             </template>
             <template v-slot:[`item.teams`]="{ item }">
               <div class="table-copy text-bold d-block text-truncate">
@@ -49,13 +31,8 @@
 
             <!-- Action Column -->
             <template v-slot:[`item.action`]="{ index }">
-              <IconButton
-                @click="selectFixture(index)"
-                color="accent"
-                icon="mdi-arrow-right"
-                size="small"
-                variant="tonal"
-              />
+              <IconButton @click="selectFixture(index)" color="accent" icon="mdi-arrow-right" size="small"
+                variant="tonal" />
             </template>
           </v-data-table>
         </v-card>
@@ -66,29 +43,18 @@
     <template v-else>
       <!-- Back Button -->
       <div class="d-flex justify-end mb-0">
-        <SecondaryButton
-          label="Back"
-          icon="mdi-arrow-left"
-          @click="backToList"
-        />
+        <SecondaryButton label="Back" icon="mdi-arrow-left" @click="backToList" />
       </div>
 
       <v-divider class="my-2 py-0 px-4" />
       <v-row>
         <v-col cols="12" md="5">
           <!-- Image Gallery -->
-          <AssetImageGallery
-            v-if="selectedImage"
-            :imageUrls="[selectedImage]"
-            isSingleImage="true"
-          />
+          <AssetImageGallery v-if="selectedImage" :imageUrls="[selectedImage]" isSingleImage="true" />
         </v-col>
         <v-col class="d-flex justify-start" cols="12" md="7">
           <!-- Article Content -->
-          <AssetDisplayArticle
-            v-if="selectedArticle"
-            :articles="[selectedArticle]"
-          />
+          <AssetDisplayArticle v-if="selectedArticle" :articles="[selectedArticle]" />
         </v-col>
       </v-row>
     </template>
@@ -119,7 +85,7 @@ const headers = [
 
 // Prepare fixtures data for the table
 const fixtures = computed(() => {
-  console.log("[props.formattedAssets]", props.formattedAssets[0].downloads);
+  //console.log("[props.formattedAssets]", props.formattedAssets[0].downloads);
   return props.formattedArticles.map((article, index) => ({
     teams: `${article.structuredOutput.team1} vs ${article.structuredOutput.team2}`,
     scores: `${article.structuredOutput.score1} | ${article.structuredOutput.score2}`,

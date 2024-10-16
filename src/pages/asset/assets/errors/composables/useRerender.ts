@@ -44,13 +44,13 @@ export function useAssetRerender() {
 
     try {
       while (attempts < maxAttempts) {
-        console.log(`Polling attempt ${attempts + 1}...`);
+        //console.log(`Polling attempt ${attempts + 1}...`);
 
         await downloadsStore.fetchDownload(assetId);
         const asset = downloadDetails.value;
 
         if (asset && asset?.attributes.hasBeenProcessed) {
-          console.log("Asset has been processed:", asset);
+          //console.log("Asset has been processed:", asset);
           return true;
         }
 

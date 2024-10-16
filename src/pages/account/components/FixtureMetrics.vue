@@ -7,67 +7,38 @@
 
   <template v-else>
     <v-row class="d-flex justify-center">
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.ui.date"
-          buttonText=""
-          :value="totalGameResults + totalUpcomingGames"
-          subtitle="Total Fixtures"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.ui.date" buttonText="" :value="totalGameResults + totalUpcomingGames"
+          subtitle="Total Fixtures" theme="cardNeutral">
           <template v-slot:chart>
-            <PieChartMini
-              :data="TotalFixturesData"
-              width="50px"
-              height="50px"
-            />
+            <PieChartMini :data="TotalFixturesData" width="50px" height="50px" />
           </template>
         </CardSmall1DataPoint>
       </v-col>
 
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.categories.upcoming"
-          buttonText=""
-          :value="totalUpcomingGames"
-          subtitle="Upcoming Games"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.categories.upcoming" buttonText="" :value="totalUpcomingGames"
+          subtitle="Upcoming Games" theme="cardNeutral">
           <template v-slot:chart>
             <BarChartMini :data="upcomingGamesArr" width="80px" height="50px" />
           </template>
         </CardSmall1DataPoint>
       </v-col>
 
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.categories.results"
-          buttonText=""
-          :value="totalGameResults"
-          subtitle="Game Results"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.categories.results" buttonText="" :value="totalGameResults"
+          subtitle="Game Results" theme="cardNeutral">
           <template v-slot:chart>
             <BarChartMini :data="gameResultsArr" width="80px" height="50px" />
           </template>
         </CardSmall1DataPoint>
       </v-col>
 
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.ui.grades"
-          buttonText=""
-          :value="totalGrades"
-          subtitle="Total Grades"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.ui.grades" buttonText="" :value="totalGrades" subtitle="Total Grades"
+          theme="cardNeutral">
           <template v-slot:chart>
-            <BarChartMini
-              :data="gradesArr"
-              width="80px"
-              height="50px"
-              barColor="#4CAF50"
-            />
+            <BarChartMini :data="gradesArr" width="80px" height="50px" barColor="#4CAF50" />
           </template>
         </CardSmall1DataPoint>
       </v-col>

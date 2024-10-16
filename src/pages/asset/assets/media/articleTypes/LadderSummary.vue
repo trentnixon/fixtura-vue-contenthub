@@ -58,7 +58,7 @@ async function copyArticle() {
       .join("\n");
 
     await navigator.clipboard.writeText(content);
-    console.log("Ladder summary copied to clipboard.");
+    //console.log("Ladder summary copied to clipboard.");
   } catch (err) {
     console.error("Failed to copy ladder summary:", err);
     throw err;

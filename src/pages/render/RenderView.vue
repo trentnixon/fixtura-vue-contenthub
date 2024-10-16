@@ -9,10 +9,7 @@
     <DownloadsStats />
     <!--     <AssetCategoryStats /> -->
     <v-divider class="my-4 py-4" />
-    <CardHeader
-      title="Fixture Statistics"
-      subtitle="Overview of your bundle's fixtures and results"
-    />
+    <CardHeader title="Fixture Statistics" subtitle="Overview of your bundle's fixtures and results" />
     <FixtureStats />
     <v-divider class="my-4 py-4" />
   </v-container>

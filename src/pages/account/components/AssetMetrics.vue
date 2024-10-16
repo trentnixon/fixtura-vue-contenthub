@@ -8,14 +8,9 @@
   <template v-else>
     <v-row class="d-flex justify-center">
       <!-- Total Digital Assets Card with Pie Chart -->
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.charts.pieChart"
-          buttonText=""
-          :value="totalDigitalAssets"
-          subtitle="Digital Assets Created"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.charts.pieChart" buttonText="" :value="totalDigitalAssets"
+          subtitle="Digital Assets Created" theme="cardNeutral">
           <template v-slot:chart>
             <PieChartMini :data="totalAssetsData" width="50px" height="50px" />
           </template>
@@ -23,14 +18,9 @@
       </v-col>
 
       <!-- Total Downloads Card -->
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.assets.download"
-          buttonText=""
-          :value="totalDownloads"
-          subtitle="Total Downloads"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.assets.download" buttonText="" :value="totalDownloads"
+          subtitle="Total Downloads" theme="cardNeutral">
           <template v-slot:chart>
             <BarChartMini :data="downloadsArr" width="80px" height="50px" />
           </template>
@@ -46,14 +36,9 @@
       </v-col>
 
       <!-- AI Articles Card -->
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.assets.articles"
-          buttonText=""
-          :value="totalAiArticles"
-          subtitle="Articles written"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.assets.articles" buttonText="" :value="totalAiArticles"
+          subtitle="Articles written" theme="cardNeutral">
           <template v-slot:chart>
             <BarChartMini :data="aiArticlesArr" width="80px" height="50px" />
           </template>
@@ -69,20 +54,11 @@
       </v-col>
 
       <!-- Average Price per Asset Card with Bar Chart -->
-      <v-col cols="4" md="3">
-        <CardSmall1DataPoint
-          :icon="icons.ui.currency"
-          buttonText=""
-          :value="`$${averageCostPerDigitalAsset.toFixed(2)}`"
-          subtitle="Price per Asset"
-          theme="cardNeutral"
-        >
+      <v-col cols="6" md="3">
+        <CardSmall1DataPoint :icon="icons.ui.currency" buttonText=""
+          :value="`$${averageCostPerDigitalAsset.toFixed(2)}`" subtitle="Price per Asset" theme="cardNeutral">
           <template v-slot:chart>
-            <BarChartMini
-              :data="averageCostOverTimeArr"
-              width="80px"
-              height="50px"
-            />
+            <BarChartMini :data="averageCostOverTimeArr" width="80px" height="50px" />
           </template>
         </CardSmall1DataPoint>
       </v-col>
@@ -93,6 +69,7 @@
 <script setup>
 import { computed, inject } from "vue";
 const icons = inject("icons");
+import { useDisplay } from "vuetify";
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
 import PieChartMini from "@/components/charts/mini/PieChart.vue";
 import BarChartMini from "@/components/charts/mini/BarChart.vue";
@@ -103,7 +80,7 @@ import { useAccountData } from "@/pages/account/composables/useAccountData";
 // Fetch the data from the composable
 const { metricsOverTime, metricsAsPercentageOfCost, loading, error } =
   useAccountData();
-
+const { mdAndDown } = useDisplay();
 // Extract values from metricsOverTime
 const totalDownloads = computed(() => metricsOverTime.value.totalDownloads);
 const totalAiArticles = computed(() => metricsOverTime.value.totalAiArticles);

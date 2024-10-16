@@ -3,11 +3,7 @@
     <!-- Check if articles exist -->
     <div v-if="formattedArticles.length > 0">
       <!-- Iterate through each article -->
-      <div
-        v-for="(article, index) in formattedArticles"
-        :key="index"
-        class="mb-4"
-      >
+      <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
         <h4 class="article-title">{{ article.title }}</h4>
         <p class="article-subtitle">{{ article.subtitle }}</p>
         <h5 class="article-subtitle">
@@ -39,7 +35,7 @@ console.log("[aiArticles]", props.articles);
 // Format the articles within the component
 const formattedArticles = computed(() => {
   const aiArticles = props.articles || [];
-  console.log("[formattedArticles]", aiArticles);
+  //console.log("[formattedArticles]", aiArticles);
   // Return formatted AI articles based on structuredOutput results
   return aiArticles.flatMap((article) => {
     const results = article.structuredOutput?.results || [];
@@ -86,7 +82,7 @@ async function copyArticle() {
 
     // Copy the content to the clipboard
     await navigator.clipboard.writeText(content);
-    console.log("Articles copied to clipboard.");
+    //console.log("Articles copied to clipboard.");
   } catch (err) {
     console.error("Failed to copy articles:", err);
     throw err;

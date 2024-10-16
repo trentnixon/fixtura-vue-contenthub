@@ -74,7 +74,7 @@ async function copyArticle() {
     `.trim();
 
     await navigator.clipboard.writeText(content);
-    console.log("Article copied to clipboard.");
+    //console.log("Article copied to clipboard.");
   } catch (err) {
     console.error("Failed to copy article:", err);
     throw err;

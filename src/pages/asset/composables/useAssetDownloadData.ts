@@ -106,7 +106,6 @@ export function useAssetDownloadData() {
       return [];
     }
 
-    console.log("[selectedAssetType ]", selectedAssetType);
     //weekendresults
     const useFilteredArticles = filteredArticles.map((article) => ({
       id: article.id,

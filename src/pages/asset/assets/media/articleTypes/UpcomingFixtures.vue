@@ -65,7 +65,7 @@ async function copyArticle() {
 
     // Copy the content to the clipboard
     await navigator.clipboard.writeText(content);
-    console.log("Upcoming fixtures copied to clipboard.");
+    //console.log("Upcoming fixtures copied to clipboard.");
   } catch (err) {
     console.error("Failed to copy upcoming fixtures:", err);
     throw err;
