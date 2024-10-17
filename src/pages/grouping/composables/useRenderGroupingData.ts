@@ -4,6 +4,16 @@ import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
+interface GroupingCategoryStats {
+  downloads: number;
+  videos: number;
+  images: number;
+  aiWriteups: number;
+  hasErrors: boolean;
+  results: number;
+  upcoming: number;
+}
+
 export function useRenderGroupingData() {
   const renderStore = useRendersStore();
   const {
@@ -20,29 +30,47 @@ export function useRenderGroupingData() {
     getGroupingCategories,
   } = storeToRefs(renderStore);
 
-  /*  Add any Grouped render computed properties here */
   const route = useRoute();
-  const groupingCategory = ref(route.params.groupingcategory);
+  const groupingCategory = ref<string>(route.params.groupingcategory as string);
 
-  const getSelectedCategoryStats = computed(() => {
-    if (!getGroupingCategories.value || !groupingCategory.value) return null;
+  // Helper function to normalize strings (trim spaces and convert to lowercase)
+  const normalizeString = (str: string): string => str.trim().toLowerCase();
 
-    // Decode and capitalize the groupingCategory
-    const decodedCategory = decodeURIComponent(
-      groupingCategory.value as string
-    );
-    const capitalizedCategory = decodedCategory
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
+  const getSelectedCategoryStats = computed<GroupingCategoryStats | null>(
+    () => {
+      if (!getGroupingCategories.value || !groupingCategory.value) return null;
 
-    return getGroupingCategories.value[capitalizedCategory] || null;
-  });
+      // Decode the groupingCategory without capitalizing
+      const decodedCategory = decodeURIComponent(groupingCategory.value);
 
+      // Normalize the decoded category
+      const normalizedCategory = normalizeString(decodedCategory);
+
+      // Normalize the keys in getGroupingCategories
+      const normalizedCategories: Record<string, GroupingCategoryStats> =
+        Object.keys(getGroupingCategories.value).reduce((acc, key) => {
+          acc[normalizeString(key)] = getGroupingCategories.value[key];
+          return acc;
+        }, {} as Record<string, GroupingCategoryStats>);
+
+      // Try to find a match with the normalized category
+      console.log({
+        originalCategory: groupingCategory.value,
+        decodedCategory,
+        normalizedCategory,
+        normalizedCategoriesKeys: Object.keys(normalizedCategories), // Log the normalized keys
+        selectedCategoryStats: normalizedCategories[normalizedCategory],
+      });
+
+      return normalizedCategories[normalizedCategory] || null;
+    }
+  );
+
+  // Watch for route param changes and update the groupingCategory
   watch(
     () => route.params.groupingcategory,
     (newCategory) => {
-      groupingCategory.value = newCategory;
+      groupingCategory.value = newCategory as string;
     }
   );
 

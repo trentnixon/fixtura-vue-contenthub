@@ -7,6 +7,8 @@
   <CreateTeamRosterLink />
   <CardHeader :title="`${groupingCategory} render statistics`" subtitle="Download breakdown" />
   <CategoryDownloadsStats :groupingCategory="groupingCategory" />
+  <v-divider class="my-4" />
+  <CardHeader :title="`${groupingCategory} Fixtures`" subtitle="The fixtures were used when creating the render" />
 </template>
 
 <script setup>

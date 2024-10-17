@@ -39,6 +39,7 @@ const groupingCategory = ref(route.params.groupingcategory);
 // Extract stats from the composable
 const { getSelectedCategoryStats } = useRenderGroupingData();
 
+console.log("[getSelectedCategoryStats]", getSelectedCategoryStats)
 // Watch for route parameter changes
 watch(
   () => route.params.groupingcategory,
