@@ -4,12 +4,19 @@
       <!-- Header Slot -->
       <template v-slot:header>
         <div class="card-title">
-          <template v-if="fixture.isUserHomeTeam">
-            {{ fixture.teamHome }}
-          </template>
-          <template v-else-if="fixture.isUserAwayTeam">
-            {{ fixture.teamAway }}
-          </template>
+          <div class="text-body">
+            <template v-if="fixture.isUserHomeTeam">
+              {{ fixture.teamHome }}
+            </template>
+            <template v-else-if="fixture.isUserAwayTeam">
+              {{ fixture.teamAway }}
+            </template>
+          </div>
+          <div class="text-xSmall">
+            {{ fixture.grade }} |
+            {{ fixture.ageGroup }}
+          </div>
+
         </div>
       </template>
 
@@ -32,7 +39,7 @@
                   <li v-for="(player, index) in userTeam?.players" :key="'player-' + index"
                     :class="['d-flex', 'align-center', 'justify-space-between', 'py-1', 'px-2', 'border-b-thin']">
                     <v-icon :icon="icons.ui.player"
-                      :class="['rounded-md', { 'bg-error-lighten1': player === 'Fill-in' || player === 'Private Player' }]" />
+                      :class="['rounded-md', { 'bg-error-lighten1': player === 'Fill-in' || player === 'Private player' }]" />
                     <div class="text-body">
                       {{ player }}
                     </div>
@@ -49,7 +56,7 @@
                 <div class="d-flex justify-space-between pa-2 w-100 ">
                   <v-btn-toggle class="ml-2 mb-1" rounded="md" color="primary" variant="outlined" :mandatory="false"
                     :group="false">
-                    <IconButton :icon="icons.ui.extLink" color="primary" size="small" @click="viewFixture"
+                    <IconButton :icon="icons.ui.extLink" color="primary" size="small" @click="openScoreCard"
                       tooltip="View Fixture" variant="outlined" />
                   </v-btn-toggle>
 
@@ -60,9 +67,11 @@
                     <IconButton :icon="icons.ui.save" size="small" color="success" @click="saveRoster"
                       tooltip="Save Changes to Roster" variant="outlined">
                       <!-- Badge to indicate unsaved changes -->
-                      <v-badge v-if="hasUnsavedChanges" content="!" color="error"></v-badge>
+
                     </IconButton>
+                    <v-badge v-if="hasUnsavedChanges" content="!" color="error" inline></v-badge>
                   </v-btn-toggle>
+
                 </div>
               </v-col>
             </v-row>

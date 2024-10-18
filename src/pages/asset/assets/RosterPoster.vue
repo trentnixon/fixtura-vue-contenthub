@@ -233,9 +233,15 @@ watch(
 );
 
 // Watch for changes in `renderId` and `groupingCategory`, and refetch fixtures if they change
-watch([renderId, groupingCategory], () => {
-  fetchFixtures();
-});
+watch(
+  [renderId, groupingCategory],
+  async ([newRenderId, newGroupingCategory], [oldRenderId, oldGroupingCategory]) => {
+    if (newRenderId !== oldRenderId || newGroupingCategory !== oldGroupingCategory) {
+      await fetchFixtures(); // Explicitly await the fetch to ensure it's complete
+    }
+  },
+  { immediate: true }
+);
 
 // Watch for changes in `formattedAssets` and update relevant state
 watch(

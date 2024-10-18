@@ -48,7 +48,16 @@
 /* Small Text Styles */
 @mixin text-small-styles {
   font-size: $font-size-xs; /* e.g., 1rem */
-  font-weight: $font-weight-sm; /* e.g., 400 */
+  font-weight: $font-weight-md; /* e.g., 400 */
+  line-height: $line-height-sm; /* e.g., 1.5 */
+  color: var(--v-text-base); /* Ensure --v-text-base is defined */
+
+  margin-top: 0;
+  margin-bottom: $spacing-1; /* e.g., 0.25rem */
+}
+@mixin text-xSmall-styles {
+  font-size: $font-size-xxs; /* e.g., 1rem */
+  font-weight: $font-weight-md; /* e.g., 400 */
   line-height: $line-height-sm; /* e.g., 1.5 */
   color: var(--v-text-base); /* Ensure --v-text-base is defined */
 
@@ -164,6 +173,10 @@
 /* text-small combines text-small-styles mixin */
 .text-small {
   @include text-small-styles;
+}
+
+.text-xSmall {
+  @include text-xSmall-styles;
 }
 
 /* New Typography Utility Classes */

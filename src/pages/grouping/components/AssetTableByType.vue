@@ -3,12 +3,16 @@
   <v-skeleton-loader v-if="loading" type="table" />
 
   <template v-else>
-    <v-row>
-      <v-col class="d-flex justify-end py-0 px-1 my-0" cols="12">
+    <v-row class="mx-0">
+      <v-col class="d-flex justify-end py-0 px-2 align-center" cols="12">
+
         <CustomChip :label="!getSelectedCategoryStats?.hasErrors
           ? 'No Errors Detected'
           : 'Errors'
           " :value="!getSelectedCategoryStats?.hasErrors" type="boolean" />
+        <template v-if="getAccountType === 1">
+          <PrimaryButton label="Team Rosters" size="small" :to="rosterLink" color="accent" />
+        </template>
       </v-col>
     </v-row>
 
@@ -54,10 +58,12 @@ import CustomChip from "@/components/primitives/chips/CustomChip.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import { useRenderGroupingData } from "@/pages/grouping/composables/useRenderGroupingData";
 import { useDisplay } from "vuetify";
+import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
+import { useAccountData } from "@/pages/account/composables/useAccountData";
 
 const icons = inject("icons");
 const { mdAndUp } = useDisplay();
-
+const { getAccountType } = useAccountData()
 // Fetch data from the composable
 const { loading, getAssetsByType, getSelectedCategoryStats } =
   useRenderGroupingData();
@@ -162,6 +168,15 @@ function getIcon(type) {
   };
   return iconMap[type] || icons.file;
 }
+
+// team roaster handler
+const rosterLink = computed(() => {
+  // vue link to  renderId/cricket/6852/senior/rosterposter
+  const accountId = Number(route.params.accountid);
+  const sport = route.params.sport;
+  const renderId = Number(route.params.renderid);
+  return `/${accountId}/${sport}/${renderId}/${groupingCategory.value}/rosterposter`;
+});
 
 watch(
   () => route.params,

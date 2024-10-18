@@ -4,11 +4,10 @@
   <!-- Display download stats for the grouping category -->
   <AssetTableByType />
   <v-divider class="my-4" />
-  <CreateTeamRosterLink />
   <CardHeader :title="`${groupingCategory} render statistics`" subtitle="Download breakdown" />
   <CategoryDownloadsStats :groupingCategory="groupingCategory" />
-  <v-divider class="my-4" />
-  <CardHeader :title="`${groupingCategory} Fixtures`" subtitle="The fixtures were used when creating the render" />
+  <!--   <v-divider class="my-4" />
+  <CardHeader :title="`${groupingCategory} Fixtures`" subtitle="The fixtures were used when creating the render" /> -->
 </template>
 
 <script setup>
@@ -21,7 +20,7 @@ import CardHeader from "@/components/primitives/headers/CardHeader.vue";
 import { useAccountData } from "@/pages/account/composables/useAccountData";
 import { fetchFixturaRenderById } from "@/store/renders/actions";
 import { useRendersStore } from "@/store/renders";
-import CreateTeamRosterLink from "@/pages/grouping/components/CreateTeamRosterLink.vue";
+
 // Initialize composables
 const { fetchAccountById } = useAccountData();
 const { fetchGroupingDetails } = useRendersStore();

@@ -179,9 +179,9 @@ export function useRosterFixtures() {
 function useRouteParams(): RouteParams {
   const route = useRoute();
   return {
-    accountId: ref(Number(route.params.accountid)),
-    renderId: ref(Number(route.params.renderid)),
-    groupingCategory: ref(String(route.params.groupingcategory)),
-    sport: ref(String(route.params.sport)),
+    accountId: computed(() => Number(route.params.accountid)),
+    renderId: computed(() => Number(route.params.renderid)),
+    groupingCategory: computed(() => String(route.params.groupingcategory)),
+    sport: computed(() => String(route.params.sport)),
   };
 }

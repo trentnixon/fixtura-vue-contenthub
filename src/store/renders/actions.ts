@@ -131,7 +131,7 @@ export async function fetchFixturesByRenderForRosterPosters(
     );
 
     if (response && response.data) {
-      state.selectedFixturesForRosters = response.data; // Set the fixtures in the state
+      state.selectedFixturesForRosters = [...response.data]; // Set the fixtures in the state
     } else {
       throw new Error("Invalid fixtures data structure");
     }
