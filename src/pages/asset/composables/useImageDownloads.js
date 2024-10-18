@@ -42,20 +42,20 @@ export function useImageDownloads() {
   // Method to handle bulk download of images
   const handleBulkDownload = async (imageUrls) => {
     isBulkDownloading.value = true;
-
+    console.log("[imageUrls]", imageUrls);
     try {
       const zip = new JSZip();
 
       // Download all images and add them to the zip file
       const downloads = imageUrls.map(async (item) => {
-        const response = await fetch(item.url, {
+        const response = await fetch(item, {
           headers: {
             "Cache-Control": "no-cache",
           },
         });
         const blob = await response.blob();
 
-        const urlObject = new URL(item.url);
+        const urlObject = new URL(item);
         const filename = urlObject.pathname.split("/").pop();
 
         zip.file(filename, blob);
@@ -63,7 +63,7 @@ export function useImageDownloads() {
 
       await Promise.all(downloads);
 
-      const firstUrlObject = new URL(imageUrls[0].url);
+      const firstUrlObject = new URL(imageUrls[0]);
       const firstFilename = firstUrlObject.pathname.split("/").pop();
       const zipFilename =
         firstFilename.split("_").slice(0, -1).join("_") + ".zip";

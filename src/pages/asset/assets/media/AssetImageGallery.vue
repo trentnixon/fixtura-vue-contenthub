@@ -5,8 +5,8 @@
       <CategoryHeader title="IMAGES" icon="mdi-image" />
       <v-spacer></v-spacer>
       <SecondaryButton color="accent" :label="isBulkDownloading
-          ? 'Downloading...'
-          : `Download All (${imageUrls.length})`
+        ? 'Downloading...'
+        : `Download All (${imageUrls.length})`
         " @click="handleBulkDownload(imageUrls)" :loading="isBulkDownloading" />
     </template>
 
