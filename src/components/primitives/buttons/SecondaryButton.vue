@@ -1,13 +1,20 @@
 <template>
-  <v-btn :color="color" :disabled="disabled" :loading="loading" @click="handleClick" class="secondary-button"
-    :prepend-icon="icon" variant="tonal">
-
+  <v-btn
+    :color="color"
+    :disabled="disabled"
+    :loading="loading"
+    @click="handleClick"
+    class="secondary-button"
+    :prepend-icon="icon"
+    variant="tonal"
+  >
     {{ label }}
   </v-btn>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from "vue";
+import { useGA } from "@/utils/useGA";
 
 const props = defineProps({
   label: {
@@ -16,7 +23,7 @@ const props = defineProps({
   },
   icon: {
     type: String,
-    default: '',
+    default: "",
   },
   disabled: {
     type: Boolean,
@@ -28,16 +35,20 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: 'secondary',
+    default: "secondary",
   },
 });
 
-const emit = defineEmits(['click']);
+const emit = defineEmits(["click"]);
+const { trackEvent } = useGA(); // Use the GA composable
 
 function handleClick() {
   if (!props.disabled) {
-    emit('click');
+    // Track the click event
+    trackEvent("button_click", "interaction", props.label);
+
+    // Emit the click event
+    emit("click");
   }
 }
 </script>
-

@@ -28,7 +28,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const accountStore = useAccountStore();
-  const { getAccountName, getOrganizationDetails } = storeToRefs(accountStore);
+  const { getOrganizationDetails } = storeToRefs(accountStore);
 
   let dynamicTitle = to.meta.title;
 
@@ -52,8 +52,6 @@ router.beforeEach((to, from, next) => {
     async (newVal) => {
       if (newVal) {
         await nextTick();
-
-        console.log("[getOrganizationDetails]", newVal.Name);
         // Set the title with the account name and the dynamic title
         document.title = `${newVal.Name} - ${dynamicTitle}`;
       } else {
