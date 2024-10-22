@@ -46,7 +46,14 @@ export function useRenderData() {
     const accountId = Number(route.params.accountid); // Replace with dynamic value if needed
     const sport = route.params.sport; // Replace with dynamic value if needed
     const renderId = Number(route.params.renderid); // Replace with dynamic value if needed
-    return `/${accountId}/${sport}/${renderId}/${category.toLowerCase()}`;
+
+    // Encode the category and replace forward slashes with %2F
+    const encodedCategory = encodeURIComponent(category.toLowerCase()).replace(
+      /\//g,
+      "%2F"
+    );
+
+    return `/${accountId}/${sport}/${renderId}/${encodedCategory}`;
   }
 
   // Function to determine chip color based on count
