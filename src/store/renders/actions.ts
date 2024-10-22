@@ -56,11 +56,15 @@ export async function fetchGroupingDetails(
   try {
     state.loading = true;
     state.error = null; // Reset error before fetching
+    // Encode the grouping category to escape special characters
+    const encodedGroupingCategory = encodeURIComponent(
+      groupingCategory
+    ).replace(/\//g, "%2F");
 
     const response = await fetchGroupingDetailsFromService(
       userID,
       renderID,
-      groupingCategory
+      encodedGroupingCategory
     );
 
     if (response && response.data) {

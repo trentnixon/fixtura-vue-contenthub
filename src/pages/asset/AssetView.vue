@@ -48,8 +48,6 @@ watch(
 const isLoading = computed(() => rendersStore.loading);
 const hasError = computed(() => rendersStore.error);
 
-console.log("[hasError]", hasError.value)
-
 // Function to fetch all required data
 async function fetchData() {
   // Fetch account and render data
