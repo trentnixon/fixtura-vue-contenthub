@@ -86,10 +86,14 @@ function getCategoryLink(type) {
 
 function navigateToAsset(type) {
   isMenuOpen.value = false;
+  const encodedType = encodeURIComponent(
+    groupingCategory.value.toLowerCase()
+  ).replace(/\//g, "%2F");
+
   router.push(
-    `/${accountId.value}/${sport.value}/${renderId.value}/${
-      groupingCategory.value
-    }/${type.toLowerCase()}`
+    `/${accountId.value}/${sport.value}/${
+      renderId.value
+    }/${encodedType}/${type.toLowerCase()}`
   );
 }
 // Add watch function for route params
