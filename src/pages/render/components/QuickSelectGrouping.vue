@@ -54,8 +54,10 @@ const isActiveCategory = computed(() => (category) => {
 
 function navigateToAsset(type) {
   isMenuOpen.value = false;
+  // Encode the category value to handle special characters in the URL
+  const encodedType = encodeURIComponent(type.toLowerCase());
   router.push(
-    `/${accountId.value}/${sport.value}/${renderId.value}/${type.toLowerCase()}`
+    `/${accountId.value}/${sport.value}/${renderId.value}/${encodedType}`
   );
 }
 

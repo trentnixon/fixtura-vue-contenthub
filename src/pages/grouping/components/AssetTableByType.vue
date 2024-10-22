@@ -5,13 +5,22 @@
   <template v-else>
     <v-row class="mx-0">
       <v-col class="d-flex justify-end py-0 px-2 align-center" cols="12">
-
-        <CustomChip :label="!getSelectedCategoryStats?.hasErrors
-          ? 'No Errors Detected'
-          : 'Errors'
-          " :value="!getSelectedCategoryStats?.hasErrors" type="boolean" />
+        <CustomChip
+          :label="
+            !getSelectedCategoryStats?.hasErrors
+              ? 'No Errors Detected'
+              : 'Errors'
+          "
+          :value="!getSelectedCategoryStats?.hasErrors"
+          type="boolean"
+        />
         <template v-if="getAccountType === 1">
-          <PrimaryButton label="Team Rosters" size="small" :to="rosterLink" color="accent" />
+          <PrimaryButton
+            label="Team Rosters"
+            size="small"
+            :to="rosterLink"
+            color="accent"
+          />
         </template>
       </v-col>
     </v-row>
@@ -20,8 +29,15 @@
     <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-2">
       <div class="text-body py-2 px-4"></div>
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
-        <v-data-table :headers="computedHeaders" :items="filteredItems" class="mx-auto" fixed-header color="cardNeutral"
-          variant="flat" rounded>
+        <v-data-table
+          :headers="computedHeaders"
+          :items="filteredItems"
+          class="mx-auto"
+          fixed-header
+          color="cardNeutral"
+          variant="flat"
+          rounded
+        >
           <!-- Slot for the asset type display (with icon and name) -->
           <template v-slot:[`item.type`]="{ item }">
             <v-icon :icon="getIcon(item.type)" class="mr-2" />
@@ -29,21 +45,38 @@
           </template>
 
           <!-- Conditionally render download count based on screen size -->
-          <template v-if="$vuetify.display.mdAndUp" v-slot:[`item.downloads`]="{ item }">
-            <CustomChip :color="getAssetCountColor(item.downloadCount)" :label="`${item.downloadCount} Downloads`"
-              :icon="icons.assets.download" />
+          <template
+            v-if="$vuetify.display.mdAndUp"
+            v-slot:[`item.downloads`]="{ item }"
+          >
+            <CustomChip
+              :color="getAssetCountColor(item.downloadCount)"
+              :label="`${item.downloadCount} Downloads`"
+              :icon="icons.assets.download"
+            />
           </template>
 
           <!-- Conditionally render article count based on screen size -->
-          <template v-if="$vuetify.display.mdAndUp" v-slot:[`item.aiArticles`]="{ item }">
-            <CustomChip :color="getAssetCountColor(item.articleCount)" :label="`${item.articleCount} Articles`"
-              :icon="icons.assets.file" />
+          <template
+            v-if="$vuetify.display.mdAndUp"
+            v-slot:[`item.aiArticles`]="{ item }"
+          >
+            <CustomChip
+              :color="getAssetCountColor(item.articleCount)"
+              :label="`${item.articleCount} Articles`"
+              :icon="icons.assets.file"
+            />
           </template>
 
           <!-- Slot for the Action button -->
           <template v-slot:[`item.link`]="{ item }">
-            <IconButton :to="item.link" color="accent" :icon="icons.navigation.internalLink" size="small"
-              variant="tonal" />
+            <IconButton
+              :to="item.link"
+              color="accent"
+              :icon="icons.navigation.internalLink"
+              size="small"
+              variant="tonal"
+            />
           </template>
         </v-data-table>
       </v-card>
@@ -63,7 +96,7 @@ import { useAccountData } from "@/pages/account/composables/useAccountData";
 
 const icons = inject("icons");
 const { mdAndUp } = useDisplay();
-const { getAccountType } = useAccountData()
+const { getAccountType } = useAccountData();
 // Fetch data from the composable
 const { loading, getAssetsByType, getSelectedCategoryStats } =
   useRenderGroupingData();
@@ -132,7 +165,11 @@ function getCategoryLink(type) {
   const accountId = Number(route.params.accountid);
   const sport = route.params.sport;
   const renderId = Number(route.params.renderid);
-  return `/${accountId}/${sport}/${renderId}/${groupingCategory.value}/${type.toLowerCase()}`;
+
+  // Encode the grouping category to escape special characters
+  const encodedGroupingCategory = encodeURIComponent(groupingCategory.value);
+
+  return `/${accountId}/${sport}/${renderId}/${encodedGroupingCategory}/${type.toLowerCase()}`;
 }
 
 // Function to return a display name for the type (enum guide)
@@ -144,7 +181,7 @@ function getDisplayName(type) {
     Top5BattingList: "Top 5 Batting",
     UpComingFixtures: "Upcoming Fixtures",
     WeekendSingleGameResult: "Single Game Result",
-    RosterPoster: "Team Rosters"
+    RosterPoster: "Team Rosters",
   };
   return names[type] || type;
 }
