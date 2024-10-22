@@ -95,10 +95,14 @@ export async function fetchAssetsByRenderAction(
     state.loading = true;
     state.error = null;
 
+    const encodedGroupingCategory = encodeURIComponent(
+      groupingCategory
+    ).replace(/\//g, "%2F");
+
     const response = await fetchAssetsByRender(
       userID,
       renderID,
-      groupingCategory,
+      encodedGroupingCategory,
       assetType
     );
 
@@ -127,10 +131,13 @@ export async function fetchFixturesByRenderForRosterPosters(
     //state.loading = true;
     //state.error = null;
 
+    const encodedGroupingCategory = encodeURIComponent(
+      groupingCategory
+    ).replace(/\//g, "%2F");
     const response = await fetchFixturesByRenderForRoster(
       userID,
       renderID,
-      groupingCategory,
+      encodedGroupingCategory,
       sport
     );
 
