@@ -167,8 +167,9 @@ function getCategoryLink(type) {
   const renderId = Number(route.params.renderid);
 
   // Encode the grouping category to escape special characters
-  const encodedGroupingCategory = encodeURIComponent(groupingCategory.value);
-
+  const encodedGroupingCategory = encodeURIComponent(
+    groupingCategory.value.toLowerCase()
+  ).replace(/\//g, "%2F");
   return `/${accountId}/${sport}/${renderId}/${encodedGroupingCategory}/${type.toLowerCase()}`;
 }
 
