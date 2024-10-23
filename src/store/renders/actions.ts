@@ -161,7 +161,6 @@ export async function requestTeamRosterAction(renderID: number) {
     //state.error = null;
 
     const response = await requestTeamRoster(renderID);
-    console.log("[response]", response);
     if (response && response.data && response.data.status) {
       //state.requestStatus = "success";
       //state.selectedRenderId = response.data.renderId;
@@ -195,7 +194,7 @@ export async function createTeamRosterAction(
     state.error = null;
     const response = await createRosterService(renderId, groupingId);
     if (response) {
-      console.log("Roster creation job added successfully:", response);
+      console.log("Roster creation job added successfully");
     } else {
       throw new Error("Failed to add roster creation job");
     }

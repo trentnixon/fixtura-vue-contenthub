@@ -1,6 +1,5 @@
 export const useGlobalComposable = () => {
   function getDisplayName(type) {
-    console.log("[type]", type);
     const names = {
       weekendresults: "Weekend Results",
       ladder: "Ladder",

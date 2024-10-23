@@ -18,6 +18,8 @@ export function useAssetState(asset: Asset) {
       return "initialError"; // The asset encountered an error but hasn't been rerendered.
     } else if (asset.hasBeenProcessed && !asset.hasError) {
       return "processed"; // The asset has been successfully processed.
+    } else if (!asset.hasBeenProcessed && !asset.hasError) {
+      return "unprocessed"; // The asset has been successfully processed.
     } else {
       return "unknown";
     }

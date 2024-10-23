@@ -4,8 +4,6 @@ export function useGA() {
   const route = useRoute(); // Get current route to track page path
 
   function trackEvent(action, category, label, value = null) {
-    console.log("trackEvent", action, category, label, value);
-
     // Ensure gtag is initialized before tracking
     if (window.$gtag) {
       window.$gtag.event(action, {

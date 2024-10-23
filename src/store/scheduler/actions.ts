@@ -7,14 +7,14 @@ export async function fetchScheduler(id: number) {
 
   try {
     state.loading = true; // Set loading to true
-    console.log("[Action] Loading state set to true");
+    //console.log("[Action] Loading state set to true");
 
     const response = await fetchSchedulerFromService(id); // Fetch scheduler data
 
     if (response && response.data) {
       // Directly assign the response data to `scheduler`
       state.scheduler = response.data;
-      console.log("[Action] Scheduler data set successfully:", state.scheduler);
+      //console.log("[Action] Scheduler data set successfully:", state.scheduler);
     } else {
       throw new Error("Invalid data structure");
     }
@@ -29,7 +29,7 @@ export async function fetchScheduler(id: number) {
     }
   } finally {
     state.loading = false; // Set loading to false
-    console.log("[Action] Loading state set to false");
+    //console.log("[Action] Loading state set to false");
   }
 }
 

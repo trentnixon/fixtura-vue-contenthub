@@ -42,7 +42,7 @@ export function useImageDownloads() {
   // Method to handle bulk download of images
   const handleBulkDownload = async (imageUrls) => {
     isBulkDownloading.value = true;
-    console.log("[imageUrls]", imageUrls);
+
     try {
       const zip = new JSZip();
 

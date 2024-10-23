@@ -79,11 +79,16 @@
       <v-row>
         <v-col cols="12" md="5">
           <!-- Image Gallery -->
-          <AssetImageGallery
-            v-if="selectedImage"
-            :imageUrls="[selectedImage]"
-            isSingleImage="true"
-          />
+          <template v-if="galleryState === 'unprocessed'">
+            <HandleAssetError :asset="formattedAssets[0]" />
+          </template>
+          <template v-else>
+            <AssetImageGallery
+              v-if="selectedImage"
+              :imageUrls="[selectedImage]"
+              isSingleImage="true"
+            />
+          </template>
         </v-col>
         <v-col class="d-flex justify-start" cols="12" md="7">
           <!-- Article Content -->
@@ -103,6 +108,8 @@ import AssetImageGallery from "./media/AssetImageGallery.vue";
 import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
+import { useAssetState } from "@/pages/asset/composables/useAssetState";
+import HandleAssetError from "@/pages/asset/assets/errors/HandleAssetError.vue";
 // Define component props
 const props = defineProps({
   formattedAssets: Array, // Images related to the fixtures
@@ -123,7 +130,6 @@ const headers = [
 
 // Prepare fixtures data for the table
 const fixtures = computed(() => {
-  //console.log("[props.formattedAssets]", props.formattedAssets[0].downloads);
   return props.formattedArticles.map((article, index) => ({
     id: index,
     teams: `${article.structuredOutput.team1} vs ${article.structuredOutput.team2}`,
@@ -132,7 +138,7 @@ const fixtures = computed(() => {
   }));
 });
 
-console.log("[fixtures]", fixtures);
+const { assetState: galleryState } = useAssetState(props.formattedAssets[0]);
 
 // Filtered fixtures based on search input
 const filteredFixtures = computed(() => {
@@ -166,6 +172,7 @@ const selectedImage = computed(() => {
   }
   return null; // Handle undefined or empty array
 });
+
 const onItemsPerPageChange = (newItemsPerPage) => {
   itemsPerPage.value = newItemsPerPage;
 };

@@ -13,7 +13,7 @@ export const useSchedulerStore = defineStore("scheduler", () => {
   watchImmediate(
     () => schedulerRef.value,
     (newVal) => {
-      console.log("Scheduler updated:", newVal);
+      console.log("Scheduler updated");
     }
   );
 

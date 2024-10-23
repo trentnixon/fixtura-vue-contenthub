@@ -3,6 +3,9 @@
   <template v-if="state === 'initialError'">
     <HandleAssetError :asset="asset" />
   </template>
+  <template v-if="state === 'unprocessed'">
+    <HandleAssetError :asset="asset" />
+  </template>
   <template v-else-if="state === 'processed' && asset?.downloads.length > 0">
     <AssetVideo v-if="isVideo" :videoUrls="asset.downloads[0]" />
     <AssetImageGallery v-else :imageUrls="asset.downloads" />

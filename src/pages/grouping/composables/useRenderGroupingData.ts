@@ -54,13 +54,13 @@ export function useRenderGroupingData() {
         }, {} as Record<string, GroupingCategoryStats>);
 
       // Try to find a match with the normalized category
-      console.log({
+      /*  console.log({
         originalCategory: groupingCategory.value,
         decodedCategory,
         normalizedCategory,
         normalizedCategoriesKeys: Object.keys(normalizedCategories), // Log the normalized keys
         selectedCategoryStats: normalizedCategories[normalizedCategory],
-      });
+      }); */
 
       return normalizedCategories[normalizedCategory] || null;
     }

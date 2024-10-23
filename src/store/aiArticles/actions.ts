@@ -54,7 +54,6 @@ export async function fetchFullAiArticlesByIds(ids: number[]) {
     // Store each formatted article by its ID
     responses.forEach((response) => {
       if (response && response.data) {
-        console.log("response.data ", response.data);
         const rawArticle = response.data as AiArticle;
         const item = formatAiArticles(rawArticle);
         // Format the article and store it in the state
