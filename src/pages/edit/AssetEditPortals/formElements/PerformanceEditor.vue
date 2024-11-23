@@ -25,7 +25,7 @@
               <TextInput
                 label="Runs"
                 :value="performance.runs"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'runs', val)"
               />
             </v-col>
@@ -33,7 +33,7 @@
               <TextInput
                 label="Balls"
                 :value="performance.balls"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'balls', val)"
               />
             </v-col>
@@ -41,7 +41,7 @@
               <TextInput
                 label="Strike Rate"
                 :value="performance.SR"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'SR', val)"
               />
             </v-col>
@@ -64,7 +64,7 @@
               <TextInput
                 label="Overs"
                 :value="performance.overs"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'overs', val)"
               />
             </v-col>
@@ -72,7 +72,7 @@
               <TextInput
                 label="Maidens"
                 :value="performance.maidens || 0"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'maidens', val)"
               />
             </v-col>
@@ -80,7 +80,7 @@
               <TextInput
                 label="Runs"
                 :value="performance.runs"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'runs', val)"
               />
             </v-col>
@@ -88,7 +88,7 @@
               <TextInput
                 label="Wickets"
                 :value="performance.wickets"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'wickets', val)"
               />
             </v-col>
@@ -96,7 +96,7 @@
               <TextInput
                 label="Economy"
                 :value="performance.economy"
-                :validations="[isNumber]"
+                :validations="[isValidNumber]"
                 @update="(val) => updatePerformanceField(index, 'economy', val)"
               />
             </v-col>
@@ -113,7 +113,7 @@ import TextInput from "@/pages/edit/AssetEditPortals/formElements/TextInput.vue"
 import {
   isValidName,
   isRequired,
-  isNumber,
+  isValidNumber,
 } from "@/pages/edit/validations/genericValidations";
 
 const props = defineProps({
