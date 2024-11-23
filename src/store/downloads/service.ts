@@ -1,5 +1,6 @@
 import fetcher from "@/actions/fetcher";
 import { Download } from "@/types";
+import { AssetData } from "@/types/fetchAssetByLink";
 
 interface ApiResponse<T> {
   data: T;
@@ -41,5 +42,17 @@ export async function fetchRerenderStatusFromService(
   const response = await fetcher.get<
     ApiResponse<{ hasBeenProcessed: boolean; hasError: boolean }>
   >(`/download/rerender/status/${id}`);
+  return response;
+}
+
+export async function fetchAssetByLinkIDFromService(assetLinkID: string) {
+  const response = await fetcher.get<AssetData>(
+    `/download/asset-by-link/${assetLinkID}`
+  );
+  return response;
+}
+
+export async function updateDownloadInService(id: number, data: any) {
+  const response = await fetcher.put(`/downloads/${id}`, data);
   return response;
 }

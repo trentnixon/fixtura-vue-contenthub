@@ -7,8 +7,8 @@
     <HandleAssetError :asset="asset" />
   </template>
   <template v-else-if="state === 'processed' && asset?.downloads.length > 0">
-    <AssetVideo v-if="isVideo" :videoUrls="asset.downloads[0]" />
-    <AssetImageGallery v-else :imageUrls="asset.downloads" />
+    <AssetVideo v-if="isVideo" :videoUrls="asset.downloads[0]" :asset="asset" />
+    <AssetImageGallery v-else :imageUrls="asset.downloads" :asset="asset" />
   </template>
   <template v-else-if="state === 'rerendering'">
     <PollingAssetState :asset="asset" />
@@ -34,8 +34,6 @@ const props = defineProps({
   asset: Object,
   state: String,
 });
-
-console.group("[Renderer]", props.asset, props.state);
 // Determine if the asset is a video or image
 const isVideo = computed(() => props.asset?.category === "VIDEO");
 </script>

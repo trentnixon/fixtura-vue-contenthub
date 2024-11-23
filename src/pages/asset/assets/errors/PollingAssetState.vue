@@ -5,7 +5,12 @@
       <CategoryHeader title="VIDEO" icon="mdi-video-off" />
       <v-spacer />
       <!-- Polling Indicator -->
-      <CustomChip label="Processing Asset" :value="isPolling" type="boolean" />
+      <CustomChip
+        label="Processing Asset"
+        :value="isPolling"
+        type="boolean"
+        size="small"
+      />
     </template>
 
     <!-- Video Body -->

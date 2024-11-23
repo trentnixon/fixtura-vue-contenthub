@@ -105,3 +105,41 @@ export interface MetricsAsPercentageOfCost {
 export interface AccountResponse {
   data: Account;
 }
+
+// Root response structure from the API
+// Full API response type
+export interface RelatedClubsResponse {
+  id: number;
+  attributes: {
+    Name: string;
+    clubs: {
+      data: Array<{
+        id: number;
+        attributes: {
+          Name: string;
+          Logo: {
+            data: {
+              attributes: {
+                url: string;
+                width: number;
+                height: number;
+              };
+            } | null;
+          };
+          ParentLogo: string | null;
+        };
+      }>;
+    };
+  };
+}
+
+// Simplified club structure
+export interface RelatedClub {
+  id: number;
+  name: string;
+  logo: {
+    url: string;
+    width: number;
+    height: number;
+  };
+}

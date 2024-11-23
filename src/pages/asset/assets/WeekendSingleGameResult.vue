@@ -1,103 +1,125 @@
 <template>
+  <template v-if="!formattedArticles"> no Articles Found </template>
   <v-container class="pa-0" fluid>
-    <!-- Fixtures Table View -->
-    <template v-if="selectedFixtureIndex === null">
-      <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4">
-        <v-card class="pa-2 elevation-0 bg-surface rounded-md">
-          <v-data-table
-            :headers="headers"
-            :items="filteredFixtures"
-            :items-per-page="itemsPerPage"
-            @update:items-per-page="onItemsPerPageChange"
-            v-model:page="currentPage"
-            class="elevation-0 mx-auto"
-            hover
-          >
-            <!-- Search Bar -->
-            <template #top>
-              <v-toolbar flat class="px-4" color="secondary" rounded>
-                <div class="text-leading">Fixtures</div>
-                <v-spacer></v-spacer>
-                <v-text-field
-                  v-model="search"
-                  density="compact"
-                  label="Search Teams"
-                  prepend-inner-icon="mdi-magnify"
-                  variant="solo-filled"
-                  flat
-                  hide-details
-                  single-line
-                ></v-text-field>
-              </v-toolbar>
-            </template>
+    <template v-if="isPolling">
+      <!-- Polling State -->
+      <v-skeleton-loader color="surface" type="card" />
+    </template>
+    <template v-else>
+      <!-- Fixtures Table View -->
+      <template v-if="selectedFixtureIndex === null">
+        <v-card
+          class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4"
+        >
+          <v-card class="pa-2 elevation-0 bg-surface rounded-md">
+            <v-data-table
+              :headers="headers"
+              :items="filteredFixtures"
+              :items-per-page="itemsPerPage"
+              @update:items-per-page="onItemsPerPageChange"
+              v-model:page="currentPage"
+              class="elevation-0 mx-auto"
+              hover
+            >
+              <!-- Search Bar -->
+              <template #top>
+                <v-toolbar flat class="px-4" color="secondary" rounded>
+                  <div class="text-body mb-0">
+                    <div v-if="formattedAssets[0].editTrigger" class="ml-2">
+                      <!-- Retry Button -->
+                      <PrimaryButton
+                        v-if="canRetry"
+                        color="success"
+                        label="Apply Edits"
+                        @click="handleRerender"
+                        :loading="isRerendering"
+                        :disabled="!canRetry || isRerendering"
+                        size="small"
+                      />
+                    </div>
+                  </div>
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="search"
+                    density="compact"
+                    label="Search Teams"
+                    prepend-inner-icon="mdi-magnify"
+                    variant="solo-filled"
+                    flat
+                    hide-details
+                    single-line
+                  ></v-text-field>
+                </v-toolbar>
+              </template>
 
-            <!-- Avatar Column -->
-            <template v-slot:[`item.avatar`]="{ item }">
-              <v-img
-                :width="50"
-                aspect-ratio="16/9"
-                cover
-                :src="item.avatar"
-              ></v-img>
-            </template>
-            <template v-slot:[`item.teams`]="{ item }">
-              <div class="table-copy text-bold d-block text-truncate">
-                {{ item.teams }}
-              </div>
-              <div class="table-copy d-block text-truncate">
-                {{ item.scores }}
-              </div>
-            </template>
+              <!-- Avatar Column -->
+              <template v-slot:[`item.avatar`]="{ item }">
+                <v-img
+                  :width="50"
+                  aspect-ratio="16/9"
+                  cover
+                  :src="item.avatar"
+                ></v-img>
+              </template>
+              <template v-slot:[`item.teams`]="{ item }">
+                <div class="table-copy text-bold d-block text-truncate">
+                  {{ item.teams }}
+                </div>
+                <div class="table-copy d-block text-truncate">
+                  {{ item.scores }}
+                </div>
+              </template>
 
-            <!-- Action Column -->
-            <template v-slot:[`item.action`]="{ item }">
-              <IconButton
-                @click="selectFixture(item.id)"
-                color="accent"
-                icon="mdi-arrow-right"
-                size="small"
-                variant="tonal"
+              <!-- Action Column -->
+              <template v-slot:[`item.action`]="{ item }">
+                <IconButton
+                  @click="selectFixture(item.id)"
+                  color="accent"
+                  icon="mdi-arrow-right"
+                  size="small"
+                  variant="tonal"
+                />
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-card>
+      </template>
+
+      <!-- Detailed View -->
+      <template v-else>
+        <!-- Back Button -->
+        <div class="d-flex justify-end mb-0">
+          <SecondaryButton
+            label="Back"
+            icon="mdi-arrow-left"
+            @click="backToList"
+          />
+        </div>
+
+        <v-divider class="my-2 py-0 px-4" />
+        <v-row>
+          <v-col cols="12" md="5">
+            <!-- Image Gallery -->
+            <template v-if="galleryState === 'unprocessed'">
+              <HandleAssetError :asset="formattedAssets[0]" />
+            </template>
+            <template v-else>
+              <AssetImageGallery
+                v-if="selectedImage"
+                :imageUrls="[selectedImage]"
+                isSingleImage="true"
               />
             </template>
-          </v-data-table>
-        </v-card>
-      </v-card>
-    </template>
-
-    <!-- Detailed View -->
-    <template v-else>
-      <!-- Back Button -->
-      <div class="d-flex justify-end mb-0">
-        <SecondaryButton
-          label="Back"
-          icon="mdi-arrow-left"
-          @click="backToList"
-        />
-      </div>
-
-      <v-divider class="my-2 py-0 px-4" />
-      <v-row>
-        <v-col cols="12" md="5">
-          <!-- Image Gallery -->
-          <template v-if="galleryState === 'unprocessed'">
-            <HandleAssetError :asset="formattedAssets[0]" />
-          </template>
-          <template v-else>
-            <AssetImageGallery
-              v-if="selectedImage"
-              :imageUrls="[selectedImage]"
-              isSingleImage="true"
+          </v-col>
+          <v-col class="d-flex justify-start" cols="12" md="7">
+            <!-- Article Content -->
+            <AssetDisplayArticle
+              v-if="selectedArticle"
+              :articles="[selectedArticle]"
             />
-          </template>
-        </v-col>
-        <v-col class="d-flex justify-start" cols="12" md="7">
-          <!-- Article Content -->
-          <AssetDisplayArticle
-            v-if="selectedArticle"
-            :articles="[selectedArticle]"
-          />
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+      </template>
     </template>
   </v-container>
 </template>
@@ -110,6 +132,8 @@ import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import { useAssetState } from "@/pages/asset/composables/useAssetState";
 import HandleAssetError from "@/pages/asset/assets/errors/HandleAssetError.vue";
+import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
+import { useAssetRerender } from "@/pages/asset/assets/errors/composables/useRerender";
 // Define component props
 const props = defineProps({
   formattedAssets: Array, // Images related to the fixtures
@@ -132,8 +156,8 @@ const headers = [
 const fixtures = computed(() => {
   return props.formattedArticles.map((article, index) => ({
     id: index,
-    teams: `${article.structuredOutput.team1} vs ${article.structuredOutput.team2}`,
-    scores: `${article.structuredOutput.score1} | ${article.structuredOutput.score2}`,
+    teams: `${article.structuredOutput?.team1} vs ${article.structuredOutput?.team2}`,
+    scores: `${article.structuredOutput?.score1} | ${article.structuredOutput?.score2}`,
     avatar: props.formattedAssets[0].downloads[index],
   }));
 });
@@ -184,6 +208,21 @@ const selectFixture = (id) => {
 // Function to go back to the fixtures table
 const backToList = () => {
   selectedFixtureIndex.value = null;
+};
+
+const canRetry = ref(true);
+// Composable handling rerender logic
+const { triggerRerender, isRerendering, rerenderResponse, isPolling } =
+  useAssetRerender();
+
+const handleRerender = async () => {
+  canRetry.value = false; // Disable retry button
+  await triggerRerender(props.formattedAssets[0]);
+
+  // Allow retry if CMS returned an error
+  if (rerenderResponse && !rerenderResponse.success) {
+    canRetry.value = true;
+  }
 };
 </script>
 

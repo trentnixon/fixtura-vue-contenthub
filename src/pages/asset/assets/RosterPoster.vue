@@ -1,31 +1,59 @@
 <template>
   <!-- View Toggle Button Group -->
   <template v-if="rosterFixtures">
-
     <v-divider class="my-2"></v-divider>
     <div class="d-flex justify-space-between pa-0 w-100">
-
       <div class="d-flex justify-end">
         <v-btn-toggle v-model="currentView" class="my-4" mandatory>
-          <PrimaryButton value="imageAsset" color="primary" label="View Downloads" :disabled="!rosterFixtures.length" />
-          <PrimaryButton value="rosterPoster" color="primary" label="Edit Rosters" :disabled="!rosterFixtures.length" />
+          <PrimaryButton
+            value="imageAsset"
+            color="primary"
+            label="View Downloads"
+            :disabled="!rosterFixtures.length"
+          />
+          <PrimaryButton
+            value="rosterPoster"
+            color="primary"
+            label="Edit Rosters"
+            :disabled="!rosterFixtures.length"
+          />
         </v-btn-toggle>
       </div>
-
       <v-btn-toggle class="my-4 d-flex justify-end">
-        <IconButton :icon="icons.ui.sync" color="primary" @click="openConfirmModal" variant="outlined" size="small"
-          tooltip="Sync with PlayHQ" :loading="loading || isPolling || isCreatingRoster"
-          :disabled="loading || isPolling" />
-        <IconButton :icon="icons.media.createImage" color="primary" @click="openCreateRosterModal" variant="outlined"
-          size="small" tooltip="Create Rosters" :loading="loading || isPolling || isCreatingRoster"
-          :disabled="isCreatingRoster" />
-        <IconButton :icon="showInstructions ? icons.ui.instructionsOff : icons.ui.instructions" color="primary"
-          @click="toggleInstructions" variant="outlined" size="small" tooltip="Toggle Instructions"
-          :loading="loading || isPolling || isCreatingRoster" />
+        <IconButton
+          :icon="icons.ui.sync"
+          color="primary"
+          @click="openConfirmModal"
+          variant="outlined"
+          size="small"
+          tooltip="Sync with PlayHQ"
+          :loading="loading || isPolling || isCreatingRoster"
+          :disabled="loading || isPolling"
+        />
+        <IconButton
+          :icon="icons.media.createImage"
+          color="primary"
+          @click="openCreateRosterModal"
+          variant="outlined"
+          size="small"
+          tooltip="Create Rosters"
+          :loading="loading || isPolling || isCreatingRoster"
+          :disabled="isCreatingRoster"
+        />
+        <IconButton
+          :icon="
+            showInstructions ? icons.ui.instructionsOff : icons.ui.instructions
+          "
+          color="primary"
+          @click="toggleInstructions"
+          variant="outlined"
+          size="small"
+          tooltip="Toggle Instructions"
+          :loading="loading || isPolling || isCreatingRoster"
+        />
       </v-btn-toggle>
     </div>
     <v-divider class="my-2"></v-divider>
-
   </template>
 
   <!-- Conditional Rendering Based on Selected View -->
@@ -33,7 +61,11 @@
     <template v-if="loading || !rosterFixtures">
       <MediaLayout>
         <template v-slot:header>
-          <CategoryHeader :title="'Searching for Fixtures'" :icon="icons.ui.fetching" fetching />
+          <CategoryHeader
+            :title="'Searching for Fixtures'"
+            :icon="icons.ui.fetching"
+            fetching
+          />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -44,8 +76,13 @@
       <MediaLayout>
         <template v-slot:header>
           <CategoryHeader
-            :title="`Scouting team line-up${rosterFixtures.length > 1 ? 's' : ''} for ${rosterFixtures.length} upcoming match${rosterFixtures.length > 1 ? 'es' : ''}... `"
-            :icon="icons.ui.fetching" />
+            :title="`Scouting team line-up${
+              rosterFixtures.length > 1 ? 's' : ''
+            } for ${rosterFixtures.length} upcoming match${
+              rosterFixtures.length > 1 ? 'es' : ''
+            }... `"
+            :icon="icons.ui.fetching"
+          />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -61,12 +98,22 @@
     <template v-else>
       <div class="d-flex justify-space-between pa-0 mt-4 w-100">
         <span class="card-title">Team Rosters</span>
-        <span class="card-title">Fixtures Found: {{ rosterFixtures.length }}</span>
+        <span class="card-title"
+          >Fixtures Found: {{ rosterFixtures.length }}</span
+        >
       </div>
-      <HowToGuide :showInstructions="showInstructions" :loading="loading" :isPolling="isPolling" />
+      <HowToGuide
+        :showInstructions="showInstructions"
+        :loading="loading"
+        :isPolling="isPolling"
+      />
       <v-container>
         <v-row>
-          <RosterFixtureItem v-for="fixture in rosterFixtures" :key="fixture.id" :fixture="fixture" />
+          <RosterFixtureItem
+            v-for="fixture in rosterFixtures"
+            :key="fixture.id"
+            :fixture="fixture"
+          />
         </v-row>
       </v-container>
     </template>
@@ -76,7 +123,10 @@
     <template v-if="isPollingCreation">
       <MediaLayout>
         <template v-slot:header>
-          <CategoryHeader title="Creating Assets... Please Wait" :icon="icons.ui.fetching" />
+          <CategoryHeader
+            title="Creating Assets... Please Wait"
+            :icon="icons.ui.fetching"
+          />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -90,8 +140,14 @@
       <template v-if="versionOptions.length > 1">
         <div class="d-flex justify-space-between align-center pa-0 w-100">
           <v-spacer></v-spacer>
-          <v-select v-model="rosterVersion" :items="versionOptions" item-title="name" item-value="value"
-            label="Select Roster Version" variant="outlined" />
+          <v-select
+            v-model="rosterVersion"
+            :items="versionOptions"
+            item-title="name"
+            item-value="value"
+            label="Select Roster Version"
+            variant="outlined"
+          />
         </div>
       </template>
       <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
@@ -105,12 +161,17 @@
         <span class="headline">Fetching Team Rosters</span>
       </v-card-title>
       <v-card-text>
-        Syncing with PlayHQ will update Fixtura with the latest player rosters, which may overwrite any recent changes
-        you have made. Are you sure you want to continue?
+        Syncing with PlayHQ will update Fixtura with the latest player rosters,
+        which may overwrite any recent changes you have made. Are you sure you
+        want to continue?
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <SecondaryButton color="error" label="Cancel" @click="closeConfirmModal" />
+        <SecondaryButton
+          color="error"
+          label="Cancel"
+          @click="closeConfirmModal"
+        />
         <PrimaryButton color="success" label="Confirm" @click="confirmSync" />
       </v-card-actions>
     </v-card>
@@ -123,21 +184,38 @@
         <span class="headline">Create Team Rosters</span>
       </v-card-title>
       <v-card-text>
-        Click to create the team rosters for this week. Please ensure any changes are saved before proceeding.
+        Click to create the team rosters for this week. Please ensure any
+        changes are saved before proceeding.
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <SecondaryButton color="error" label="Cancel" @click="closeCreateRosterModal" />
-        <PrimaryButton color="success" label="Create" @click="confirmCreateRoster" />
+        <SecondaryButton
+          color="error"
+          label="Cancel"
+          @click="closeCreateRosterModal"
+        />
+        <PrimaryButton
+          color="success"
+          label="Create"
+          @click="confirmCreateRoster"
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup>
-import { defineProps, computed, ref, watch, onMounted, onBeforeUnmount, inject } from "vue";
+import {
+  defineProps,
+  computed,
+  ref,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  inject,
+} from "vue";
 import { useRoute } from "vue-router";
-import { useStorage } from '@vueuse/core';
+import { useStorage } from "@vueuse/core";
 import { useCreateRoster } from "../composables/useCreateRoster";
 import { useAssetState } from "@/pages/asset/composables/useAssetState";
 import AssetStateRenderer from "@/pages/asset/assets/AssetState/AssetStateRenderer.vue";
@@ -163,7 +241,9 @@ const renderId = ref(Number(route.params.renderid));
 const groupingCategory = ref(route.params.groupingcategory);
 
 // Determine initial version of the roster based on props
-const rosterVersion = ref(props.formattedAssets.length > 0 ? props.formattedAssets.length - 1 : 0);
+const rosterVersion = ref(
+  props.formattedAssets.length > 0 ? props.formattedAssets.length - 1 : 0
+);
 
 // Initialize state and composable usage
 const {
@@ -185,10 +265,14 @@ const {
 } = useCreateRoster();
 
 // Computed value for current image asset
-const imageAsset = computed(() => props.formattedAssets[rosterVersion.value] || null);
+const imageAsset = computed(
+  () => props.formattedAssets[rosterVersion.value] || null
+);
 
 // State management for UI views
-const currentView = ref(props.formattedAssets.length > 0 ? "imageAsset" : "rosterPoster");
+const currentView = ref(
+  props.formattedAssets.length > 0 ? "imageAsset" : "rosterPoster"
+);
 const isConfirmModalOpen = ref(false);
 const isCreateRosterModalOpen = ref(false);
 const galleryState = ref("unknown");
@@ -196,10 +280,12 @@ const showInstructions = useStorage("showInstructions", true);
 
 // Computed options for selecting roster versions
 const versionOptions = computed(() => {
-  return props.formattedAssets.map((_, index) => ({
-    value: index, // Aligns with the index of `formattedAssets` array
-    name: `Version ${index + 1}`,
-  })).reverse(); // Reverse to make the latest version appear first
+  return props.formattedAssets
+    .map((_, index) => ({
+      value: index, // Aligns with the index of `formattedAssets` array
+      name: `Version ${index + 1}`,
+    }))
+    .reverse(); // Reverse to make the latest version appear first
 });
 
 // Fetch fixtures when the component is mounted
@@ -235,8 +321,14 @@ watch(
 // Watch for changes in `renderId` and `groupingCategory`, and refetch fixtures if they change
 watch(
   [renderId, groupingCategory],
-  async ([newRenderId, newGroupingCategory], [oldRenderId, oldGroupingCategory]) => {
-    if (newRenderId !== oldRenderId || newGroupingCategory !== oldGroupingCategory) {
+  async (
+    [newRenderId, newGroupingCategory],
+    [oldRenderId, oldGroupingCategory]
+  ) => {
+    if (
+      newRenderId !== oldRenderId ||
+      newGroupingCategory !== oldGroupingCategory
+    ) {
       await fetchFixtures(); // Explicitly await the fetch to ensure it's complete
     }
   },
@@ -264,7 +356,7 @@ watch(
     //console.log("Roster version changed:", newVersion);
     if (props.formattedAssets.length > 0) {
       const newAsset = props.formattedAssets[newVersion];
-      if (newAsset && typeof newAsset === 'object' && 'id' in newAsset) {
+      if (newAsset && typeof newAsset === "object" && "id" in newAsset) {
         //console.log("[watch: rosterVersion] Updated imageAsset:", newAsset);
         const { assetState } = useAssetState(newAsset);
         galleryState.value = assetState.value;

@@ -21,6 +21,7 @@
         label="Processing Asset"
         :value="isPolling"
         type="boolean"
+        size="small"
       />
     </template>
 

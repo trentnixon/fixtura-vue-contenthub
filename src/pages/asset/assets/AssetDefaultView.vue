@@ -21,14 +21,14 @@
     </AssetTabs>
 
     <!-- Layout for non-xs screens -->
-    <v-row v-else>
+    <v-row v-else class="ma-0">
       <!-- Video Column -->
       <v-col cols="12" sm="5" class="px-1">
         <AssetStateRenderer :asset="videoAsset" :state="videoState" />
       </v-col>
 
       <!-- Article Column -->
-      <v-col class="d-flex justify-start px-1" cols="12" sm="7">
+      <v-col class="d-flex justify-start px-0" cols="12" sm="7">
         <AssetDisplayArticle
           v-if="formattedArticles.length > 0"
           :articles="formattedArticles"

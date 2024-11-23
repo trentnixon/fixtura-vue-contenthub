@@ -1,27 +1,48 @@
 <template>
   <!-- Dynamically load the asset component based on the selected asset type -->
   <template v-if="assetType.toLowerCase() === 'rosterposter'">
-    <component :is="assetComponent" :formattedAssets="formattedAssets" :formattedArticles="aiArticles" />
+    <component
+      :is="assetComponent"
+      :formattedAssets="formattedAssets"
+      :formattedArticles="aiArticles"
+    />
   </template>
   <template v-else-if="formattedAssets.length === 0">
     <div class="text-center">No assets found</div>
   </template>
 
   <template v-else>
-    <component :is="assetComponent" :formattedAssets="formattedAssets" :formattedArticles="aiArticles" />
+    <!-- <div class="d-flex justify-end my-4">
+      <PrimaryButton
+        color="success"
+        label="Edit"
+        @click="navigateToEdit()"
+        :icon="icons.ui.edit"
+        size="small"
+      />
+    </div>
+ -->
+    <component
+      :is="assetComponent"
+      :formattedAssets="formattedAssets"
+      :formattedArticles="aiArticles"
+    />
   </template>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, inject } from "vue";
 import { useRenderAssets } from "@/pages/asset/composables/useRenderAssets"; // Import the composable
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import Weekendsinglegameresult from "@/pages/asset/assets/WeekendSingleGameResult.vue";
 import Rosterposter from "@/pages/asset/assets/RosterPoster.vue";
 import AssetDefaultView from "@/pages/asset/assets/AssetDefaultView.vue";
+import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 
+const icons = inject("icons");
 // Fetch the route to get the renderID
+const router = useRouter();
 const route = useRoute();
 const assetType = ref(route.params.asset);
 
@@ -65,6 +86,9 @@ const formattedAssets = computed(() => {
     numDownloads: download.numDownloads || 0, // Total number of downloads for this asset
     metadata: download.metadata || {}, // Any additional metadata
     forceRerender: download.forceRerender || false, // Flag to force rerender
+    editCount: download.editCount || 0,
+    editTrigger: download.editTrigger || false,
+    hasBeenEdited: download.hasBeenEdited || false,
   }));
 });
 
@@ -94,4 +118,24 @@ const assetComponent = computed(() => {
       return null;
   }
 });
+
+function navigateToEdit() {
+  console.log("Navigating with params:", {
+    accountid: route.params.accountid,
+    sport: route.params.sport,
+    renderid: route.params.renderid,
+    groupingcategory: route.params.groupingcategory,
+    asset: route.params.asset,
+  });
+  router.push({
+    name: "processEdit",
+    query: {
+      accountid: route.params.accountid,
+      sport: route.params.sport,
+      renderid: route.params.renderid,
+      groupingcategory: route.params.groupingcategory,
+      asset: route.params.asset,
+    },
+  });
+}
 </script>

@@ -11,8 +11,18 @@
         />
       </v-col>
       <v-col class="d-flex justify-end" cols="4" v-if="!$vuetify.display.xs">
-        <CustomChip label="Processed" :value="!getProcessing" type="boolean" />
-        <CustomChip label="Completed" :value="getComplete" type="boolean" />
+        <CustomChip
+          label="Processed"
+          :value="!getProcessing"
+          type="boolean"
+          size="small"
+        />
+        <CustomChip
+          label="Completed"
+          :value="getComplete"
+          type="boolean"
+          size="small"
+        />
       </v-col>
     </v-row>
   </template>

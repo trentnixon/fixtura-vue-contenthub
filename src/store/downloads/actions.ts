@@ -1,9 +1,12 @@
+import { AssetData } from "@/types/fetchAssetByLink";
 import { usePrivateDownloadState } from "./private";
 import {
   triggerRerenderInService,
   fetchRerenderStatusFromService,
   fetchDownloadFromService,
   fetchDownloadsByRenderIdFromService,
+  updateDownloadInService,
+  fetchAssetByLinkIDFromService,
 } from "./service";
 import { Download } from "@/types";
 
@@ -146,5 +149,54 @@ export async function pollRerenderStatus(
     console.error("Error polling rerender status:", error);
     state.isRerendering = false;
     throw new Error("Error polling rerender status: " + error);
+  }
+}
+
+// Asset  Editings
+
+// Fetch selected Fixtura asset based on provided asset ID
+export async function fetchAssetByLinkID(assetLinkID: string) {
+  const state = usePrivateDownloadState();
+  try {
+    state.loading = true;
+    const response: AssetData = await fetchAssetByLinkIDFromService(
+      assetLinkID
+    );
+    state.downloadData = response;
+  } catch (error) {
+    state.error = (error as Error).message;
+  } finally {
+    state.loading = false;
+  }
+}
+
+// Save updated Fixtura asset to Strapi
+export async function saveFixturaAsset(downloadId: number, updatedData: any) {
+  const state = usePrivateDownloadState();
+  try {
+    state.loading = true;
+
+    // Update the specific download with the provided downloadId
+    const response = await updateDownloadInService(downloadId, {
+      data: {
+        OBJ: updatedData,
+        hasError: false,
+        forceRerender: false,
+        hasBeenEdited: true,
+        editTrigger: true,
+      },
+    });
+    if (response) {
+      // Update the state for this specific download if save was successful
+      console.log("[response]", response);
+      //state.fullDownloads[downloadId] = response.data as Download;
+    } else {
+      throw new Error(`Failed to save asset with ID: ${downloadId}`);
+    }
+  } catch (error) {
+    state.error = (error as Error).message;
+    console.error("Error saving Fixtura asset:", error);
+  } finally {
+    state.loading = false;
   }
 }

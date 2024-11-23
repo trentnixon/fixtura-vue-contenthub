@@ -13,8 +13,8 @@
           <v-container>
             <router-view />
           </v-container>
-          <v-footer class="bg-surface border-t-thin pa-4 mt-2">
-            <div class="text-small text-normal text-end mb-0 w-100">
+          <v-footer class="bg-default border-t-thin pa-4 mt-2">
+            <div class="text-xSmall text-uppercase text-end mb-0 w-100">
               Fixtura Content Hub {{ new Date().getFullYear() }}
             </div>
           </v-footer>

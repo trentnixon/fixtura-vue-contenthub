@@ -177,7 +177,7 @@ export async function requestTeamRosterAction(renderID: number) {
 
 export async function saveRosterChanges(gameId: number, updatedRoster: object) {
   try {
-    const response = await saveRosterToCMS(gameId, updatedRoster);
+    await saveRosterToCMS(gameId, updatedRoster);
   } catch (error) {
     console.error("Error in saveRosterChanges action:", error);
   }

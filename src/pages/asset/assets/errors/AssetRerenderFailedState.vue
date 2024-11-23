@@ -9,6 +9,7 @@
         label="Please contact Fixtura Support"
         :value="false"
         type="boolean"
+        size="small"
       />
     </template>
 

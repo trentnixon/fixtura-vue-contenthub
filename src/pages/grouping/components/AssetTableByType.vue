@@ -13,6 +13,7 @@
           "
           :value="!getSelectedCategoryStats?.hasErrors"
           type="boolean"
+          size="small"
         />
         <template v-if="getAccountType === 1">
           <PrimaryButton
@@ -53,6 +54,7 @@
               :color="getAssetCountColor(item.downloadCount)"
               :label="`${item.downloadCount} Downloads`"
               :icon="icons.assets.download"
+              size="small"
             />
           </template>
 
@@ -65,6 +67,7 @@
               :color="getAssetCountColor(item.articleCount)"
               :label="`${item.articleCount} Articles`"
               :icon="icons.assets.file"
+              size="small"
             />
           </template>
 

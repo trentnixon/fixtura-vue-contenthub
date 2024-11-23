@@ -29,3 +29,7 @@ export const rerenderResponse = computed(() => {
 export const isRerendering = computed(() => {
   return usePrivateDownloadState().isRerendering;
 });
+
+export const getDownloadData = computed(() => {
+  return usePrivateDownloadState().downloadData?.data;
+});

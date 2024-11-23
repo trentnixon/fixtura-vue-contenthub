@@ -1,4 +1,3 @@
-import { ref, computed } from "vue";
 import { useRendersStore } from "@/store/renders"; // Import the Pinia store
 import { storeToRefs } from "pinia";
 

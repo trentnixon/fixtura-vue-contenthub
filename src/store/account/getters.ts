@@ -3,7 +3,6 @@
 import { computed } from "vue";
 import { usePrivateAccountState } from "./private";
 
-// Existing getters
 export const accounts = computed(() => usePrivateAccountState().accounts);
 export const useAccountDetails = computed(
   () => usePrivateAccountState().accountDetails
@@ -14,7 +13,6 @@ export const selectedAccount = computed(
 export const loading = computed(() => usePrivateAccountState().loading);
 export const error = computed(() => usePrivateAccountState().error);
 
-// New getters
 export const accountDetails = computed(
   () => usePrivateAccountState().accountDetails
 );
@@ -29,6 +27,14 @@ export const metricsAsPercentageOfCost = computed(() => {
   return (
     usePrivateAccountState().accountDetails?.metricsAsPercentageOfCost || null
   );
+});
+
+export const getMediaLibrary = computed(() => {
+  return usePrivateAccountState().accountMediaLibrary || null;
+});
+
+export const getRelatedClubsLogos = computed(() => {
+  return usePrivateAccountState().relatedClubs || null;
 });
 
 // Existing computed properties

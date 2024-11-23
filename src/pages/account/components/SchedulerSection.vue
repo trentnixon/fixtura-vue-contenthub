@@ -2,7 +2,12 @@
   <ContainerBlueGreyDarken2>
     <v-row>
       <v-col class="d-flex justify-end align-center pa-0" cols="12">
-        <CustomChip :label="label" :value="ChipValue" type="boolean" />
+        <CustomChip
+          :label="label"
+          :value="ChipValue"
+          type="boolean"
+          size="small"
+        />
       </v-col>
     </v-row>
   </ContainerBlueGreyDarken2>
@@ -16,12 +21,12 @@ import { computed } from "vue";
 
 const { isSchedulerQueued, isSchedulerRendering } = useAccountData();
 
-
 const label = computed(() => {
-  return !isSchedulerRendering.value && !isSchedulerQueued.value ? "Scheduler Idol" : "Scheduler Processing";
+  return !isSchedulerRendering.value && !isSchedulerQueued.value
+    ? "Scheduler Idol"
+    : "Scheduler Processing";
 });
 const ChipValue = computed(() => {
   return !isSchedulerRendering.value && !isSchedulerQueued.value ? true : false;
 });
-
 </script>

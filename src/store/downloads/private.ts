@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { Download } from "@/types";
+import { AssetData } from "../../types/fetchAssetByLink";
 
 export interface PrivateDownloadState {
   download: Download | null;
@@ -13,6 +14,7 @@ export interface PrivateDownloadState {
     message: string;
     error: string | null; // Allow the error to be null
   } | null;
+  downloadData: AssetData | null;
 }
 
 export const usePrivateDownloadState = defineStore("downloads-private", {
@@ -24,5 +26,6 @@ export const usePrivateDownloadState = defineStore("downloads-private", {
     fullDownloads: {},
     isRerendering: false,
     rerenderResponse: null,
+    downloadData: null,
   }),
 });

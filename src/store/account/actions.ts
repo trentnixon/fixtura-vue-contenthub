@@ -1,10 +1,10 @@
-/* import { useSchedulerStore } from "../scheduler";
-import { useOrdersStore } from "../orders";
-import { useAssociationStore } from "../associationStore/index";
-import { useClubStore } from "../clubStore/index"; */
-import { fetchFilteredAccountDetailsFromService } from "./service";
+import {
+  fetchAccountMediaLibrary,
+  fetchFilteredAccountDetailsFromService,
+  fetchRelatedClubsService,
+} from "./service";
 import { usePrivateAccountState } from "./private";
-import { AccountResponse } from "@/types";
+import { AccountResponse, RelatedClubsResponse } from "@/types";
 
 export async function fetchFilteredAccountDetails(id: number) {
   const state = usePrivateAccountState();
@@ -20,80 +20,16 @@ export async function fetchFilteredAccountDetails(id: number) {
     state.loading = false;
   }
 }
-/*
-export async function fetchAccountDetails(id: number) {
+
+// New action for fetching account media library
+export async function fetchAccountMediaLibraryAction(id: number) {
   const state = usePrivateAccountState();
   try {
     state.loading = true;
-    const response = await fetchAccountDetailsFromService(id);
+    const response = await fetchAccountMediaLibrary(id);
     if (response && response.data) {
-      state.accountDetails = response.data;
-      const { attributes } = state.accountDetails;
-      state.selectedAccount = {
-        updatedAt: attributes.updatedAt,
-        publishedAt: attributes.publishedAt,
-        isActive: attributes.isActive,
-        FirstName: attributes.FirstName,
-        LastName: attributes.LastName,
-        DeliveryAddress: attributes.DeliveryAddress,
-        isSetup: attributes.isSetup,
-        isUpdating: attributes.isUpdating,
-        hasCompletedStartSequence: attributes.hasCompletedStartSequence,
-        isRightsHolder: attributes.isRightsHolder,
-        isPermissionGiven: attributes.isPermissionGiven,
-        group_assets_by: attributes.group_assets_by,
-        Sport: attributes.Sport,
-        hasCustomTemplate: attributes.hasCustomTemplate,
-        scheduler: attributes.scheduler,
-        orders: attributes.orders,
-        associations: attributes.associations,
-        clubs: attributes.clubs,
-        renders: attributes.renders, // Add renders
-        account_type: attributes.account_type,
-        render_token: attributes.render_token,
-        template: attributes.template,
-        theme: attributes.theme,
-        trial_instance: attributes.trial_instance,
-        subscription_tier: attributes.subscription_tier,
-        sponsors: attributes.sponsors,
-      };
-
-      // Fetch and set the scheduler
-      if (attributes.scheduler) {
-        const schedulerStore = useSchedulerStore();
-        schedulerStore.setScheduler(attributes.scheduler.data);
-      }
-
-      // Fetch and set the orders
-      if (attributes.orders) {
-        const ordersStore = useOrdersStore();
-        const orderIds = attributes.orders.data.map((order: Order) => order.id);
-        ordersStore.setOrders(orderIds);
-      }
-
-      // Fetch and set the associations
-      if (attributes.associations) {
-        const associationStore = useAssociationStore();
-        const associationIds = attributes.associations.data.map(
-          (association: Association) => association.id
-        );
-        associationIds.forEach((id) => {
-          associationStore.fetchAssociation(id);
-        });
-      }
-
-      // Fetch and set the clubs
-      if (attributes.clubs) {
-        const clubStore = useClubStore();
-        const clubIds = attributes.clubs.data.map((club: Club) => club.id);
-        clubIds.forEach((id) => {
-          clubStore.fetchClub(id);
-        });
-      }
-
-      // Fetch and set the renders
-    } else {
-      throw new Error("Invalid data structure");
+      // Assuming `accountMediaLibrary` is a property in your state
+      state.accountMediaLibrary = response.data;
     }
   } catch (error) {
     state.error = (error as Error).message;
@@ -101,4 +37,42 @@ export async function fetchAccountDetails(id: number) {
     state.loading = false;
   }
 }
- */
+
+export async function fetchRelatedClubsAction(associationId: number) {
+  const state = usePrivateAccountState();
+  try {
+    state.loading = true;
+
+    // Fetch the API response
+    const response = await fetchRelatedClubsService(associationId);
+
+    // Map the response to the desired `relatedClubs` structure
+    if (response.attributes.clubs.data) {
+      state.relatedClubs = response.attributes.clubs.data.map((club) => ({
+        id: club.id,
+        name: club.attributes.Name,
+        logo: {
+          url: club.attributes.Logo?.data?.attributes?.url || DefaultLogo.url,
+          width:
+            club.attributes.Logo?.data?.attributes?.width || DefaultLogo.width,
+          height:
+            club.attributes.Logo?.data?.attributes?.height ||
+            DefaultLogo.height,
+        },
+      }));
+    } else {
+      state.relatedClubs = []; // Default to an empty array if no clubs are found
+    }
+  } catch (error) {
+    state.error = (error as Error).message;
+    console.error("Error fetching related clubs:", error);
+  } finally {
+    state.loading = false;
+  }
+}
+
+const DefaultLogo = {
+  url: "https://fixtura.s3.ap-southeast-2.amazonaws.com/Default_ICON_171b58a21b.png",
+  width: 800,
+  height: 800,
+};

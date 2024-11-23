@@ -1,25 +1,46 @@
 <template>
   <div class="text-body py-1 px-2 mt-4">
-    <CardHeader title="Categories" subtitle="Click a category to view the assets and articles" />
+    <CardHeader
+      title="Categories"
+      subtitle="Click a category to view the assets and articles"
+    />
   </div>
   <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md">
     <v-card class="pa-2 elevation-0 bg-surface rounded-md">
-      <v-data-table :headers="computedHeaders" :items="filteredCategoryItems" class="mx-auto" fixed-header
-        color="cardNeutral" variant="outlined" rounded>
+      <v-data-table
+        :headers="computedHeaders"
+        :items="filteredCategoryItems"
+        class="mx-auto"
+        fixed-header
+        color="cardNeutral"
+        variant="outlined"
+        rounded
+      >
         <template #top>
           <v-toolbar flat class="px-4" color="secondary" rounded>
             <v-spacer></v-spacer>
-            <v-text-field v-model="search" density="compact" label="Search"
-              :prepend-inner-icon="icons.bundles.bundleDate" variant="solo-filled" flat hide-details
-              single-line></v-text-field>
+            <v-text-field
+              v-model="search"
+              density="compact"
+              label="Search"
+              :prepend-inner-icon="icons.bundles.bundleDate"
+              variant="solo-filled"
+              flat
+              hide-details
+              single-line
+            ></v-text-field>
           </v-toolbar>
         </template>
 
         <!-- Slot for the Action button -->
         <template v-slot:[`item.link`]="{ item }">
-          <IconButton :to="item.link" color="accent" :icon="icons.navigation.internalLink" size="small"
-            variant="tonal" />
-
+          <IconButton
+            :to="item.link"
+            color="accent"
+            :icon="icons.navigation.internalLink"
+            size="small"
+            variant="tonal"
+          />
         </template>
 
         <!-- Slot for the category display -->
@@ -28,20 +49,42 @@
         </template>
 
         <!-- Conditionally render asset count based on screen size -->
-        <template v-if="$vuetify.display.mdAndUp" v-slot:[`item.assetCount`]="{ item }">
-          <CustomChip :color="getAssetCountColor(item.assetCount)" :icon="icons.assets.download"
-            :label="`${item.assetCount} Assets`" />
+        <template
+          v-if="$vuetify.display.mdAndUp"
+          v-slot:[`item.assetCount`]="{ item }"
+        >
+          <CustomChip
+            :color="getAssetCountColor(item.assetCount)"
+            :icon="icons.assets.download"
+            :label="`${item.assetCount} Assets`"
+            size="small"
+          />
         </template>
 
         <!-- Conditionally render article count based on screen size -->
-        <template v-if="$vuetify.display.mdAndUp" v-slot:[`item.articleCount`]="{ item }">
-          <CustomChip :color="getAssetCountColor(item.articleCount)" :icon="icons.assets.articles"
-            :label="`${item.articleCount} Articles`" />
+        <template
+          v-if="$vuetify.display.mdAndUp"
+          v-slot:[`item.articleCount`]="{ item }"
+        >
+          <CustomChip
+            :color="getAssetCountColor(item.articleCount)"
+            :icon="icons.assets.articles"
+            :label="`${item.articleCount} Articles`"
+            size="small"
+          />
         </template>
 
         <!-- Slot for the error count display -->
-        <template v-if="$vuetify.display.lgAndUp" v-slot:[`item.errors`]="{ item }">
-          <CustomChip :color="item.errors ? 'red' : 'green'" :icon="icons.ui.error" :label="`${item.errors} Errors`" />
+        <template
+          v-if="$vuetify.display.lgAndUp"
+          v-slot:[`item.errors`]="{ item }"
+        >
+          <CustomChip
+            :color="item.errors ? 'red' : 'green'"
+            :icon="icons.ui.error"
+            :label="`${item.errors} Errors`"
+            size="small"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -57,7 +100,6 @@ import { useRenderData } from "@/pages/render/composables/useRenderData";
 import CustomChip from "@/components/primitives/chips/CustomChip.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import CardHeader from "@/components/primitives/headers/CardHeader.vue";
-
 
 const { mdAndUp, lgAndUp } = useDisplay();
 
