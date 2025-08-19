@@ -1,13 +1,13 @@
 export const useGlobalComposable = () => {
   function getDisplayName(type) {
     const names = {
-      weekendresults: "Weekend Results",
-      ladder: "Ladder",
-      top5bowlinglist: "Top 5 Bowling",
-      top5battinglist: "Top 5 Batting",
-      upcomingfixtures: "Upcoming Fixtures",
-      weekendsinglegameresult: "Single Game Result",
-      rosterposter: "Roster Poster",
+      CricketResults: "Weekend Results",
+      CricketLadder: "Ladder",
+      CricketTop5Bowling: "Top 5 Bowling",
+      CricketTop5Batting: "Top 5 Batting",
+      CricketUpcoming: "Upcoming Fixtures",
+      CricketResultSingle: "Single Game Result",
+      CricketRoster: "Roster Poster",
     };
     return names[type] || type;
   }

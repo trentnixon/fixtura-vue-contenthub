@@ -5,24 +5,11 @@
   <template v-else>
     <v-row>
       <v-col cols="8">
-        <MainHeader
-          :title="`${getRenderDate} Bundle`"
-          :subtitle="`Processed at ${getRenderTime}`"
-        />
+        <MainHeader :title="`${getRenderDate} Bundle`" :subtitle="`Processed at ${getRenderTime}`" />
       </v-col>
       <v-col class="d-flex justify-end" cols="4" v-if="!$vuetify.display.xs">
-        <CustomChip
-          label="Processed"
-          :value="!getProcessing"
-          type="boolean"
-          size="small"
-        />
-        <CustomChip
-          label="Completed"
-          :value="getComplete"
-          type="boolean"
-          size="small"
-        />
+        <CustomChip label="Processed" :value="!getProcessing" type="boolean" size="small" />
+        <CustomChip label="Completed" :value="getComplete" type="boolean" size="small" />
       </v-col>
     </v-row>
   </template>

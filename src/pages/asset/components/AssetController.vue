@@ -1,11 +1,7 @@
 <template>
   <!-- Dynamically load the asset component based on the selected asset type -->
-  <template v-if="assetType.toLowerCase() === 'rosterposter'">
-    <component
-      :is="assetComponent"
-      :formattedAssets="formattedAssets"
-      :formattedArticles="aiArticles"
-    />
+  <template v-if="assetType.toLowerCase() === 'cricketroster'">
+    <component :is="assetComponent" :formattedAssets="formattedAssets" :formattedArticles="aiArticles" />
   </template>
   <template v-else-if="formattedAssets.length === 0">
     <div class="text-center">No assets found</div>
@@ -22,29 +18,39 @@
       />
     </div>
  -->
-    <component
-      :is="assetComponent"
-      :formattedAssets="formattedAssets"
-      :formattedArticles="aiArticles"
-    />
+    <component :is="assetComponent" :formattedAssets="formattedAssets" :formattedArticles="aiArticles" />
   </template>
 </template>
 
 <script setup>
-import { computed, ref, inject } from "vue";
+import { computed, ref, inject, watch } from "vue";
 import { useRenderAssets } from "@/pages/asset/composables/useRenderAssets"; // Import the composable
 import { useRoute, useRouter } from "vue-router";
 
 import Weekendsinglegameresult from "@/pages/asset/assets/WeekendSingleGameResult.vue";
 import Rosterposter from "@/pages/asset/assets/RosterPoster.vue";
 import AssetDefaultView from "@/pages/asset/assets/AssetDefaultView.vue";
-import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
+//import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 
-const icons = inject("icons");
+//const icons = inject("icons");
 // Fetch the route to get the renderID
-const router = useRouter();
+//const router = useRouter();
 const route = useRoute();
-const assetType = ref(route.params.asset);
+
+function toPascalCase(str) {
+  return str
+    .replace(/(^|_|-|\s)+(\w)/g, (_, __, c) => c.toUpperCase())
+    .replace(/^(\w)/, (c) => c.toUpperCase());
+}
+
+const assetType = ref(toPascalCase(route.params.asset));
+
+watch(
+  () => route.params.asset,
+  (newAsset) => {
+    assetType.value = toPascalCase(newAsset);
+  }
+);
 
 // Fetch assets and articles using the new composable
 const { selectedFixturaAsset } = useRenderAssets();
@@ -99,27 +105,27 @@ const aiArticles = computed(() => {
 
 // Dynamically select the asset component based on the asset type
 const assetComponent = computed(() => {
-  switch (assetType.value.toLowerCase()) {
-    case "weekendresults":
+  switch (assetType.value) {
+    case "CricketResults":
       return AssetDefaultView;
-    case "top5bowlinglist":
+    case "CricketTop5Bowling":
       return AssetDefaultView;
-    case "top5battinglist":
+    case "CricketTop5Batting":
       return AssetDefaultView;
-    case "ladder":
+    case "CricketLadder":
       return AssetDefaultView;
-    case "upcomingfixtures":
+    case "CricketUpcoming":
       return AssetDefaultView;
-    case "weekendsinglegameresult":
+    case "CricketResultSingle":
       return Weekendsinglegameresult;
-    case "rosterposter":
+    case "CricketRoster":
       return Rosterposter;
     default:
       return null;
   }
 });
 
-function navigateToEdit() {
+/* function navigateToEdit() {
   console.log("Navigating with params:", {
     accountid: route.params.accountid,
     sport: route.params.sport,
@@ -137,5 +143,5 @@ function navigateToEdit() {
       asset: route.params.asset,
     },
   });
-}
+} */
 </script>

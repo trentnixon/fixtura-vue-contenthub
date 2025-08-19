@@ -39,7 +39,7 @@ const props = defineProps({
   copyID: String,
 });
 
-console.log("[UpcomingFixtures] articles:", props.articles);
+console.log("[CricketUpcomingFixtures] articles:", props.articles);
 
 // Format the fixtures from the articles
 const fixtures = computed(() => {

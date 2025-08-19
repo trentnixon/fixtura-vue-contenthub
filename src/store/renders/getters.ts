@@ -66,7 +66,7 @@ export const getAssetCategorySplit = computed(() => {
   return selectedGrouping.value?.metrics.assetCategorySplit || {};
 });
 
-// Get a specific asset type (e.g., WeekendResults, Top5BowlingList) for the grouping
+// Get a specific asset type (e.g., CricketResults, CricketTop5Bowling) for the grouping
 export const getAssetsByType = computed(() => {
   return selectedGrouping.value?.assets || {};
 });

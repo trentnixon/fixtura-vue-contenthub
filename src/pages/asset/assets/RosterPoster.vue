@@ -5,67 +5,32 @@
     <div class="d-flex justify-space-between pa-0 w-100">
       <div class="d-flex justify-end">
         <v-btn-toggle v-model="currentView" class="my-4" mandatory>
-          <PrimaryButton
-            value="imageAsset"
-            color="primary"
-            label="View Downloads"
-            :disabled="!rosterFixtures.length"
-          />
-          <PrimaryButton
-            value="rosterPoster"
-            color="primary"
-            label="Edit Rosters"
-            :disabled="!rosterFixtures.length"
-          />
+          <PrimaryButton value="imageAsset" color="primary" label="View Downloads" :disabled="!rosterFixtures.length" />
+          <PrimaryButton value="CricketRoster" color="primary" label="Edit Rosters"
+            :disabled="!rosterFixtures.length" />
         </v-btn-toggle>
       </div>
       <v-btn-toggle class="my-4 d-flex justify-end">
-        <IconButton
-          :icon="icons.ui.sync"
-          color="primary"
-          @click="openConfirmModal"
-          variant="outlined"
-          size="small"
-          tooltip="Sync with PlayHQ"
-          :loading="loading || isPolling || isCreatingRoster"
-          :disabled="loading || isPolling"
-        />
-        <IconButton
-          :icon="icons.media.createImage"
-          color="primary"
-          @click="openCreateRosterModal"
-          variant="outlined"
-          size="small"
-          tooltip="Create Rosters"
-          :loading="loading || isPolling || isCreatingRoster"
-          :disabled="isCreatingRoster"
-        />
-        <IconButton
-          :icon="
-            showInstructions ? icons.ui.instructionsOff : icons.ui.instructions
-          "
-          color="primary"
-          @click="toggleInstructions"
-          variant="outlined"
-          size="small"
-          tooltip="Toggle Instructions"
-          :loading="loading || isPolling || isCreatingRoster"
-        />
+        <IconButton :icon="icons.ui.sync" color="primary" @click="openConfirmModal" variant="outlined" size="small"
+          tooltip="Sync with PlayHQ" :loading="loading || isPolling || isCreatingRoster"
+          :disabled="loading || isPolling" />
+        <IconButton :icon="icons.media.createImage" color="primary" @click="openCreateRosterModal" variant="outlined"
+          size="small" tooltip="Create Rosters" :loading="loading || isPolling || isCreatingRoster"
+          :disabled="isCreatingRoster" />
+        <IconButton :icon="showInstructions ? icons.ui.instructionsOff : icons.ui.instructions
+          " color="primary" @click="toggleInstructions" variant="outlined" size="small" tooltip="Toggle Instructions"
+          :loading="loading || isPolling || isCreatingRoster" />
       </v-btn-toggle>
     </div>
     <v-divider class="my-2"></v-divider>
   </template>
 
   <!-- Conditional Rendering Based on Selected View -->
-  <template v-if="currentView === 'rosterPoster'">
+  <template v-if="currentView === 'CricketRoster'">
     <template v-if="loading || !rosterFixtures">
       <MediaLayout>
         <template v-slot:header>
-          <CategoryHeader
-            :title="'Searching for Fixtures'"
-            :icon="icons.ui.fetching"
-            fetching
-          />
+          <CategoryHeader :title="'Searching for Fixtures'" :icon="icons.ui.fetching" fetching />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -75,14 +40,9 @@
     <template v-else-if="isPolling || isPollingCreation">
       <MediaLayout>
         <template v-slot:header>
-          <CategoryHeader
-            :title="`Scouting team line-up${
-              rosterFixtures.length > 1 ? 's' : ''
-            } for ${rosterFixtures.length} upcoming match${
-              rosterFixtures.length > 1 ? 'es' : ''
-            }... `"
-            :icon="icons.ui.fetching"
-          />
+          <CategoryHeader :title="`Scouting team line-up${rosterFixtures.length > 1 ? 's' : ''
+            } for ${rosterFixtures.length} upcoming match${rosterFixtures.length > 1 ? 'es' : ''
+            }... `" :icon="icons.ui.fetching" />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -98,22 +58,12 @@
     <template v-else>
       <div class="d-flex justify-space-between pa-0 mt-4 w-100">
         <span class="card-title">Team Rosters</span>
-        <span class="card-title"
-          >Fixtures Found: {{ rosterFixtures.length }}</span
-        >
+        <span class="card-title">Fixtures Found: {{ rosterFixtures.length }}</span>
       </div>
-      <HowToGuide
-        :showInstructions="showInstructions"
-        :loading="loading"
-        :isPolling="isPolling"
-      />
+      <HowToGuide :showInstructions="showInstructions" :loading="loading" :isPolling="isPolling" />
       <v-container>
         <v-row>
-          <RosterFixtureItem
-            v-for="fixture in rosterFixtures"
-            :key="fixture.id"
-            :fixture="fixture"
-          />
+          <RosterFixtureItem v-for="fixture in rosterFixtures" :key="fixture.id" :fixture="fixture" />
         </v-row>
       </v-container>
     </template>
@@ -123,10 +73,7 @@
     <template v-if="isPollingCreation">
       <MediaLayout>
         <template v-slot:header>
-          <CategoryHeader
-            title="Creating Assets... Please Wait"
-            :icon="icons.ui.fetching"
-          />
+          <CategoryHeader title="Creating Assets... Please Wait" :icon="icons.ui.fetching" />
         </template>
         <template v-slot:body>
           <v-skeleton-loader type="card" class="my-2" />
@@ -134,20 +81,14 @@
       </MediaLayout>
     </template>
     <template v-else-if="galleryState === 'unknown'">
-      <div>Team Rosters yet to be Created</div>
+      <div>Team Rosters yet to be Created {{ galleryState }}</div>
     </template>
     <template v-else>
       <template v-if="versionOptions.length > 1">
         <div class="d-flex justify-space-between align-center pa-0 w-100">
           <v-spacer></v-spacer>
-          <v-select
-            v-model="rosterVersion"
-            :items="versionOptions"
-            item-title="name"
-            item-value="value"
-            label="Select Roster Version"
-            variant="outlined"
-          />
+          <v-select v-model="rosterVersion" :items="versionOptions" item-title="name" item-value="value"
+            label="Select Roster Version" variant="outlined" />
         </div>
       </template>
       <AssetStateRenderer :asset="imageAsset" :state="galleryState" />
@@ -167,11 +108,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <SecondaryButton
-          color="error"
-          label="Cancel"
-          @click="closeConfirmModal"
-        />
+        <SecondaryButton color="error" label="Cancel" @click="closeConfirmModal" />
         <PrimaryButton color="success" label="Confirm" @click="confirmSync" />
       </v-card-actions>
     </v-card>
@@ -189,16 +126,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <SecondaryButton
-          color="error"
-          label="Cancel"
-          @click="closeCreateRosterModal"
-        />
-        <PrimaryButton
-          color="success"
-          label="Create"
-          @click="confirmCreateRoster"
-        />
+        <SecondaryButton color="error" label="Cancel" @click="closeCreateRosterModal" />
+        <PrimaryButton color="success" label="Create" @click="confirmCreateRoster" />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -270,13 +199,25 @@ const imageAsset = computed(
 );
 
 // State management for UI views
+const hasValidAssets = computed(() =>
+  props.formattedAssets.some((asset) => asset && typeof asset === 'object')
+);
+
 const currentView = ref(
-  props.formattedAssets.length > 0 ? "imageAsset" : "rosterPoster"
+  hasValidAssets.value ? "imageAsset" : "CricketRoster"
 );
 const isConfirmModalOpen = ref(false);
 const isCreateRosterModalOpen = ref(false);
-const galleryState = ref("unknown");
 const showInstructions = useStorage("showInstructions", true);
+
+const galleryState = computed(() => {
+  if (imageAsset.value) {
+    console.log("imageAsset", imageAsset.value);
+    const { assetState } = useAssetState(imageAsset.value);
+    return assetState.value;
+  }
+  return "unknown";
+});
 
 // Computed options for selecting roster versions
 const versionOptions = computed(() => {
@@ -290,33 +231,14 @@ const versionOptions = computed(() => {
 
 // Fetch fixtures when the component is mounted
 onMounted(() => {
-  if (currentView.value === "rosterPoster") {
-    fetchFixtures();
-    resumePollingIfNeeded();
-    resumeCreationPollingIfNeeded();
-  }
+  // fetchFixtures() is called by the watcher for renderId/groupingCategory
+  // Polling resumption is handled by the watcher on `currentView`
 });
 
 // Stop polling when the component is unmounted
 onBeforeUnmount(() => {
   stopPolling();
 });
-
-// Watch for changes in `imageAsset` and update `galleryState`
-watch(
-  imageAsset,
-  (newAsset) => {
-    if (newAsset) {
-      //console.log("[watch: imageAsset] Updated imageAsset:", newAsset);
-      const { assetState } = useAssetState(newAsset);
-      galleryState.value = assetState;
-    } else {
-      console.warn("[watch: imageAsset] Image asset is undefined.");
-      galleryState.value = "unknown"; // Set galleryState to unknown if no asset is found
-    }
-  },
-  { immediate: true }
-);
 
 // Watch for changes in `renderId` and `groupingCategory`, and refetch fixtures if they change
 watch(
@@ -339,28 +261,23 @@ watch(
 watch(
   () => props.formattedAssets,
   (newAssets) => {
-    if (newAssets.length > 0 && rosterVersion.value !== newAssets.length - 1) {
-      rosterVersion.value = newAssets.length - 1; // Set to the latest version if it hasn't been set already
-      //console.log("[watch: formattedAssets] Updated rosterVersion to:", rosterVersion.value);
+    const newAssetsValid = newAssets && newAssets.some((asset) => asset && typeof asset === 'object');
+    if (newAssetsValid) {
+      // If assets are now available, we might need to refresh the view or state
+      rosterVersion.value = newAssets.length - 1; // Set to latest version
     }
 
-    currentView.value = newAssets.length > 0 ? "imageAsset" : "rosterPoster";
+    currentView.value = newAssetsValid ? "imageAsset" : "CricketRoster";
   },
-  { immediate: true }
+  { deep: true }
 );
 
-// Watch for changes in `rosterVersion` and update `imageAsset` and `galleryState`
 watch(
-  rosterVersion,
-  (newVersion) => {
-    //console.log("Roster version changed:", newVersion);
-    if (props.formattedAssets.length > 0) {
-      const newAsset = props.formattedAssets[newVersion];
-      if (newAsset && typeof newAsset === "object" && "id" in newAsset) {
-        //console.log("[watch: rosterVersion] Updated imageAsset:", newAsset);
-        const { assetState } = useAssetState(newAsset);
-        galleryState.value = assetState.value;
-      }
+  currentView,
+  (newView) => {
+    if (newView === "CricketRoster") {
+      resumePollingIfNeeded();
+      resumeCreationPollingIfNeeded();
     }
   },
   { immediate: true }

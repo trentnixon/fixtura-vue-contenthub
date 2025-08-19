@@ -19,14 +19,8 @@
 
     <!-- Append: Edit Button -->
     <template v-slot:append>
-      <IconButton
-        :icon="icons.ui.edit"
-        color="success"
-        @click="openEditModal"
-        variant="tonal"
-        size="small"
-        tooltip="Edit Player"
-      />
+      <IconButton :icon="icons.ui.edit" color="success" @click="openEditModal" variant="tonal" size="small"
+        tooltip="Edit Player" />
     </template>
 
     <!-- Modal -->
@@ -40,119 +34,71 @@
             <FormRowTwoItems v-if="isAssociation">
               <template #description>
                 <v-avatar>
-                  <v-img
-                    :src="player.teamLogo.url || icons.default.logo"
-                    :alt="player.playedFor"
-                  />
+                  <v-img :src="player.teamLogo.url || icons.default.logo" :alt="player.playedFor" />
                 </v-avatar>
               </template>
               <template #form-element>
-                <v-select
-                  label=""
-                  :items="getClubLogos"
-                  item-title="name"
-                  item-value="name"
-                  :value="getSelectedClubName"
-                  @update:model-value="updateLogoByName"
-                  dense
-                  variant="outlined"
-                  :loading="accountState.loading"
-                />
+                <v-select label="" :items="getClubLogos" item-title="name" item-value="name"
+                  :value="getSelectedClubName" @update:model-value="updateLogoByName" dense variant="outlined"
+                  :loading="accountState.loading" />
               </template>
             </FormRowTwoItems>
             <!-- Common Fields -->
             <FormRowTwoItems>
               <template #description>
-                <TextInput
-                  label="Player Name"
-                  :value="player.name"
-                  :validations="[isValidName, isRequired]"
-                  @update="(val) => updatePlayerField('name', val)"
-                />
+                <TextInput label="Player Name" :value="player.name" :validations="[isValidName, isRequired]"
+                  @update="(val) => updatePlayerField('name', val)" />
               </template>
               <template #form-element>
-                <TextInput
-                  label="Played For"
-                  :value="player.playedFor"
-                  :validations="[isValidName]"
-                  @update="(val) => updatePlayerField('playedFor', val)"
-                />
+                <TextInput label="Played For" :value="player.playedFor" :validations="[isValidName]"
+                  @update="(val) => updatePlayerField('playedFor', val)" />
               </template>
             </FormRowTwoItems>
 
             <!-- Dynamic Fields for Batting or Bowling -->
             <FormRowTwoItems v-if="isBatting">
               <template #description>
-                <TextInput
-                  label="Runs Scored"
-                  :value="player.runs"
-                  :validations="[isValidNumber, (value) => maxLength(value, 3)]"
-                  type="number"
-                  @update="(val) => updatePlayerField('runs', val)"
-                />
+                <TextInput label="Runs Scored" :value="player.runs"
+                  :validations="[isValidNumber, (value) => maxLength(value, 3)]" type="number"
+                  @update="(val) => updatePlayerField('runs', val)" />
               </template>
               <template #form-element>
-                <TextInput
-                  label="Balls Faced"
-                  :value="player.balls"
-                  :validations="[isValidNumber, (value) => maxLength(value, 3)]"
-                  type="number"
-                  @update="(val) => updatePlayerField('balls', val)"
-                />
+                <TextInput label="Balls Faced" :value="player.balls"
+                  :validations="[isValidNumber, (value) => maxLength(value, 3)]" type="number"
+                  @update="(val) => updatePlayerField('balls', val)" />
               </template>
             </FormRowTwoItems>
             <FormRowTwoItems v-if="isBatting">
               <template #description>
-                <TextInput
-                  label="Strike Rate"
-                  :value="player.SR"
-                  :validations="[isValidNumber, (value) => maxLength(value, 6)]"
-                  type="number"
-                  @update="(val) => updatePlayerField('SR', val)"
-                />
+                <TextInput label="Strike Rate" :value="player.SR"
+                  :validations="[isValidNumber, (value) => maxLength(value, 6)]" type="number"
+                  @update="(val) => updatePlayerField('SR', val)" />
               </template>
               <template #form-element>
-                <v-select
-                  label="Not Out"
-                  :items="['Yes', 'No']"
-                  :value="player.notOut ? 'Yes' : 'No'"
+                <v-select label="Not Out" :items="['Yes', 'No']" :value="player.notOut ? 'Yes' : 'No'"
                   @update:model-value="
                     (val) => updatePlayerField('notOut', val === 'Yes')
-                  "
-                  variant="outlined"
-                  dense
-                />
+                  " variant="outlined" dense />
               </template>
             </FormRowTwoItems>
 
             <FormRowTwoItems v-if="isBowling">
               <template #description>
-                <TextInput
-                  label="Wickets"
-                  :value="player.wickets"
-                  :validations="[isValidNumber, (value) => maxLength(value, 2)]"
-                  type="number"
-                  @update="(val) => updatePlayerField('wickets', val)"
-                />
+                <TextInput label="Wickets" :value="player.wickets"
+                  :validations="[isValidNumber, (value) => maxLength(value, 2)]" type="number"
+                  @update="(val) => updatePlayerField('wickets', val)" />
               </template>
               <template #form-element>
-                <TextInput
-                  label="Overs Bowled"
-                  :value="player.overs"
+                <TextInput label="Overs Bowled" :value="player.overs"
                   :validations="[isValidNumber, (value) => maxLength(value, 4)]"
-                  @update="(val) => updatePlayerField('overs', val)"
-                />
+                  @update="(val) => updatePlayerField('overs', val)" />
               </template>
             </FormRowTwoItems>
             <FormRowTwoItems v-if="isBowling">
               <template #description>
-                <TextInput
-                  label="Runs Conceded"
-                  :value="player.runs"
-                  :validations="[isValidNumber, (value) => maxLength(value, 3)]"
-                  type="number"
-                  @update="(val) => updatePlayerField('runs', val)"
-                />
+                <TextInput label="Runs Conceded" :value="player.runs"
+                  :validations="[isValidNumber, (value) => maxLength(value, 3)]" type="number"
+                  @update="(val) => updatePlayerField('runs', val)" />
               </template>
               <template #form-element></template>
             </FormRowTwoItems>
@@ -202,8 +148,8 @@ const isAssociation = computed(() => accountState.getAccountType === 2);
 const getClubLogos = computed(() => accountState.getRelatedClubsLogos || []);
 
 // Determine if the asset type is batting or bowling
-const isBatting = computed(() => props.assetType === "top5battinglist");
-const isBowling = computed(() => props.assetType === "top5bowlinglist");
+const isBatting = computed(() => props.assetType === "CricketTop5Batting");
+const isBowling = computed(() => props.assetType === "CricketTop5Bowling");
 
 // Calculate the primary stat for display (runs for batting, wickets for bowling)
 const primaryStat = computed(() =>

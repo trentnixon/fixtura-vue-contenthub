@@ -41,12 +41,12 @@ const { selectedFixturaAsset } = useRenderAssets();
 
 // Map asset types to components
 const assetEditComponents = {
-  weekendresults: WeekendResultsEdit,
-  ladder: LadderEdit,
-  top5bowlinglist: Top5Edit,
-  top5battinglist: Top5Edit,
-  upcomingfixtures: UpComingFixturesEdit,
-  weekendsinglegameresult: WeekendResultsEdit,
+  CricketResults: WeekendResultsEdit,
+  CricketLadder: LadderEdit,
+  CricketTop5Bowling: Top5Edit,
+  CricketTop5Batting: Top5Edit,
+  CricketUpcoming: UpComingFixturesEdit,
+  CricketResultSingle: WeekendResultsEdit,
 };
 
 // Asset type logic
@@ -68,10 +68,12 @@ const isBlocked = computed(() => !assetEditComponent.value);
   margin-top: 2rem;
   color: #666;
 }
+
 .blocker-message h2 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
+
 .blocker-message p {
   font-size: 1rem;
 }

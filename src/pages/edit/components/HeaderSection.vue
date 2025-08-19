@@ -1,19 +1,10 @@
 <template>
   <v-row>
     <v-col cols="8">
-      <MainHeader
-        :title="title"
-        :subtitle="`Edit your ${assetEditComponents[assetType]}`"
-      />
+      <MainHeader :title="title" :subtitle="`Edit your ${assetEditComponents[assetType]}`" />
     </v-col>
     <v-col class="d-flex justify-end" cols="4">
-      <SecondaryButton
-        label="Back"
-        @click="handleBack"
-        :icon="icons.ui.arrowLeft"
-        color="error"
-        size="small"
-      />
+      <SecondaryButton label="Back" @click="handleBack" :icon="icons.ui.arrowLeft" color="error" size="small" />
     </v-col>
   </v-row>
 </template>
@@ -42,12 +33,12 @@ const props = defineProps({
 const assetType = computed(() => route.query.asset.toLowerCase());
 
 const assetEditComponents = {
-  weekendresults: "Weekend Results",
-  ladder: "Ladder",
-  top5bowlinglist: "Top 5 Bowling",
-  top5battinglist: "Top 5 Batting",
-  upcomingfixtures: "Upcoming Fixtures",
-  weekendsinglegameresult: "Single Game Result",
+  CricketResults: "Weekend Results",
+  CricketLadder: "Ladder",
+  CricketTop5Bowling: "Top 5 Bowling",
+  CricketTop5Batting: "Top 5 Batting",
+  CricketUpcoming: "Upcoming Fixtures",
+  CricketResultSingle: "Single Game Result",
 };
 const handleBack = () => {
   router.back();

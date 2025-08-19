@@ -22,7 +22,7 @@ export interface StructuredOutput {
 }
 
 export interface Top5ListicleArticle {
-  type: "top5bowlinglist" | "top5battinglist";
+  type: "CricketTop5Bowling" | "CricketTop5Batting";
   structuredOutput: StructuredOutput;
 }
 
@@ -37,7 +37,7 @@ export interface LadderSummaryStructuredOutput {
 }
 
 export interface LadderSummaryArticle {
-  type: "ladder";
+  type: "CricketLadder";
   structuredOutput: LadderSummaryStructuredOutput;
 }
 
@@ -54,7 +54,7 @@ export interface UpcomingFixturesStructuredOutput {
 }
 
 export interface UpcomingFixturesArticle {
-  type: "upcomingfixtures";
+  type: "CricketUpcoming";
   structuredOutput: UpcomingFixturesStructuredOutput;
 }
 
@@ -75,7 +75,7 @@ export interface WeekendWrapUpStructuredOutput {
 }
 
 export interface WeekendWrapUpArticle {
-  type: "weekendresults";
+  type: "CricketResults";
   structuredOutput: WeekendWrapUpStructuredOutput;
 }
 

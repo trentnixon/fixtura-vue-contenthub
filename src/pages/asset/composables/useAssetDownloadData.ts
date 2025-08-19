@@ -106,7 +106,7 @@ export function useAssetDownloadData() {
       return [];
     }
 
-    //weekendresults
+    //CricketResults
     const useFilteredArticles = filteredArticles.map((article) => ({
       id: article.id,
       CompositionID: article.attributes.asset.data.attributes.CompositionID,
@@ -114,7 +114,7 @@ export function useAssetDownloadData() {
       structuredOutput: article.attributes?.structuredOutput || null,
     }));
 
-    return selectedAssetType === "weekendresults"
+    return selectedAssetType === "CricketResults"
       ? [useFilteredArticles]
       : useFilteredArticles;
   });

@@ -6,24 +6,14 @@
       <v-spacer></v-spacer>
       <!-- <v-btn color="primary" @click="navigateToEdit()"> Edit Writeup </v-btn> -->
       <!-- Copy Button in the Header -->
-      <SecondaryButton
-        color="accent"
-        :icon="copyIcon"
-        label="Copy"
-        @click="handleCopy"
-        :loading="copyLoading"
-        size="small"
-      />
+      <SecondaryButton color="accent" :icon="copyIcon" label="Copy" @click="handleCopy" :loading="copyLoading"
+        size="small" />
     </template>
 
     <!-- Conditionally rendering named slots -->
     <!-- Loading State -->
     <template v-slot:loading v-if="loading">
-      <v-progress-linear
-        indeterminate
-        color="primary"
-        class="mt-4"
-      ></v-progress-linear>
+      <v-progress-linear indeterminate color="primary" class="mt-4"></v-progress-linear>
       <p class="mt-2">Loading articles...</p>
     </template>
 
@@ -31,12 +21,8 @@
     <template v-slot:body v-else-if="articles.length > 0">
       <!-- Assign a ref to the child component -->
       <v-sheet class="overflow-y-auto" :max-height="maxHeight">
-        <component
-          :is="assetComponent"
-          :articles="Array.isArray(articles) ? articles : []"
-          :copyID="generateCopyID()"
-          ref="articleComponent"
-        />
+        <component :is="assetComponent" :articles="Array.isArray(articles) ? articles : []" :copyID="generateCopyID()"
+          ref="articleComponent" />
       </v-sheet>
     </template>
 
@@ -87,16 +73,16 @@ const articleComponent = ref<ArticleComponent | null>(null);
 // Define the dynamic component based on the asset type
 const assetComponent = computed(() => {
   switch (assetType.value) {
-    case "top5bowlinglist":
-    case "top5battinglist":
+    case "CricketTop5Bowling":
+    case "CricketTop5Batting":
       return Top5Listicle;
-    case "ladder":
+    case "CricketLadder":
       return LadderSummary;
-    case "upcomingfixtures":
+    case "CricketUpcoming":
       return UpcomingFixtures;
-    case "weekendresults":
+    case "CricketResults":
       return WeekendWrapUp;
-    case "weekendsinglegameresult":
+    case "CricketResultSingle":
       return SingleResultArticles;
     default:
       return null;

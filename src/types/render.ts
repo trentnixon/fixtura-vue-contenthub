@@ -121,7 +121,7 @@ export interface GroupingDetails {
   downloads: number;
   aiArticles: number;
   metrics: Metrics;
-  assets: Record<string, { downloads: number; aiArticles: number }>; // Dynamic asset composition (e.g. Top5BattingList, Ladder, etc.)
+  assets: Record<string, { downloads: number; aiArticles: number }>; // Dynamic asset composition (e.g. CricketTop5Batting, CricketLadder, etc.)
 }
 
 // Interface for grouping response from API

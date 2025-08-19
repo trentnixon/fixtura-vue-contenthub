@@ -1,33 +1,22 @@
 <template>
   <template v-if="groupingCategory">
-    <v-menu
-      v-model="isMenuOpen"
-      close-on-content-click
-      transition="slide-y-transition"
-    >
+    <v-menu v-model="isMenuOpen" close-on-content-click transition="slide-y-transition">
       <template v-slot:activator="{ props }">
-        <v-btn class="mr-2" v-bind="props" variant="tonal" color="primary"
-          ><span v-if="$vuetify.display.smAndDown">Assets</span>
-          <span v-else
-            >{{
-              groupingCategory.length > 20
-                ? groupingCategory.slice(0, 20) + "[...]"
-                : groupingCategory
-            }}
-            Assets</span
-          ></v-btn
-        >
+        <v-btn class="mr-2" v-bind="props" variant="tonal" color="primary"><span
+            v-if="$vuetify.display.smAndDown">Assets</span>
+          <span v-else>{{
+            groupingCategory.length > 20
+              ? groupingCategory.slice(0, 20) + "[...]"
+              : groupingCategory
+          }}
+            Assets</span></v-btn>
       </template>
 
       <v-list>
-        <v-list-item
-          v-for="asset in sortedAssets"
-          :key="asset.type"
-          @click="navigateToAsset(asset.type)"
-          :active="isActiveAssetType(asset.type)"
-        >
+        <v-list-item v-for="asset in sortedAssets" :key="asset.type" @click="navigateToAsset(asset.type)"
+          :active="isActiveAssetType(asset.type)">
           <v-list-item-title>{{
-            getDisplayName(asset.type.toLowerCase())
+            getDisplayName(toPascalCase(asset.type))
           }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -55,12 +44,12 @@ const { getAssetsByType } = useRenderGroupingData();
 const { getDisplayName } = useGlobalComposable();
 
 const assetOrder = [
-  "WeekendResults",
-  "WeekendSingleGameResult",
-  "Top5BattingList",
-  "Top5BowlingList",
-  "Ladder",
-  "UpComingFixtures",
+  "CricketResults",
+  "CricketResultSingle",
+  "CricketTop5Batting",
+  "CricketTop5Bowling",
+  "CricketLadder",
+  "CricketUpcoming",
 ];
 
 const isActiveAssetType = computed(() => (type) => {
@@ -79,9 +68,8 @@ const sortedAssets = computed(() => {
 });
 
 function getCategoryLink(type) {
-  return `/${accountId.value}/${sport.value}/${renderId.value}/${
-    groupingCategory.value
-  }/${type.toLowerCase()}`;
+  return `/${accountId.value}/${sport.value}/${renderId.value}/${groupingCategory.value
+    }/${type.toLowerCase()}`;
 }
 
 function navigateToAsset(type) {
@@ -91,11 +79,17 @@ function navigateToAsset(type) {
   ).replace(/\//g, "%2F");
 
   router.push(
-    `/${accountId.value}/${sport.value}/${
-      renderId.value
-    }/${encodedType}/${type.toLowerCase()}`
+    `/${accountId.value}/${sport.value}/${renderId.value
+    }/${encodedType}/${toPascalCase(type)}`
   );
 }
+
+function toPascalCase(str) {
+  return str
+    .replace(/(^|_|-|\s)+(\w)/g, (_, __, c) => c.toUpperCase())
+    .replace(/^(\w)/, (c) => c.toUpperCase());
+}
+
 // Add watch function for route params
 watch(
   () => route.params,

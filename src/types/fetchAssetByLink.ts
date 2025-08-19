@@ -43,11 +43,11 @@ export interface VideoMeta {
     includeSponsors: boolean;
     audio_option: string;
     DiviedFixturesBy: {
-      UpComingFixtures: number;
-      WeekendResults: number;
-      WeekendSingleGameResult: number;
-      Ladder: number;
-      RosterPoster: number;
+      CricketUpcoming: number;
+      CricketResults: number;
+      CricketResultSingle: number;
+      CricketLadder: number;
+      CricketRoster: number;
     };
     ASSETID: number;
     ASSETTYPEID: number;

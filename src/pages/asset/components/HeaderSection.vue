@@ -1,26 +1,12 @@
 <template>
   <v-row>
     <v-col cols="12" sm="8">
-      <MainHeader
-        :title="getDisplayName(asset)"
-        :subtitle="`Render ${renderId}`"
-      />
+      <MainHeader :title="getDisplayName(toPascalCase(asset))" :subtitle="`Render ${renderId}`" />
     </v-col>
 
-    <v-col
-      class="d-flex justify-end"
-      cols="12"
-      sm="4"
-      v-if="!$vuetify.display.xs"
-    >
-      <div class="d-flex justify-end my-4" v-if="asset !== 'rosterposter'">
-        <PrimaryButton
-          color="success"
-          label="Edit"
-          @click="navigateToEdit()"
-          :icon="icons.ui.edit"
-          size="small"
-        />
+    <v-col class="d-flex justify-end" cols="12" sm="4" v-if="!$vuetify.display.xs">
+      <div class="d-flex justify-end my-4" v-if="asset !== 'CricketRoster'">
+        <PrimaryButton color="success" label="Edit" @click="navigateToEdit()" :icon="icons.ui.edit" size="small" />
       </div>
     </v-col>
   </v-row>
@@ -34,6 +20,7 @@ import { ref, watch, inject } from "vue";
 // Components
 import MainHeader from "@/components/primitives/headers/MainHeader.vue";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
+import { useGlobalComposable } from "@/utils/useGlobalComposable";
 const icons = inject("icons");
 const router = useRouter();
 const route = useRoute();
@@ -44,6 +31,8 @@ const renderId = ref(Number(route.params.renderid));
 //const sport = ref(route.params.sport);
 //const { getRenderTime } = useRenderData();
 
+const { getDisplayName } = useGlobalComposable();
+
 watch(
   () => route.params,
   (newParams) => {
@@ -51,17 +40,10 @@ watch(
   }
 );
 
-function getDisplayName(type) {
-  const names = {
-    weekendresults: "Weekend Results",
-    ladder: "Ladder",
-    top5bowlinglist: "Top 5 Bowling",
-    top5battinglist: "Top 5 Batting",
-    upcomingfixtures: "Upcoming Fixtures",
-    weekendsinglegameresult: "Single Game Result",
-    rosterposter: "Team Rosters",
-  };
-  return names[type] || type;
+function toPascalCase(str) {
+  return str
+    .replace(/(^|_|-|\s)+(\w)/g, (_, __, c) => c.toUpperCase())
+    .replace(/^(\w)/, (c) => c.toUpperCase());
 }
 
 function navigateToEdit() {
