@@ -41,12 +41,12 @@ const { selectedFixturaAsset } = useRenderAssets();
 
 // Map asset types to components
 const assetEditComponents = {
-  CricketResults: WeekendResultsEdit,
-  CricketLadder: LadderEdit,
-  CricketTop5Bowling: Top5Edit,
-  CricketTop5Batting: Top5Edit,
-  CricketUpcoming: UpComingFixturesEdit,
-  CricketResultSingle: WeekendResultsEdit,
+  cricketresults: WeekendResultsEdit,
+  cricketladder: LadderEdit,
+  crickettop5bowling: Top5Edit,
+  crickettop5batting: Top5Edit,
+  cricketupcoming: UpComingFixturesEdit,
+  cricketresultsingle: WeekendResultsEdit,
 };
 
 // Asset type logic

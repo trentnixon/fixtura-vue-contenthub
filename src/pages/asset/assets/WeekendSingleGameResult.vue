@@ -1,204 +1,56 @@
 <template>
-  <template v-if="!formattedArticles"> no Articles Found </template>
-  <v-container class="pa-0" fluid>
-    <template v-if="isPolling">
-      <!-- Polling State -->
-      <v-skeleton-loader color="surface" type="card" />
-    </template>
-    <template v-else>
-      <!-- Fixtures Table View -->
-      <template v-if="selectedFixtureIndex === null">
-        <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4">
-          <v-card class="pa-2 elevation-0 bg-surface rounded-md">
-            <v-data-table :headers="headers" :items="filteredFixtures" :items-per-page="itemsPerPage"
-              @update:items-per-page="onItemsPerPageChange" v-model:page="currentPage" class="elevation-0 mx-auto"
-              hover>
-              <!-- Search Bar -->
-              <template #top>
-                <v-toolbar flat class="px-4" color="secondary" rounded>
-                  <div class="text-body mb-0">
-                    <div v-if="formattedAssets[0].editTrigger" class="ml-2">
-                      <!-- Retry Button -->
-                      <PrimaryButton v-if="canRetry" color="success" label="Apply Edits" @click="handleRerender"
-                        :loading="isRerendering" :disabled="!canRetry || isRerendering" size="small" />
-                    </div>
-                  </div>
-                  <v-spacer></v-spacer>
-                  <v-text-field v-model="search" density="compact" label="Search Teams" prepend-inner-icon="mdi-magnify"
-                    variant="solo-filled" flat hide-details single-line></v-text-field>
-                </v-toolbar>
-              </template>
-
-              <!-- Avatar Column -->
-              <template v-slot:[`item.avatar`]="{ item }">
-                <v-img :width="50" aspect-ratio="16/9" cover :src="item.avatar"></v-img>
-              </template>
-              <template v-slot:[`item.teams`]="{ item }">
-                <div class="table-copy text-bold d-block text-truncate">
-                  {{ item.teams }}
-                </div>
-                <div class="table-copy d-block text-truncate">
-                  {{ item.scores }}
-                </div>
-              </template>
-
-              <!-- Action Column -->
-              <template v-slot:[`item.action`]="{ item }">
-                <IconButton @click="selectFixture(item.id)" color="accent" icon="mdi-arrow-right" size="small"
-                  variant="tonal" />
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-card>
-      </template>
-
-      <!-- Detailed View -->
-      <template v-else>
-        <!-- Back Button -->
-        <div class="d-flex justify-end mb-0">
-          <SecondaryButton label="Back" icon="mdi-arrow-left" @click="backToList" />
-        </div>
-
-        <v-divider class="my-2 py-0 px-4" />
-        <v-row>
-          <v-col cols="12" md="5">
-            <!-- Image Gallery -->
-            <template v-if="galleryState === 'unprocessed'">
-              <HandleAssetError :asset="formattedAssets[0]" />
-            </template>
-            <template v-else>
-              <AssetImageGallery v-if="selectedImage" :imageUrls="[selectedImage]" isSingleImage="true" />
-            </template>
-          </v-col>
-          <v-col class="d-flex justify-start" cols="12" md="7">
-            <!-- Article Content -->
-            <AssetDisplayArticle v-if="selectedArticle" :articles="[selectedArticle]" />
-          </v-col>
-        </v-row>
-      </template>
-    </template>
-  </v-container>
-
-  <!-- REMOVE FOR PRODUCTION -->
-  <!-- Add a new section for asset images below the main table -->
+  <!-- Asset Images with View/Download Options -->
   <v-container class="pa-0 mt-6" fluid>
-    <div class="text-h6 mb-2">All Asset Images</div>
     <v-row>
-      <v-col v-for="(img, idx) in props.formattedAssets[0]?.downloads || []" :key="idx" cols="12" sm="4" md="3" lg="2"
+      <v-col v-for="(img, idx) in props.formattedAssets[0]?.downloads || []" :key="idx" cols="12" sm="6" md="4"
         class="mb-4">
-        <v-img :src="img" :alt="`Asset Image ${idx + 1}`" aspect-ratio="16/9" cover class="rounded" />
-        <div class="caption text-center mt-1">Image {{ idx + 1 }}</div>
+        <v-card class="mx-auto" elevation="0">
+          <v-img :src="img" :alt="`Asset Image ${idx + 1}`" aspect-ratio="16/9" cover class="rounded" />
+          <v-card-actions class="d-flex flex-row justify-end pa-2">
+            <!-- View Button -->
+            <IconButton size="x-small" color="accent-lighten1" icon="mdi-eye" variant="elevated" class="mr-1"
+              @click="viewImage(img)" />
+            <!-- Download Button -->
+            <IconButton size="x-small" color="accent-darken1" icon="mdi-download" variant="elevated" class="ml-1"
+              @click="downloadImage(img)" />
+          </v-card-actions>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
-  <!-- End Testing -->
+
+  <!-- Image View Modal -->
+  <v-dialog v-model="isModalOpen" max-width="90vw" max-height="90vh" transition="dialog-bottom-transition">
+    <v-card>
+      <v-img :src="currentImage" :aspect-ratio="4 / 5" class="bg-grey-lighten-2" cover>
+        <v-container class="d-flex justify-end">
+          <IconButton size="x-small" color="success" icon="mdi-download" class="mr-1" variant="elevated"
+            @click="downloadImage(currentImage)" />
+          <IconButton size="x-small" color="error" icon="mdi-close" variant="elevated" @click="isModalOpen = false" />
+        </v-container>
+      </v-img>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
-import { ref, defineProps, computed, onMounted } from "vue";
-import AssetImageGallery from "./media/AssetImageGallery.vue";
-import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
-import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
+import { defineProps } from "vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
-import { useAssetState } from "@/pages/asset/composables/useAssetState";
-import HandleAssetError from "@/pages/asset/assets/errors/HandleAssetError.vue";
-import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
-import { useAssetRerender } from "@/pages/asset/assets/errors/composables/useRerender";
+import { useImageDownloads } from "@/pages/asset/composables/useImageDownloads.js";
+
 // Define component props
 const props = defineProps({
   formattedAssets: Array, // Images related to the fixtures
   formattedArticles: Array, // Articles related to the fixtures
 });
 
-// State for search input
-const search = ref("");
-const currentPage = ref(1); // Default to page 1
-const itemsPerPage = ref(5); // Default to 5 items per page
-
-// Define table headers
-const headers = [
-  { title: "", value: "avatar", sortable: false, align: "center" },
-  { title: "", value: "teams", align: "start" },
-  { title: "", value: "action", sortable: false, align: "end" },
-];
-
-// Prepare fixtures data for the table
-const fixtures = computed(() => {
-  return props.formattedArticles.map((article, index) => ({
-    id: index,
-    teams: `${article.structuredOutput?.team1} vs ${article.structuredOutput?.team2}`,
-    scores: `${article.structuredOutput?.score1} | ${article.structuredOutput?.score2}`,
-    avatar: props.formattedAssets[0].downloads[index],
-  }));
-});
-
-const { assetState: galleryState } = useAssetState(props.formattedAssets[0]);
-
-// Filtered fixtures based on search input
-const filteredFixtures = computed(() => {
-  if (!search.value) return fixtures.value;
-  return fixtures.value.filter((fixture) =>
-    fixture.teams.toLowerCase().includes(search.value.toLowerCase())
-  );
-});
-
-// State for selected fixture index
-const selectedFixtureIndex = ref(null);
-
-// Computed properties for selected article and image
-const selectedArticle = computed(() => {
-  return selectedFixtureIndex.value !== null
-    ? props.formattedArticles[selectedFixtureIndex.value]
-    : null;
-});
-
-const selectedImage = computed(() => {
-  if (
-    selectedFixtureIndex.value !== null &&
-    props.formattedAssets[0] &&
-    props.formattedAssets[0].downloads.length > 0
-  ) {
-    // Assuming you want the first image in the downloads array
-    return (
-      props.formattedAssets[0].downloads[selectedFixtureIndex.value] ||
-      props.formattedAssets[0].downloads[0]
-    );
-  }
-  return null; // Handle undefined or empty array
-});
-
-const onItemsPerPageChange = (newItemsPerPage) => {
-  itemsPerPage.value = newItemsPerPage;
-};
-
-// Function to select a fixture and show details
-const selectFixture = (id) => {
-  selectedFixtureIndex.value = id;
-};
-// Function to go back to the fixtures table
-const backToList = () => {
-  selectedFixtureIndex.value = null;
-};
-
-const canRetry = ref(true);
-// Composable handling rerender logic
-const { triggerRerender, isRerendering, rerenderResponse, isPolling } =
-  useAssetRerender();
-
-const handleRerender = async () => {
-  canRetry.value = false; // Disable retry button
-  await triggerRerender(props.formattedAssets[0]);
-
-  // Allow retry if CMS returned an error
-  if (rerenderResponse && !rerenderResponse.success) {
-    canRetry.value = true;
-  }
-};
-
-onMounted(() => {
-  console.log("[WeekendSingleGameResult] formattedAssets:", props.formattedAssets);
-  console.log("[WeekendSingleGameResult] formattedArticles:", props.formattedArticles);
-});
+// Image downloads functionality
+const {
+  isModalOpen,
+  currentImage,
+  downloadImage,
+  viewImage,
+} = useImageDownloads();
 </script>
 
 <style scoped>

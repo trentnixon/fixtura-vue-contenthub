@@ -9,16 +9,9 @@
 
   <template v-else>
     <!-- Video Meta Data Section -->
-    <VideoMetaDataEdit
-      :videoMeta="dataObj.VIDEOMETA"
-      @update="updateVideoMeta"
-    />
+    <VideoMetaDataEdit v-if="dataObj && dataObj.VIDEOMETA" :videoMeta="dataObj.VIDEOMETA" @update="updateVideoMeta" />
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton
-        color="success"
-        @click="saveAllChanges"
-        label="Update Meta Data"
-      />
+      <PrimaryButton color="success" @click="saveAllChanges" label="Update Meta Data" />
     </div>
 
     <!-- Draggable Fixtures List -->
@@ -27,24 +20,15 @@
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
         <Container @drop="onDrop">
           <Draggable v-for="(fixture, index) in fixtures" :key="fixture.gameID">
-            <FixtureResultItem
-              :fixture="fixture"
-              :index="index"
-              :lastIndex="fixtures.length - 1"
-              @updateFixtureField="updateFixture"
-              @saveFixture="saveFixture"
-            />
+            <FixtureResultItem :fixture="fixture" :index="index" :lastIndex="fixtures.length - 1"
+              @updateFixtureField="updateFixture" @saveFixture="saveFixture" />
           </Draggable>
         </Container>
       </v-card>
     </v-card>
 
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton
-        color="success"
-        @click="saveAllChanges"
-        label="Save All Changes"
-      />
+      <PrimaryButton color="success" @click="saveAllChanges" label="Save All Changes" />
     </div>
   </template>
 </template>
@@ -56,7 +40,6 @@ import { useFetchFixturaAsset } from "../composables/useFixturaAsset.js";
 import { useSaveFixturaAsset } from "../composables/useSaveFixturaAsset.js";
 import VideoMetaDataEdit from "@/pages/edit/AssetEditPortals/Sections/VideoMetaDataEdit.vue";
 import LoadingSpinner from "@/components/UI/LoadingSpinner.vue";
-import UpcomingFixtureItem from "./Sections/upcomingFixtureItem.vue";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 import FixtureResultItem from "@/pages/edit/AssetEditPortals/Sections/fixtureResultItem.vue";
 
@@ -68,7 +51,8 @@ const fixtures = ref([]);
 // Load fixtures on component mount
 onMounted(async () => {
   await fetchAssetData();
-  if (dataObj.value.DATA) {
+  console.log("[WeekendResultsEdit] dataObj loaded:", dataObj.value);
+  if (dataObj.value && dataObj.value.DATA) {
     fixtures.value = [...dataObj.value.DATA];
   }
 });
@@ -91,7 +75,7 @@ function updateFixture({ index, key, newValue }) {
   }
 }
 
-function saveFixture(index) {
+function saveFixture() {
   dataObj.value.DATA = [...fixtures.value];
   saveToCMS();
 }

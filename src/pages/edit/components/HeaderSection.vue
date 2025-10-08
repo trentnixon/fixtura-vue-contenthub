@@ -23,7 +23,7 @@ const router = useRouter();
 const route = useRoute();
 
 // eslint-disable-next-line no-undef
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     required: true,
@@ -33,12 +33,12 @@ const props = defineProps({
 const assetType = computed(() => route.query.asset.toLowerCase());
 
 const assetEditComponents = {
-  CricketResults: "Weekend Results",
-  CricketLadder: "Ladder",
-  CricketTop5Bowling: "Top 5 Bowling",
-  CricketTop5Batting: "Top 5 Batting",
-  CricketUpcoming: "Upcoming Fixtures",
-  CricketResultSingle: "Single Game Result",
+  cricketresults: "Weekend Results",
+  cricketladder: "Ladder",
+  crickettop5bowling: "Top 5 Bowling",
+  crickettop5batting: "Top 5 Batting",
+  cricketupcoming: "Upcoming Fixtures",
+  cricketresultsingle: "Single Game Result",
 };
 const handleBack = () => {
   router.back();
