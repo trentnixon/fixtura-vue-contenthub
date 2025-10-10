@@ -175,7 +175,13 @@ const rosterLink = computed(() => {
   const accountId = Number(route.params.accountid);
   const sport = route.params.sport;
   const renderId = Number(route.params.renderid);
-  return `/${accountId}/${sport}/${renderId}/${groupingCategory.value}/CricketRoster`;
+
+  // Encode the grouping category to escape special characters (same as getCategoryLink)
+  const encodedGroupingCategory = encodeURIComponent(
+    groupingCategory.value
+  ).replace(/\//g, "%2F");
+
+  return `/${accountId}/${sport}/${renderId}/${encodedGroupingCategory}/CricketRoster`;
 });
 
 watch(
