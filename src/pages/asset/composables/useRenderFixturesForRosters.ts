@@ -181,7 +181,11 @@ function useRouteParams(): RouteParams {
   return {
     accountId: computed(() => Number(route.params.accountid)),
     renderId: computed(() => Number(route.params.renderid)),
-    groupingCategory: computed(() => String(route.params.groupingcategory)),
+    groupingCategory: computed(() => {
+      // Ensure the grouping category is properly decoded
+      const rawCategory = String(route.params.groupingcategory);
+      return decodeURIComponent(rawCategory);
+    }),
     sport: computed(() => String(route.params.sport)),
   };
 }

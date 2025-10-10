@@ -167,7 +167,7 @@ const props = defineProps({
 const icons = inject("icons");
 const route = useRoute();
 const renderId = ref(Number(route.params.renderid));
-const groupingCategory = ref(route.params.groupingcategory);
+const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
 
 // Determine initial version of the roster based on props
 const rosterVersion = ref(

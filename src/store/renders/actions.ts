@@ -56,15 +56,11 @@ export async function fetchGroupingDetails(
   try {
     state.loading = true;
     state.error = null; // Reset error before fetching
-    // Encode the grouping category to escape special characters
-    const encodedGroupingCategory = encodeURIComponent(
-      groupingCategory
-    ).replace(/\//g, "%2F");
-
+    // Don't encode the forward slash - let it pass through as a path segment
     const response = await fetchGroupingDetailsFromService(
       userID,
       renderID,
-      encodedGroupingCategory
+      groupingCategory
     );
 
     if (response && response.data) {
@@ -95,14 +91,11 @@ export async function fetchAssetsByRenderAction(
     state.loading = true;
     state.error = null;
 
-    const encodedGroupingCategory = encodeURIComponent(
-      groupingCategory
-    ).replace(/\//g, "%2F");
-
+    // Don't encode the forward slash - let it pass through as a path segment
     const response = await fetchAssetsByRender(
       userID,
       renderID,
-      encodedGroupingCategory,
+      groupingCategory,
       assetType
     );
 
@@ -131,13 +124,11 @@ export async function fetchFixturesByRenderForRosterPosters(
     //state.loading = true;
     //state.error = null;
 
-    const encodedGroupingCategory = encodeURIComponent(
-      groupingCategory
-    ).replace(/\//g, "%2F");
+    // Don't encode the forward slash - let it pass through as a path segment
     const response = await fetchFixturesByRenderForRoster(
       userID,
       renderID,
-      encodedGroupingCategory,
+      groupingCategory,
       sport
     );
 
@@ -147,6 +138,7 @@ export async function fetchFixturesByRenderForRosterPosters(
       throw new Error("Invalid fixtures data structure");
     }
   } catch (error) {
+    console.error("[Store] Error fetching fixtures:", error);
     state.error = `Failed to fetch fixtures: ${(error as Error).message}`;
   } finally {
     //state.loading = false;

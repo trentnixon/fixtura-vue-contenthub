@@ -29,7 +29,7 @@ const { fetchGroupingDetails } = useRendersStore();
 const route = useRoute();
 const renderId = ref(Number(route.params.renderid));
 const accountId = ref(Number(route.params.accountid));
-const groupingCategory = ref(route.params.groupingcategory);
+const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
 
 // Function to fetch data based on route parameters
 async function fetchData() {
