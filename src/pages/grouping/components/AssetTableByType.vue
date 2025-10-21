@@ -71,7 +71,7 @@ const route = useRoute();
 
 // Search bar state
 const search = ref("");
-const groupingCategory = ref(route.params.groupingcategory);
+const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
 
 // Define the full set of table headers with all items
 const fullHeaders = [
@@ -187,7 +187,7 @@ const rosterLink = computed(() => {
 watch(
   () => route.params,
   (newParams) => {
-    groupingCategory.value = newParams.groupingcategory;
+    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
   }
 );
 </script>

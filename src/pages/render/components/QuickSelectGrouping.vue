@@ -1,10 +1,5 @@
 <template>
-  <v-menu
-    v-if="renderId"
-    v-model="isMenuOpen"
-    close-on-content-click
-    transition="slide-y-transition"
-  >
+  <v-menu v-if="renderId" v-model="isMenuOpen" close-on-content-click transition="slide-y-transition">
     <template #activator="{ props }">
       <v-btn class="mr-2" v-bind="props" variant="tonal" color="primary">
         <span v-if="$vuetify.display.smAndDown">Categories</span>
@@ -13,12 +8,8 @@
     </template>
 
     <v-list>
-      <v-list-item
-        v-for="asset in filteredCategoryItems"
-        :key="asset.category"
-        @click="navigateToAsset(asset.category)"
-        :active="isActiveCategory(asset.category)"
-      >
+      <v-list-item v-for="asset in filteredCategoryItems" :key="asset.category" @click="navigateToAsset(asset.category)"
+        :active="isActiveCategory(asset.category)">
         <v-list-item-title>
           {{ getDisplayName(asset.category) }}
         </v-list-item-title>
@@ -41,7 +32,7 @@ const { getDisplayName } = useGlobalComposable();
 const accountId = ref(Number(route.params.accountid));
 const renderId = ref(Number(route.params.renderid));
 const sport = ref(route.params.sport);
-const groupingCategory = ref(route.params.groupingcategory);
+const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory || '')));
 const isMenuOpen = ref(false);
 
 const useVerb = computed(() => {
@@ -71,7 +62,7 @@ watch(
     accountId.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
     sport.value = newParams.sport;
-    groupingCategory.value = newParams.groupingcategory;
+    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory || ''));
   },
   { deep: true }
 );

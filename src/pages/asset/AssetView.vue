@@ -29,7 +29,7 @@ const route = useRoute();
 // Reactive route parameters
 const accountId = ref(Number(route.params.accountid));
 const renderId = ref(Number(route.params.renderid));
-const groupingCategory = ref(route.params.groupingcategory);
+const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
 const assetType = ref(route.params.asset);
 
 // Watch for route changes and update reactive values
@@ -38,7 +38,7 @@ watch(
   (newParams) => {
     accountId.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
-    groupingCategory.value = newParams.groupingcategory;
+    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
     assetType.value = newParams.asset;
     fetchData(); // Refetch data when route changes
   }

@@ -150,7 +150,9 @@ function useRouteParams(): RouteParams {
   return {
     accountId: ref(Number(route.params.accountid)),
     renderId: ref(Number(route.params.renderid)),
-    groupingCategory: ref(String(route.params.groupingcategory)),
+    groupingCategory: ref(
+      decodeURIComponent(String(route.params.groupingcategory))
+    ),
     assetType: ref(String(route.params.asset)),
   };
 }

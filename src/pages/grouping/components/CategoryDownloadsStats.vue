@@ -34,7 +34,7 @@ import { useRenderGroupingData } from "@/pages/grouping/composables/useRenderGro
 const icons = inject("icons");
 // Get route parameters
 const route = useRoute();
-const groupingCategory = ref(route.params.groupingcategory);
+const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
 
 // Extract stats from the composable
 const { getSelectedCategoryStats } = useRenderGroupingData();
@@ -44,7 +44,7 @@ console.log("[getSelectedCategoryStats]", getSelectedCategoryStats)
 watch(
   () => route.params.groupingcategory,
   (newCategory) => {
-    groupingCategory.value = newCategory;
+    groupingCategory.value = decodeURIComponent(String(newCategory));
   }
 );
 </script>

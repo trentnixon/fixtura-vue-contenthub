@@ -56,7 +56,7 @@ export async function fetchGroupingDetails(
   try {
     state.loading = true;
     state.error = null; // Reset error before fetching
-    // Don't encode the forward slash - let it pass through as a path segment
+    // Pass decoded grouping category - will be encoded in the service layer
     const response = await fetchGroupingDetailsFromService(
       userID,
       renderID,
@@ -91,7 +91,7 @@ export async function fetchAssetsByRenderAction(
     state.loading = true;
     state.error = null;
 
-    // Don't encode the forward slash - let it pass through as a path segment
+    // Pass decoded grouping category - will be encoded in the service layer
     const response = await fetchAssetsByRender(
       userID,
       renderID,
@@ -124,7 +124,7 @@ export async function fetchFixturesByRenderForRosterPosters(
     //state.loading = true;
     //state.error = null;
 
-    // Don't encode the forward slash - let it pass through as a path segment
+    // Pass decoded grouping category - will be encoded in the service layer
     const response = await fetchFixturesByRenderForRoster(
       userID,
       renderID,

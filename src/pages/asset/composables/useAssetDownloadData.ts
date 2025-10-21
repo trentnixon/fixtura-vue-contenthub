@@ -8,8 +8,8 @@ export function useAssetDownloadData() {
   const route = useRoute();
 
   // Reactive route parameters for category and asset type
-  const groupingCategory = computed(
-    () => String(route.params.groupingcategory) || ""
+  const groupingCategory = computed(() =>
+    decodeURIComponent(String(route.params.groupingcategory || ""))
   );
   const assetType = computed(() => route.params.asset || "");
   const renderId = computed(() => Number(route.params.renderid) || 0);

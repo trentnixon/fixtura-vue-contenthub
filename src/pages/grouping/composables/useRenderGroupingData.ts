@@ -31,7 +31,9 @@ export function useRenderGroupingData() {
   } = storeToRefs(renderStore);
 
   const route = useRoute();
-  const groupingCategory = ref<string>(route.params.groupingcategory as string);
+  const groupingCategory = ref<string>(
+    decodeURIComponent(String(route.params.groupingcategory))
+  );
 
   // Helper function to normalize strings (trim spaces and convert to lowercase)
   const normalizeString = (str: string): string => str.trim().toLowerCase();
@@ -40,11 +42,8 @@ export function useRenderGroupingData() {
     () => {
       if (!getGroupingCategories.value || !groupingCategory.value) return null;
 
-      // Decode the groupingCategory without capitalizing
-      const decodedCategory = decodeURIComponent(groupingCategory.value);
-
-      // Normalize the decoded category
-      const normalizedCategory = normalizeString(decodedCategory);
+      // Normalize the grouping category (already decoded)
+      const normalizedCategory = normalizeString(groupingCategory.value);
 
       // Normalize the keys in getGroupingCategories
       const normalizedCategories: Record<string, GroupingCategoryStats> =
@@ -70,7 +69,7 @@ export function useRenderGroupingData() {
   watch(
     () => route.params.groupingcategory,
     (newCategory) => {
-      groupingCategory.value = newCategory as string;
+      groupingCategory.value = decodeURIComponent(String(newCategory));
     }
   );
 

@@ -53,7 +53,7 @@ watch(
   (newParams) => {
     accountId.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
-    groupingCategory.value = newParams.groupingcategory;
+    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
     fetchData(); // Refetch data when route changes
   }
 );

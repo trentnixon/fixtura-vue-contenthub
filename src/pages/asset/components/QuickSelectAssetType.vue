@@ -36,7 +36,7 @@ const route = useRoute();
 const accountId = ref(Number(route.params.accountid));
 const renderId = ref(Number(route.params.renderid));
 const sport = ref(route.params.sport);
-const groupingCategory = ref(route.params.groupingcategory);
+const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
 const assetType = ref(route.params.asset);
 
 const isMenuOpen = ref(false);
@@ -97,7 +97,7 @@ watch(
     accountId.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
     sport.value = newParams.sport;
-    groupingCategory.value = newParams.groupingcategory;
+    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
     assetType.value = newParams.asset;
   },
   { deep: true }

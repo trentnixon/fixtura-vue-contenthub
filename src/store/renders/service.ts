@@ -46,8 +46,10 @@ export async function fetchGroupingDetailsFromService(
   groupingCategory: string
 ): Promise<ApiResponse<GroupingDetails>> {
   try {
+    // Encode the grouping category to handle special characters and forward slashes
+    const encodedCategory = encodeURIComponent(groupingCategory);
     const response = await fetcher.get<ApiResponse<GroupingDetails>>(
-      `/render/fixturaContentHubGroupingDetails/${userID}/${renderID}/${groupingCategory}`
+      `/render/fixturaContentHubGroupingDetails/${userID}/${renderID}/${encodedCategory}`
     );
     return response;
   } catch (error) {
@@ -66,8 +68,10 @@ export async function fetchAssetsByRender(
   assetType: string
 ): Promise<ApiResponse<RenderAssetsResponse>> {
   try {
+    // Encode the grouping category to handle special characters and forward slashes
+    const encodedCategory = encodeURIComponent(groupingCategory);
     const response = await fetcher.get<ApiResponse<RenderAssetsResponse>>(
-      `/render/fixturaGetAssetsFromRender/${userID}/${renderID}/${groupingCategory}/${assetType}`
+      `/render/fixturaGetAssetsFromRender/${userID}/${renderID}/${encodedCategory}/${assetType}`
     );
 
     return response;
@@ -87,8 +91,10 @@ export async function fetchFixturesByRenderForRoster(
   sport: string
 ): Promise<ApiResponse<RenderFixture[]>> {
   try {
+    // Encode the grouping category to handle special characters and forward slashes
+    const encodedCategory = encodeURIComponent(groupingCategory);
     const response = await fetcher.get<ApiResponse<RenderFixture[]>>(
-      `/render/fixturaGetFixturesFromRenderForRosters/${userID}/${renderID}/${groupingCategory}/${sport}`
+      `/render/fixturaGetFixturesFromRenderForRosters/${userID}/${renderID}/${encodedCategory}/${sport}`
     );
     return response;
   } catch (error) {
@@ -148,9 +154,11 @@ export async function createRosterService(
   groupingId: string
 ): Promise<ApiResponse<{ status: string; renderId: number }>> {
   try {
+    // Encode the grouping ID to handle special characters and forward slashes
+    const encodedGroupingId = encodeURIComponent(groupingId);
     const response = await fetcher.get<
       ApiResponse<{ status: string; renderId: number }>
-    >(`/render/fixturaCreateTeamRosters/${renderId}/${groupingId}`);
+    >(`/render/fixturaCreateTeamRosters/${renderId}/${encodedGroupingId}`);
     return response;
   } catch (error) {
     console.error(

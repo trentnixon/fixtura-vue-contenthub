@@ -7,7 +7,9 @@ export function useSideNav() {
   const accountid = ref(Number(route.params.accountid));
   const renderId = ref(Number(route.params.renderid));
   const sport = ref(route.params.sport);
-  const groupingcategory = ref(route.params.groupingcategory);
+  const groupingcategory = ref(
+    decodeURIComponent(String(route.params.groupingcategory || ""))
+  );
 
   const hasRenderId = computed(() => Boolean(renderId.value));
 
@@ -24,7 +26,9 @@ export function useSideNav() {
       accountid.value = Number(newParams.accountid);
       renderId.value = Number(newParams.renderid);
       sport.value = newParams.sport;
-      groupingcategory.value = newParams.groupingcategory;
+      groupingcategory.value = decodeURIComponent(
+        String(newParams.groupingcategory || "")
+      );
     }
   );
 
