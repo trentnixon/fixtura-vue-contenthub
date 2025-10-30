@@ -28,7 +28,7 @@
 
     <!-- No Content Slot -->
     <template v-slot:noContent v-else>
-      <v-alert type="info" class="mt-4"> No article available </v-alert>
+      <v-alert type="info" class="mt-4"> AI Articles are Currently Disabled. </v-alert>
     </template>
   </MediaLayout>
 </template>

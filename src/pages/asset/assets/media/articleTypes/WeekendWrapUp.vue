@@ -16,7 +16,8 @@
       </div>
     </div>
     <div v-else>
-      <p class="article-body">No articles available.</p>
+      <p class="article-body text-center text-bold">AI Articles are Currently Disabled.</p>
+      <p class="article-body text-center">The AI is currently learning cricket.</p>
     </div>
   </div>
 </template>
