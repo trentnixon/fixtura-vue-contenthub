@@ -1,7 +1,8 @@
 <template>
     <div>
-        <!-- Show loading state when status is pending -->
-        <div v-if="articleStatus === 'pending'" class="text-center pa-8">
+        <!-- Show loading state when status is pending or writing -->
+        <!-- pending: article generation queued, writing: article is being written -->
+        <div v-if="articleStatus === 'pending' || articleStatus === 'writing'" class="text-center pa-8">
             <v-progress-circular indeterminate color="primary" size="64" class="mb-6"></v-progress-circular>
             <p class="text-h6 font-weight-bold mb-3">Generating new article...</p>
             <p class="article-body mb-3">
@@ -27,8 +28,9 @@
                 @click="$emit('request-writeup')" />
         </div>
 
-        <!-- Check if articles exist (only show when status is completed) -->
-        <div v-else-if="articleStatus === 'completed' && formattedArticles.length > 0">
+        <!-- Check if articles exist (show when status is completed or waiting) -->
+        <!-- waiting status indicates article exists and is ready (backward compatibility for legacy articles) -->
+        <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0">
             <!-- Iterate through each article -->
             <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
                 <!-- Article Title -->
