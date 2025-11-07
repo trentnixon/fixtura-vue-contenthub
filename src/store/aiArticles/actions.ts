@@ -95,7 +95,8 @@ export async function triggerWeekendArticleAction(payload: {
 
     const res = await triggerWeekendArticleFromService(payload);
     if (res.data) {
-      state.status = res.data.status;
+      // Backward compatibility: treat null status as "waiting"
+      state.status = res.data.status ?? "waiting";
       // Store articleId from payload since it's already known
       state.articleId = payload.articleId;
     }
@@ -119,7 +120,8 @@ export async function pollWeekendArticleStatus(payload: {
   try {
     const res = await fetchWeekendArticleStatusFromService(payload);
     if (res.data) {
-      state.status = res.data.status;
+      // Backward compatibility: treat null status as "waiting"
+      state.status = res.data.status ?? "waiting";
       state.articleId = payload.articleId; // Already known from payload
 
       // Handle locked state or other error conditions

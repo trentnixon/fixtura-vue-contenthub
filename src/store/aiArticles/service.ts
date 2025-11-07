@@ -8,7 +8,8 @@ interface ApiResponse<T> {
 
 // AI Article API response shapes
 export interface ArticleStatusData {
-  status: "waiting" | "pending" | "writing" | "completed" | "failed";
+  // Backward compatibility: status can be null for older articles without articleStatus set
+  status: "waiting" | "pending" | "writing" | "completed" | "failed" | null;
   locked: boolean;
   feedback: {
     count: number;

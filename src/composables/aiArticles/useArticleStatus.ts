@@ -11,7 +11,8 @@ export function useArticleStatus(
 ) {
   const storeState = usePrivateAiArticleState();
   const articleStatus = computed<ArticleStatus>(
-    () => (storeState.status || "idle") as ArticleStatus
+    // Backward compatibility: treat null/undefined status as "waiting"
+    () => (storeState.status ?? "waiting") as ArticleStatus
   );
   const previousStatus = ref<ArticleStatus | null>(null);
 
