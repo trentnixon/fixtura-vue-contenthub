@@ -9,7 +9,8 @@
 
   <template v-else>
     <!-- Video Meta Data Section -->
-    <VideoMetaDataEdit v-if="dataObj && dataObj.VIDEOMETA" :videoMeta="dataObj.VIDEOMETA" @update="updateVideoMeta" />
+    <VideoMetaDataEdit v-if="dataObj && (dataObj.videoMeta || dataObj.VIDEOMETA)"
+      :videoMeta="dataObj.videoMeta || dataObj.VIDEOMETA" @update="updateVideoMeta" />
     <div class="d-flex justify-end align-center items-center my-2 w-full">
       <PrimaryButton color="success" @click="saveAllChanges" label="Update Meta Data" />
     </div>
@@ -52,8 +53,10 @@ const fixtures = ref([]);
 onMounted(async () => {
   await fetchAssetData();
   console.log("[WeekendResultsEdit] dataObj loaded:", dataObj.value);
-  if (dataObj.value && dataObj.value.DATA) {
-    fixtures.value = [...dataObj.value.DATA];
+  // Handle both uppercase (DATA) and lowercase (data) field names
+  const fixturesData = dataObj.value?.data || dataObj.value?.DATA;
+  if (fixturesData && Array.isArray(fixturesData)) {
+    fixtures.value = [...fixturesData];
   }
 });
 
@@ -69,23 +72,56 @@ function onDrop(dropResult) {
   fixtures.value = reorderedFixtures; // Update the fixture list
 }
 
-function updateFixture({ index, key, newValue }) {
+function updateFixture({ index, key, value }) {
   if (fixtures.value[index]) {
-    fixtures.value[index][key] = newValue;
+    // Handle nested keys like "homeTeam.battingPerformances"
+    const keys = key.split(".");
+    let obj = fixtures.value[index];
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!obj[keys[i]]) {
+        obj[keys[i]] = {};
+      }
+      obj = obj[keys[i]];
+    }
+
+    // Use Vue's reactivity to ensure the update is tracked
+    obj[keys[keys.length - 1]] = value;
+
+    // Force reactivity by reassigning the array (this ensures Vue tracks the change)
+    fixtures.value = [...fixtures.value];
+
+    console.log("[WeekendResultsEdit] Updated fixture:", { index, key, value, fixture: fixtures.value[index] });
   }
 }
 
 function saveFixture() {
-  dataObj.value.DATA = [...fixtures.value];
+  // Handle both uppercase (DATA) and lowercase (data) field names
+  if (dataObj.value?.data !== undefined) {
+    dataObj.value.data = [...fixtures.value];
+  } else {
+    dataObj.value.DATA = [...fixtures.value];
+  }
   saveToCMS();
 }
 
 function saveAllChanges() {
-  dataObj.value.DATA = [...fixtures.value];
+  // Handle both uppercase (DATA) and lowercase (data) field names
+  if (dataObj.value?.data !== undefined) {
+    dataObj.value.data = [...fixtures.value];
+  } else {
+    dataObj.value.DATA = [...fixtures.value];
+  }
   saveToCMS();
 }
 
 function updateVideoMeta(updatedMeta) {
-  updateDataObj({ VIDEOMETA: { ...dataObj.value.VIDEOMETA, ...updatedMeta } });
+  // Handle both uppercase (VIDEOMETA) and lowercase (videoMeta) field names
+  const currentVideoMeta = dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
+  if (dataObj.value?.videoMeta !== undefined) {
+    updateDataObj({ videoMeta: { ...currentVideoMeta, ...updatedMeta } });
+  } else {
+    updateDataObj({ VIDEOMETA: { ...currentVideoMeta, ...updatedMeta } });
+  }
 }
 </script>

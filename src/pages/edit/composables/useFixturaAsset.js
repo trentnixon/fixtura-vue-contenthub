@@ -17,11 +17,31 @@ export function useFetchFixturaAsset() {
   // Computed property to get dataObj for editing
   const dataObj = computed(() => getDownloadData.value?.dataObj);
   const isFetching = ref(false);
-  const assetLinkID = computed(() =>
-    selectedFixturaAsset.value
-      ? Object.keys(selectedFixturaAsset.value)[0]
-      : null
-  );
+
+  // Extract assetLinkID from the structure
+  // The API returns: { assetLinkID: { downloads: [], aiArticles: [] } }
+  // NOT: { assetType: { assetLinkID: { downloads: [], aiArticles: [] } } }
+  const assetLinkID = computed(() => {
+    if (!selectedFixturaAsset.value) return null;
+
+    // The API returns assetLinkID directly as the first key
+    // Structure: { "cbef93e4...": { downloads: [], aiArticles: [] } }
+    const keys = Object.keys(selectedFixturaAsset.value);
+
+    if (keys.length === 0) {
+      console.warn(
+        "[useFixturaAsset] selectedFixturaAsset is empty:",
+        selectedFixturaAsset.value
+      );
+      return null;
+    }
+
+    // Get the first key, which is the assetLinkID
+    const linkID = keys[0];
+    console.log("[useFixturaAsset] Extracted assetLinkID:", linkID);
+
+    return linkID;
+  });
 
   // Fetch asset data by assetLinkID
   async function fetchAssetData() {
@@ -40,12 +60,17 @@ export function useFetchFixturaAsset() {
         route.query.groupingcategory &&
         route.query.asset
       ) {
-        console.log("[useFixturaAsset] Fetching assets from render...");
+        console.log("[useFixturaAsset] Fetching assets from render...", {
+          accountid: route.query.accountid,
+          renderid: route.query.renderid,
+          groupingcategory: route.query.groupingcategory,
+          asset: route.query.asset
+        });
         await rendersStore.fetchAssetsByRenderAction(
           Number(route.query.accountid),
           Number(route.query.renderid),
           route.query.groupingcategory,
-          route.query.asset
+          route.query.asset  // Pass the asset name as-is from URL
         );
         console.log(
           "[useFixturaAsset] Assets fetched:",
@@ -66,8 +91,10 @@ export function useFetchFixturaAsset() {
         );
       } else {
         console.warn(
-          "[useFixturaAsset] No valid assetLinkID found in selectedFixturaAsset:",
-          selectedFixturaAsset.value
+          "[useFixturaAsset] No valid assetLinkID found. selectedFixturaAsset:",
+          selectedFixturaAsset.value,
+          "route.query.asset:",
+          route.query.asset
         );
       }
     } catch (error) {

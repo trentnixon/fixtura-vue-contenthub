@@ -20,33 +20,15 @@
     <!-- Append: Edit Buttons -->
     <template v-slot:append>
       <!-- Edit Result Modal -->
-      <IconButton
-        :icon="icons.ui.metaData"
-        color="success"
-        @click="openModal('result')"
-        variant="tonal"
-        size="small"
-        tooltip="Edit Result"
-      />
+      <IconButton :icon="icons.ui.metaData" color="success" @click="openModal('result')" variant="tonal" size="small"
+        tooltip="Edit Result" />
       &nbsp;
       <!-- Edit Innings 1 Modal -->
-      <IconButton
-        :icon="icons.ui.home"
-        color="primary"
-        @click="openModal('innings1')"
-        variant="tonal"
-        size="small"
-        tooltip="Edit Home Team Innings"
-      />&nbsp;
+      <IconButton :icon="icons.ui.home" color="primary" @click="openModal('innings1')" variant="tonal" size="small"
+        tooltip="Edit Home Team Innings" />&nbsp;
       <!-- Edit Innings 2 Modal -->
-      <IconButton
-        :icon="icons.ui.away"
-        color="secondary"
-        @click="openModal('innings2')"
-        variant="tonal"
-        size="small"
-        tooltip="Edit Away Team Innings"
-      />
+      <IconButton :icon="icons.ui.away" color="secondary" @click="openModal('innings2')" variant="tonal" size="small"
+        tooltip="Edit Away Team Innings" />
     </template>
 
     <!-- Result Modal -->
@@ -59,38 +41,22 @@
           <v-container class="pa-0">
             <FormRowTwoItems>
               <template #description>
-                <TextInput
-                  label="Home Team"
-                  :value="fixture.homeTeam.name"
-                  :validations="[isValidName, isRequired]"
-                  @update="(val) => updateFixtureField('homeTeam.name', val)"
-                />
+                <TextInput label="Home Team" :value="fixture.homeTeam.name" :validations="[isValidName, isRequired]"
+                  @update="(val) => updateFixtureField('homeTeam.name', val)" />
               </template>
               <template #form-element>
-                <TextInput
-                  label="Home Team Score"
-                  :value="fixture.homeTeam.score"
-                  :validations="[isValidName]"
-                  @update="(val) => updateFixtureField('homeTeam.score', val)"
-                />
+                <TextInput label="Home Team Score" :value="fixture.homeTeam.score" :validations="[isValidScore]"
+                  @update="(val) => updateFixtureField('homeTeam.score', val)" />
               </template>
             </FormRowTwoItems>
             <FormRowTwoItems>
               <template #description>
-                <TextInput
-                  label="Away Team"
-                  :value="fixture.awayTeam.name"
-                  :validations="[isValidName, isRequired]"
-                  @update="(val) => updateFixtureField('awayTeam.name', val)"
-                />
+                <TextInput label="Away Team" :value="fixture.awayTeam.name" :validations="[isValidName, isRequired]"
+                  @update="(val) => updateFixtureField('awayTeam.name', val)" />
               </template>
               <template #form-element>
-                <TextInput
-                  label="Away Team Score"
-                  :value="fixture.awayTeam.score"
-                  :validations="[isValidName]"
-                  @update="(val) => updateFixtureField('awayTeam.score', val)"
-                />
+                <TextInput label="Away Team Score" :value="fixture.awayTeam.score" :validations="[isValidScore]"
+                  @update="(val) => updateFixtureField('awayTeam.score', val)" />
               </template>
             </FormRowTwoItems>
           </v-container>
@@ -98,28 +64,16 @@
           <!-- Fixture Details -->
           <v-container class="pa-0">
             <p class="card-title mb-4">Fixture Details</p>
-            <TextInput
-              label="Result"
-              :value="fixture.result"
-              :validations="[isValidName, isRequired]"
-              @update="(val) => updateFixtureField('result', val)"
-            />
+            <TextInput label="Result" :value="fixture.result" :validations="[isValidResult, isRequired]"
+              @update="(val) => updateFixtureField('result', val)" />
             <FormRowTwoItems>
               <template #description>
-                <TextInput
-                  label="Ground"
-                  :value="fixture.ground"
-                  :validations="[isValidName]"
-                  @update="(val) => updateFixtureField('ground', val)"
-                />
+                <TextInput label="Ground" :value="fixture.ground" :validations="[isValidName]"
+                  @update="(val) => updateFixtureField('ground', val)" />
               </template>
               <template #form-element>
-                <TextInput
-                  label="Date"
-                  :value="fixture.date"
-                  :validations="[isDate]"
-                  @update="(val) => updateFixtureField('date', val)"
-                />
+                <TextInput label="Date" :value="fixture.date" :validations="[isDate]"
+                  @update="(val) => updateFixtureField('date', val)" />
               </template>
             </FormRowTwoItems>
           </v-container>
@@ -137,29 +91,21 @@
       <v-card>
         <v-card-title>Home Team Editor</v-card-title>
         <v-card-text>
-          <PerformanceEditor
-            :performances="fixture.homeTeam.battingPerformances"
-            type="batting"
-            @update="
-              (updatedPerformances) =>
-                updateFixtureField(
-                  'homeTeam.battingPerformances',
-                  updatedPerformances
-                )
-            "
-          />
+          <PerformanceEditor :performances="fixture.homeTeam.battingPerformances" type="batting" @update="
+            (updatedPerformances) =>
+              updateFixtureField(
+                'homeTeam.battingPerformances',
+                updatedPerformances
+              )
+          " />
 
-          <PerformanceEditor
-            :performances="fixture.awayTeam.bowlingPerformances"
-            type="bowling"
-            @update="
-              (updatedPerformances) =>
-                updateFixtureField(
-                  'awayTeam.bowlingPerformances',
-                  updatedPerformances
-                )
-            "
-          />
+          <PerformanceEditor :performances="fixture.awayTeam.bowlingPerformances" type="bowling" @update="
+            (updatedPerformances) =>
+              updateFixtureField(
+                'awayTeam.bowlingPerformances',
+                updatedPerformances
+              )
+          " />
         </v-card-text>
         <v-card-actions>
           <v-btn text @click="closeModal('innings1')">Cancel</v-btn>
@@ -174,29 +120,21 @@
         <v-card-title>Away Team Editor</v-card-title>
         <v-card-text>
           <p class="card-title mb-4">Away Team Batting</p>
-          <PerformanceEditor
-            :performances="fixture.awayTeam.battingPerformances"
-            type="batting"
-            @update="
-              (updatedPerformances) =>
-                updateFixtureField(
-                  'awayTeam.battingPerformances',
-                  updatedPerformances
-                )
-            "
-          />
+          <PerformanceEditor :performances="fixture.awayTeam.battingPerformances" type="batting" @update="
+            (updatedPerformances) =>
+              updateFixtureField(
+                'awayTeam.battingPerformances',
+                updatedPerformances
+              )
+          " />
           <p class="card-title mb-4">Home Team Bowling</p>
-          <PerformanceEditor
-            :performances="fixture.homeTeam.bowlingPerformances"
-            type="bowling"
-            @update="
-              (updatedPerformances) =>
-                updateFixtureField(
-                  'homeTeam.bowlingPerformances',
-                  updatedPerformances
-                )
-            "
-          />
+          <PerformanceEditor :performances="fixture.homeTeam.bowlingPerformances" type="bowling" @update="
+            (updatedPerformances) =>
+              updateFixtureField(
+                'homeTeam.bowlingPerformances',
+                updatedPerformances
+              )
+          " />
         </v-card-text>
         <v-card-actions>
           <v-btn text @click="closeModal('innings2')">Cancel</v-btn>
@@ -214,9 +152,17 @@ import TextInput from "@/pages/edit/AssetEditPortals/formElements/TextInput.vue"
 import PerformanceEditor from "@/pages/edit/AssetEditPortals/formElements/PerformanceEditor.vue";
 import {
   isValidName,
+  isValidScore,
+  isValidResult,
   isRequired,
 } from "@/pages/edit/validations/genericValidations";
 import FormRowTwoItems from "@/components/forms/structure/FormRowTwoItems.vue";
+
+// Debug: Verify imports are functions
+console.log("[fixtureResultItem] isValidScore type:", typeof isValidScore);
+console.log("[fixtureResultItem] isValidResult type:", typeof isValidResult);
+console.log("[fixtureResultItem] isValidName type:", typeof isValidName);
+console.log("[fixtureResultItem] isRequired type:", typeof isRequired);
 
 const icons = inject("icons");
 
@@ -247,15 +193,8 @@ function closeModal(modal) {
 }
 
 // Update field in the fixture object
+// Don't mutate props directly - emit the change and let the parent handle it
 function updateFixtureField(key, value) {
-  const keys = key.split(".");
-  let obj = props.fixture;
-
-  for (let i = 0; i < keys.length - 1; i++) {
-    obj = obj[keys[i]];
-  }
-
-  obj[keys[keys.length - 1]] = value;
   emit("updateFixtureField", { index: props.index, key, value });
 }
 
@@ -270,10 +209,12 @@ function saveFixture() {
   cursor: grab;
   transition: transform 0.2s ease-in-out;
 }
+
 .v-list-item:active {
   cursor: grabbing;
   transform: scale(1.01);
 }
+
 .v-list-item:hover {
   background-color: #f5f5f5;
 }

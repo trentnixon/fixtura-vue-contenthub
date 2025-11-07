@@ -10,7 +10,8 @@
   <template v-else>
     <!-- Video Meta Data Section -->
     <VideoMetaDataEdit
-      :videoMeta="dataObj.VIDEOMETA"
+      v-if="dataObj && (dataObj.videoMeta || dataObj.VIDEOMETA)"
+      :videoMeta="dataObj.videoMeta || dataObj.VIDEOMETA"
       @update="updateVideoMeta"
     />
 
@@ -43,13 +44,20 @@ import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 const { fetchAssetData, dataObj, isFetching } = useFetchFixturaAsset();
 const { updateDataObj, saveToCMS, isSaving } = useSaveFixturaAsset();
 
-onMounted(() => {
-  fetchAssetData(); // Fetch asset data on component mount
+onMounted(async () => {
+  await fetchAssetData();
+  console.log("[LadderEdit] dataObj loaded:", dataObj.value);
 });
 
 // Update VideoMeta data within dataObj
 function updateVideoMeta(updatedMeta) {
-  updateDataObj({ VIDEOMETA: { ...dataObj.value.VIDEOMETA, ...updatedMeta } });
+  // Handle both uppercase (VIDEOMETA) and lowercase (videoMeta) field names
+  const currentVideoMeta = dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
+  if (dataObj.value?.videoMeta !== undefined) {
+    updateDataObj({ videoMeta: { ...currentVideoMeta, ...updatedMeta } });
+  } else {
+    updateDataObj({ VIDEOMETA: { ...currentVideoMeta, ...updatedMeta } });
+  }
 }
 
 // Save changes to CMS

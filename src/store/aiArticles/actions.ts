@@ -3,6 +3,18 @@ import { usePrivateAiArticleState } from "./private";
 import {
   fetchAiArticleFromService,
   fetchAiArticlesByRenderIdFromService,
+  triggerWeekendArticleFromService,
+  fetchWeekendArticleStatusFromService,
+  fetchWeekendArticleDownloadFromService,
+  saveArticleContext,
+  fetchArticleContext,
+  deleteArticleContext,
+  fetchArticleFixtures,
+  updateArticleFixtures,
+  type SaveContextResponse,
+  type FetchContextResponse,
+  type DeleteContextResponse,
+  type UpdateFixturesResponse,
 } from "./service";
 
 export async function fetchAiArticle(id: number) {
@@ -62,6 +74,209 @@ export async function fetchFullAiArticlesByIds(ids: number[]) {
     });
   } catch (error) {
     state.error = (error as Error).message;
+  } finally {
+    state.loading = false;
+  }
+}
+
+// Trigger AI weekend article creation
+export async function triggerWeekendArticleAction(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+}) {
+  const state = usePrivateAiArticleState();
+  try {
+    state.loading = true;
+    state.error = null;
+    state.status = "pending";
+    state.jobId = null; // No longer used, but keeping for compatibility
+    state.articleId = payload.articleId;
+
+    const res = await triggerWeekendArticleFromService(payload);
+    if (res.data) {
+      state.status = res.data.status;
+      // Store articleId from payload since it's already known
+      state.articleId = payload.articleId;
+    }
+    return res; // Return response for UI display
+  } catch (error) {
+    state.error = (error as Error).message;
+    state.status = "failed";
+    throw error; // Re-throw so component can handle
+  } finally {
+    state.loading = false;
+  }
+}
+
+// Poll current status with accountId, renderId, articleId
+export async function pollWeekendArticleStatus(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+}) {
+  const state = usePrivateAiArticleState();
+  try {
+    const res = await fetchWeekendArticleStatusFromService(payload);
+    if (res.data) {
+      state.status = res.data.status;
+      state.articleId = payload.articleId; // Already known from payload
+
+      // Handle locked state or other error conditions
+      if (res.data.locked) {
+        state.error =
+          "Article is locked (feedback limit reached or article too old)";
+      }
+
+      if (res.data.status === "failed") {
+        state.error = "Article generation failed";
+      }
+    }
+    return res;
+  } catch (error) {
+    state.error = (error as Error).message;
+    state.status = "failed";
+    throw error;
+  }
+}
+
+// Optionally fetch completed article data
+export async function fetchWeekendArticleDownload(articleId: number) {
+  return await fetchWeekendArticleDownloadFromService(articleId);
+}
+
+// ============================================================
+// Context Actions
+// ============================================================
+// Actions for managing article context via CMS API
+
+/**
+ * Save/update article context
+ * POST /ai-article/context
+ */
+export async function saveArticleContextAction(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+  context: string;
+}): Promise<SaveContextResponse> {
+  const state = usePrivateAiArticleState();
+  try {
+    state.loading = true;
+    state.error = null;
+
+    const response = await saveArticleContext(payload);
+    return response;
+  } catch (error) {
+    state.error = (error as Error).message;
+    throw error;
+  } finally {
+    state.loading = false;
+  }
+}
+
+/**
+ * Fetch existing article context
+ * POST /ai-article/context (without 'context' field triggers fetch mode)
+ */
+export async function fetchArticleContextAction(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+}): Promise<FetchContextResponse> {
+  const state = usePrivateAiArticleState();
+  try {
+    // Don't set loading state for fetch (optional, can be set if needed)
+    const response = await fetchArticleContext(payload);
+    return response;
+  } catch (error) {
+    state.error = (error as Error).message;
+    throw error;
+  }
+}
+
+/**
+ * Delete article context
+ * DELETE /ai-article/context
+ */
+export async function deleteArticleContextAction(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+}): Promise<DeleteContextResponse> {
+  const state = usePrivateAiArticleState();
+  try {
+    state.loading = true;
+    state.error = null;
+
+    const response = await deleteArticleContext(payload);
+    return response;
+  } catch (error) {
+    state.error = (error as Error).message;
+    throw error;
+  } finally {
+    state.loading = false;
+  }
+}
+
+// ============================================================
+// Fixture Update Actions
+// ============================================================
+
+/**
+ * Fetch article fixtures
+ * Note: Currently not implemented as a separate endpoint - fixtures are loaded
+ * directly from the article's ArticleDataForPrompt field.
+ */
+export async function fetchArticleFixturesAction(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+}): Promise<{ data: { fixtures: { prompt: string }[] } }> {
+  const state = usePrivateAiArticleState();
+  try {
+    state.loading = true;
+    state.error = null;
+
+    const response = await fetchArticleFixtures(payload);
+    return response;
+  } catch (error) {
+    state.error = (error as Error).message;
+    throw error;
+  } finally {
+    state.loading = false;
+  }
+}
+
+/**
+ * Update article fixtures
+ * POST /ai-article/fixtures
+ *
+ * Updates the articleDataForPrompt array for a specific article.
+ * Performs a full replacement of all fixtures - partial updates are not supported.
+ */
+export async function updateArticleFixturesAction(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+  fixtures: { prompt: string }[];
+}): Promise<UpdateFixturesResponse> {
+  const state = usePrivateAiArticleState();
+  try {
+    state.loading = true;
+    state.error = null;
+
+    const response = await updateArticleFixtures(payload);
+    return response;
+  } catch (error: any) {
+    // Handle error based on API spec error format
+    const errorMessage =
+      error?.response?.data?.error?.message ||
+      error?.response?.data?.error?.details ||
+      error?.message ||
+      "Failed to update fixtures";
+    state.error = errorMessage;
+    throw new Error(errorMessage);
   } finally {
     state.loading = false;
   }

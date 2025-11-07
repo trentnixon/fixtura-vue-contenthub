@@ -1,94 +1,349 @@
 <template>
   <div class="pa-4 text-body" :id="copyID">
-    <!-- Check if articles exist -->
-    <div v-if="topScorers && topScorers.length > 0">
-      <!-- Article Title -->
-      <h4 class="article-title">{{ title }}</h4>
-      <p class="article-subtitle">{{ subtitle }}</p>
+    <!-- Article View (default) -->
+    <div>
+      <div class="mb-4 d-flex align-center flex-wrap">
+        <!-- Locked state: Show lock icon and label -->
+        <template v-if="isLocked">
+          <v-icon color="warning" size="small">mdi-lock</v-icon>
+          <span class="text-caption ml-2">Article Locked</span>
+        </template>
 
-      <!-- Divider -->
-      <v-divider class="my-4"></v-divider>
+        <!-- Normal state: Show buttons -->
+        <template v-else>
+          <div class="d-flex align-center justify-space-between w-100" style="gap: 8px;">
+            <IconButton icon="mdi-file-document-edit" :tooltip="buttonText" size="small" color="primary"
+              :loading="isPending" :disabled="isPending" @click="showConfirmationDialog = true" />
+            <div class="d-flex align-center ms-auto" style="gap: 8px;">
+              <!-- Additional buttons shown when article is written -->
+              <template v-if="showAdditionalButtons">
+                <v-tooltip v-if="hasContext" location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-chip v-bind="props" color="orange" size="small" variant="tonal">
+                      <v-icon start size="x-small">mdi-check-circle</v-icon>
+                      Context
+                    </v-chip>
+                  </template>
+                  <span>Context has been added to this article</span>
+                </v-tooltip>
+                <IconButton icon="mdi-text-box-plus" tooltip="Add Context" size="small" color="success"
+                  :loading="isPending" :disabled="isPending" @click="onAddContext" />
+              </template>
+            </div>
+          </div>
+        </template>
 
-      <!-- Top Scorers List -->
-      <div v-for="(scorer, index) in topScorers" :key="index" class="mb-4">
-        <!-- Scorer Position and Name -->
-        <h5 class="article-title">
-          {{ scorer.position }}. {{ scorer.player_name }}
-        </h5>
-
-        <!-- Performance Stats -->
-        <p class="article-body">{{ scorer.performance_stats }}</p>
-
-        <!-- Article Body -->
-        <p class="article-body">{{ scorer.article_body }}</p>
-
-        <!-- Divider Between Scorers -->
-        <v-divider class="my-4"></v-divider>
+        <div v-if="requestError" class="ml-3 text-error">{{ requestError }}</div>
       </div>
-    </div>
-    <div v-else>
-      <p class="article-body">No top 5 performances available.</p>
+
+      <!-- Confirmation Dialog -->
+      <ConfirmationModal v-model="showConfirmationDialog" :title="`Confirm ${buttonText}`" :persistent="isPending"
+        :loading="isPending" :disabled="isPending" @confirm="confirmAndRequest">
+        <p v-if="articlePhase === 'initial' || articlePhase === 'postPending'">
+          Are you sure you want to request a new AI Top 5 article? This will generate a fresh article based on the
+          current
+          data.
+        </p>
+        <p v-else-if="articlePhase === 'articleWritten'">
+          Are you sure you want to request a review? This will generate a new version of the article based on your
+          feedback.
+        </p>
+        <p v-else>
+          Are you sure you want to proceed with this request?
+        </p>
+      </ConfirmationModal>
+
+      <!-- Context Dialog -->
+      <ContextDialog v-model="showContextDialog" v-model:contextText="contextText" :hasContext="hasContext"
+        :isSaving="isSavingContext" :error="contextError" :success="contextSuccess" :maxLength="CONTEXT_MAX_LENGTH"
+        :charCount="contextCharCount" :charRemaining="contextCharRemaining" :charCountClass="contextCharCountClass"
+        :isValid="isContextValid" :cancelLabel="cancelButtonLabel" @save="handleSaveContext"
+        @delete="handleDeleteContext" @close="closeContextDialog" />
+
+      <!-- Article Display -->
+      <Top5Display :articleStatus="articleStatus" :formattedArticles="formattedArticles" :isRequesting="isPending"
+        :isLocked="isLocked" @request-writeup="showConfirmationDialog = true" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from "vue";
-import { Top5ListicleArticle } from "@/types/ArticleTypes";
-// Define props, accepting the article and copyID
-const props = defineProps({
-  articles: Array,
-  copyID: String,
-});
+import { computed, defineExpose, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import {
+  pollWeekendArticleStatus,
+  triggerWeekendArticleAction,
+} from "@/store/aiArticles/actions";
+import { useArticleFeedback } from "@/composables/aiArticles/useArticleFeedback";
+import { useArticleStatus } from "@/composables/aiArticles/useArticleStatus";
+import { useArticlePolling } from "@/composables/aiArticles/useArticlePolling";
+import { FlattenedArticle } from "@/types/ArticleTypes";
+import { useTop5Formatting } from "./_composables/useTop5Formatting";
+import { useArticleContext } from "./_composables/useArticleContext";
+import IconButton from "@/components/primitives/buttons/IconButton.vue";
+import ConfirmationModal from "@/components/primitives/modals/ConfirmationModal.vue";
+import ContextDialog from "./_components/ContextDialog.vue";
+import Top5Display from "./_components/Top5Display.vue";
 
-// Extract the structured data
-const formattedArticles = computed(() => {
-  const aiArticles = (props.articles || []) as Top5ListicleArticle[];
-  return aiArticles.map((article) => ({
-    title: article.structuredOutput?.title || "No Title",
-    subtitle: article.structuredOutput?.subtitle || "No Subtitle",
-    topScorers: article.structuredOutput?.top_scorers || [],
-    socialMediaPost: article.structuredOutput?.social_media_post || "",
-    twitterPost: article.structuredOutput?.twitter_post || "",
-  }));
-});
+// Define the props
+const props = defineProps<{
+  articles: FlattenedArticle[];
+  copyID?: string;
+  accountId?: number;
+  renderId?: number;
+}>();
 
-// Use the first article (assuming a single Top 5 list)
-const article = computed(() => formattedArticles.value[0]);
+const route = useRoute();
+const router = useRouter();
 
-// Extract title, subtitle, and top scorers
-const title = computed(() => article.value?.title);
-const subtitle = computed(() => article.value?.subtitle);
-const topScorers = computed(() => article.value?.topScorers);
-
-// Copy function for the article content
-async function copyArticle() {
-  try {
-    let content = `${title.value}\n\n${subtitle.value}\n\n${topScorers.value
-      .map(
-        (scorer) => `
-${scorer.position}. ${scorer.player_name}
-${scorer.performance_stats}
-${scorer.article_body}
-`
-      )
-      .join("\n")}`;
-
-    await navigator.clipboard.writeText(content);
-    //console.log("Top 5 article copied to clipboard.");
-  } catch (err) {
-    console.error("Failed to copy Top 5 article:", err);
-    throw err;
-  }
+// Function to trigger data sync on render (refresh page data)
+function triggerDataSync() {
+  router.go(0); // Reload current page
 }
 
+// Initialize Top5 formatting composable
+const articlesRef = computed(() => props.articles);
+const {
+  formattedArticles,
+  hasArticle,
+  copyArticle: copyArticleFromComposable,
+} = useTop5Formatting(articlesRef);
+
+// Display helpers
+const accountIdDisplay = computed<number | null>(() => {
+  const first = props.articles?.[0];
+  if (first && typeof (first as FlattenedArticle & { accountId?: number }).accountId === "number") {
+    const accountId = (first as FlattenedArticle & { accountId?: number }).accountId;
+    return accountId ?? null;
+  }
+  const fromRoute = Number(route.params.accountid);
+  return Number.isFinite(fromRoute) ? fromRoute : null;
+});
+
+const renderIdDisplay = computed<number | null>(() => {
+  const fromRoute = Number(route.params.renderid);
+  return Number.isFinite(fromRoute) ? fromRoute : null;
+});
+
+// copyArticle is now provided by useTop5Formatting composable
+const copyArticle = copyArticleFromComposable;
+
 // Expose the copyArticle method to the parent
-// eslint-disable-next-line no-undef
 defineExpose({
   copyArticle,
 });
-</script>
 
-<style scoped>
-/* Add any specific styling if required */
-</style>
+// Initialize composables
+const { feedbackCount, isLocked, updateFeedback } = useArticleFeedback();
+const { articleStatus, articlePhase } = useArticleStatus(hasArticle, feedbackCount);
+const { startPolling, stopPolling } = useArticlePolling();
+
+// Component state
+const isPending = ref(false);
+const requestError = ref("");
+const triggerResponse = ref<unknown>(null);
+const showConfirmationDialog = ref(false);
+
+// Initialize article context composable
+const {
+  showContextDialog,
+  contextText,
+  isSavingContext,
+  contextError,
+  contextSuccess,
+  hasContext,
+  CONTEXT_MAX_LENGTH,
+  contextCharCount,
+  contextCharRemaining,
+  isContextValid,
+  contextCharCountClass,
+  cancelButtonLabel,
+  onAddContext,
+  fetchExistingContext,
+  closeContextDialog,
+  handleSaveContext,
+  handleDeleteContext,
+} = useArticleContext(
+  () => accountIdDisplay.value,
+  () => renderIdDisplay.value,
+  () => resolvedArticleId.value
+);
+
+// Button text based on phase
+const buttonText = computed(() => {
+  const phase = articlePhase.value;
+  const status = articleStatus.value;
+
+  if (phase === "pending") {
+    if (status === "writing") return "Writing…";
+    if (status === "pending") return "Pending…";
+    return "Processing…";
+  }
+
+  if (phase === "articleWritten") {
+    return "Request a Review";
+  }
+
+  // Initial or postPending
+  return "Request Write-up";
+});
+
+// Show additional buttons (Add Context) whenever article is NOT locked
+const showAdditionalButtons = computed(() => {
+  return !isLocked.value;
+});
+
+// Watch articleStatus and handle state changes
+watch(articleStatus, (newStatus, oldStatus) => {
+  // Detect transition from pending to completed for data sync
+  if (oldStatus === "pending" && newStatus === "completed") {
+    triggerDataSync();
+  }
+
+  // Only set isPending for actual polling state (pending only)
+  isPending.value = newStatus === "pending";
+
+  // Stop polling if status is NOT pending
+  if (newStatus !== "pending") {
+    stopPolling();
+  }
+});
+
+// Resolve IDs for trigger payload
+const resolvedArticleId = computed<number | null>(() => {
+  const first = props.articles?.[0];
+  return first?.id ?? null;
+});
+
+// Confirmation dialog handler
+function confirmAndRequest() {
+  showConfirmationDialog.value = false;
+  onRequestWriteup();
+}
+
+async function onRequestWriteup() {
+  try {
+    requestError.value = "";
+    triggerResponse.value = null;
+    isPending.value = true;
+
+    const accountId = accountIdDisplay.value;
+    const renderId = renderIdDisplay.value;
+    const articleId = resolvedArticleId.value;
+
+    if (
+      typeof accountId !== "number" ||
+      typeof renderId !== "number" ||
+      typeof articleId !== "number"
+    ) {
+      throw new Error("Missing required identifiers (accountId, renderId, articleId)");
+    }
+
+    // Capture and display the trigger response
+    // Note: Using weekend article action for now - replace with Top5-specific action when available
+    const response = await triggerWeekendArticleAction({ accountId, renderId, articleId });
+    triggerResponse.value = response;
+
+    // Check status endpoint to determine if polling is needed
+    const statusRes = await pollWeekendArticleStatus({ accountId, renderId, articleId });
+
+    if (statusRes.data) {
+      const status = statusRes.data.status;
+
+      // Update feedback from response
+      updateFeedback(statusRes.data);
+
+      // Only start polling if status is pending
+      if (status === "pending") {
+        startPolling(
+          { accountId, renderId, articleId },
+          (data) => {
+            // Update feedback on each poll
+            updateFeedback(data);
+          },
+          () => {
+            // On complete - data sync will be handled by watcher
+          },
+          (error) => {
+            requestError.value = error;
+            isPending.value = false;
+          }
+        );
+      } else {
+        // Status is already completed/failed, don't poll
+        isPending.value = false;
+        if (status === "failed") {
+          requestError.value = statusRes.data.locked
+            ? "Article is locked (feedback limit reached or article too old)"
+            : "Article generation failed";
+        }
+      }
+    }
+  } catch (e: unknown) {
+    const error = e as Error;
+    requestError.value = error?.message || "Unable to trigger write-up";
+    isPending.value = false;
+  }
+}
+
+// Check status on mount and resume polling if needed
+onMounted(async () => {
+  const accountId = accountIdDisplay.value;
+  const renderId = renderIdDisplay.value;
+  const articleId = resolvedArticleId.value;
+
+  if (
+    typeof accountId !== "number" ||
+    typeof renderId !== "number" ||
+    typeof articleId !== "number"
+  ) {
+    return; // Can't check status without IDs
+  }
+
+  try {
+    // Check current status
+    const statusRes = await pollWeekendArticleStatus({ accountId, renderId, articleId });
+
+    if (statusRes.data) {
+      const status = statusRes.data.status;
+
+      // Update feedback from response
+      updateFeedback(statusRes.data);
+
+      // If pending, automatically start polling
+      if (status === "pending") {
+        isPending.value = true;
+        startPolling(
+          { accountId, renderId, articleId },
+          (data) => {
+            // Update feedback on each poll
+            updateFeedback(data);
+          },
+          () => {
+            // On complete - data sync will be handled by watcher
+          },
+          (error) => {
+            requestError.value = error;
+            isPending.value = false;
+          }
+        );
+      } else if (status === "failed") {
+        // Article failed, show error
+        if (statusRes.data.locked) {
+          requestError.value = "Article is locked (feedback limit reached or article too old)";
+        } else {
+          requestError.value = "Article generation failed";
+        }
+      }
+    }
+
+    // Fetch existing context if article exists
+    if (articleId) {
+      await fetchExistingContext();
+    }
+  } catch (e: unknown) {
+    // Silently fail on mount - don't show error unless user triggers
+    console.warn("Failed to check article status on mount:", e);
+  }
+});
+</script>

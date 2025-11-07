@@ -91,6 +91,13 @@ export async function fetchAssetsByRenderAction(
     state.loading = true;
     state.error = null;
 
+    console.log("[fetchAssetsByRenderAction] Calling API with:", {
+      userID,
+      renderID,
+      groupingCategory,
+      assetType,
+    });
+
     // Pass decoded grouping category - will be encoded in the service layer
     const response = await fetchAssetsByRender(
       userID,
@@ -99,13 +106,26 @@ export async function fetchAssetsByRenderAction(
       assetType
     );
 
+    console.log("[fetchAssetsByRenderAction] API Response:", response);
+
     if (response && response.data) {
       state.selectedFixturaAsset = response.data; // Set the assets in the state
+      console.log(
+        "[fetchAssetsByRenderAction] Assets set in state:",
+        state.selectedFixturaAsset
+      );
     } else {
-      throw new Error("Invalid assets data structure");
+      console.warn(
+        "[fetchAssetsByRenderAction] Invalid response structure:",
+        response
+      );
+      state.selectedFixturaAsset = null;
+      throw new Error("Invalid assets data structure - response.data is null or undefined");
     }
   } catch (error) {
+    console.error("[fetchAssetsByRenderAction] Error:", error);
     state.error = `Failed to fetch assets: ${(error as Error).message}`;
+    state.selectedFixturaAsset = null;
   } finally {
     state.loading = false;
   }

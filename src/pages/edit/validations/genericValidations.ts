@@ -1,11 +1,32 @@
 // src/validations/genericValidations.ts
 
-// Validate a name field
+// Validate a name field (allows forward slashes for locations like "Nelson Park / 3")
 export function isValidName(name: string): true | string {
-  const nameRegex = /^[a-zA-Z0-9\s'()-]+$/;
-  return nameRegex.test(name)
+  if (name === null || name === undefined) return true; // Allow empty/null values
+  const nameRegex = /^[a-zA-Z0-9\s'()/-]+$/;
+  return nameRegex.test(String(name))
     ? true
-    : "The name must only contain letters, numbers, spaces, hyphens, apostrophes, and parentheses.";
+    : "The name must only contain letters, numbers, spaces, hyphens, apostrophes, parentheses, and forward slashes.";
+}
+
+// Validate a score field (allows numbers and forward slashes for cricket scores like "8/303")
+export function isValidScore(score: string): true | string {
+  if (score === null || score === undefined) return true; // Allow empty/null values
+  const scoreRegex = /^[0-9/]+$/;
+  return scoreRegex.test(String(score))
+    ? true
+    : "The score must only contain numbers and forward slashes (e.g., 8/303).";
+}
+
+// Validate a result field (allows common characters found in cricket match results)
+// Allows letters, numbers, spaces, hyphens, apostrophes, parentheses, periods, commas, question marks, exclamation marks, and other common punctuation
+export function isValidResult(result: string): true | string {
+  if (result === null || result === undefined) return true; // Allow empty/null values
+  // More permissive regex for result text - allows common punctuation used in match results
+  const resultRegex = /^[a-zA-Z0-9\s'().,-/?!]+$/;
+  return resultRegex.test(String(result))
+    ? true
+    : "The result must only contain letters, numbers, spaces, and common punctuation.";
 }
 
 // Validate a number field (integer or decimal)

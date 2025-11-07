@@ -70,16 +70,44 @@ export async function fetchAssetsByRender(
   try {
     // Encode the grouping category to handle special characters and forward slashes
     const encodedCategory = encodeURIComponent(groupingCategory);
-    const response = await fetcher.get<ApiResponse<RenderAssetsResponse>>(
-      `/render/fixturaGetAssetsFromRender/${userID}/${renderID}/${encodedCategory}/${assetType}`
-    );
+    const url = `/render/fixturaGetAssetsFromRender/${userID}/${renderID}/${encodedCategory}/${assetType}`;
+
+    console.log("[fetchAssetsByRender] API URL:", url);
+    console.log("[fetchAssetsByRender] Request params:", {
+      userID,
+      renderID,
+      groupingCategory,
+      encodedCategory,
+      assetType,
+    });
+
+    const response = await fetcher.get<ApiResponse<RenderAssetsResponse>>(url);
+
+    console.log("[fetchAssetsByRender] Raw API response:", response);
+    console.log("[fetchAssetsByRender] Response data:", response?.data);
 
     return response;
   } catch (error) {
     console.error(
-      `Error fetching assets for user ${userID}, render ${renderID}, grouping ${groupingCategory}, assetType ${assetType}:`,
+      `[fetchAssetsByRender] Error fetching assets for user ${userID}, render ${renderID}, grouping ${groupingCategory}, assetType ${assetType}:`,
       error
     );
+
+    // Log more details about the error
+    if (error instanceof Error) {
+      console.error("[fetchAssetsByRender] Error message:", error.message);
+      console.error("[fetchAssetsByRender] Error stack:", error.stack);
+    }
+
+    // Check if it's an axios error with response data
+    if ((error as any)?.response) {
+      console.error("[fetchAssetsByRender] API Error Response:", {
+        status: (error as any).response.status,
+        statusText: (error as any).response.statusText,
+        data: (error as any).response.data,
+      });
+    }
+
     throw new Error("Failed to fetch assets.");
   }
 }

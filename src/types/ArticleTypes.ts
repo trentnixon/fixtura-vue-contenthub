@@ -1,117 +1,92 @@
-// src/types/ArticleTypes.ts
+import { ArticleStatusData } from "@/store/aiArticles/service";
 
-export interface ArticleComponent {
-  copyArticle: () => Promise<void>;
-}
-
-export interface TopScorer {
-  position: number;
-  player_name: string;
-  matches: number;
-  performance_stats: string;
-  article_body: string;
-  highlights?: string;
-}
-
-export interface StructuredOutput {
+/**
+ * Formatted article structure for display
+ */
+export interface FormattedArticle {
+  id: number;
+  name: string;
   title: string;
   subtitle: string;
-  top_scorers: TopScorer[];
-  social_media_post?: string;
-  twitter_post?: string;
-}
-
-export interface Top5ListicleArticle {
-  type: "CricketTop5Bowling" | "CricketTop5Batting";
-  structuredOutput: StructuredOutput;
-}
-
-export interface League {
-  title: string;
-  subtitle: string;
-  article_body: string;
-}
-
-export interface LadderSummaryStructuredOutput {
-  leagues: League[];
-}
-
-export interface LadderSummaryArticle {
-  type: "CricketLadder";
-  structuredOutput: LadderSummaryStructuredOutput;
-}
-
-export interface Fixture {
-  match: string;
-  date: string;
-  time: string;
-  ground: string;
-  summary: string;
-}
-
-export interface UpcomingFixturesStructuredOutput {
-  fixtures: Fixture[];
-}
-
-export interface UpcomingFixturesArticle {
-  type: "CricketUpcoming";
-  structuredOutput: UpcomingFixturesStructuredOutput;
-}
-
-export interface WeekendResult {
-  title: string;
-  subtitle: string;
-  article_body: string;
+  articleBody: string;
   highlights: string;
   team1: string;
   team2: string;
   score1: string;
   score2: string;
   winner: string;
+  assetType: string;
+  assetCategory: string;
+  hasError: boolean;
+  errorHandler: any | null;
+  hasCompleted: boolean;
+  forceRerender: boolean;
+  compositionID: string;
+  articleDataForPrompt?: { prompt: string }[] | null; // Article-level context data (array of prompt objects)
 }
 
-export interface WeekendWrapUpStructuredOutput {
-  results: WeekendResult[];
-}
-
-export interface WeekendWrapUpArticle {
-  type: "CricketResults";
-  structuredOutput: WeekendWrapUpStructuredOutput;
-}
-
-// src/types/WeekendSingleGameTypes.ts
-
-export interface ImageAsset {
-  url: string;
-}
-
-export interface WeekendSingleGameResult {
+/**
+ * Flattened article structure as returned from the API/backend
+ * This is the structure that articles have when passed to components
+ */
+export interface FlattenedArticle {
   id: number;
-  CompositionID: string;
-  grouping_category: string;
-  structuredOutput: {
-    match_identifier: string;
-    team1: string;
-    team2: string;
-    score1: string;
-    score2: string;
-    winner: string;
-    title: string;
-    subtitle: string;
-    article_body: string;
-    highlights: string;
-    social_media_post?: string;
-    twitter_post?: string;
-  };
+  name: string;
+  hasCompleted: boolean;
+  forceRerender: boolean;
+  hasError: boolean;
+  errorHandler: any | null;
+  groupingCategory: string;
+  assetLinkID: string;
+  assetType: string | null;
+  assetCategory: string | null;
+  structuredOutput: any; // Parsed JSON from structuredOutput field
+  compositionID: string;
+  articleEditor: string;
+  ArticleDataForPrompt: { prompt: string }[] | null;
 }
 
-export interface WeekendSingleGameProps {
-  imageAssets: ImageAsset[];
-  formattedArticles: WeekendSingleGameResult[];
+/**
+ * Article IDs required for API calls
+ */
+export interface ArticleIds {
+  accountId: number | null;
+  renderId: number | null;
+  articleId: number | null;
 }
 
-export type Article =
-  | Top5ListicleArticle
-  | LadderSummaryArticle
-  | UpcomingFixturesArticle
-  | WeekendWrapUpArticle;
+/**
+ * Article lifecycle phases
+ */
+export type ArticlePhase =
+  | "initial"
+  | "pending"
+  | "postPending"
+  | "articleWritten";
+
+/**
+ * Article status types
+ */
+export type ArticleStatus =
+  | "idle"
+  | "waiting"
+  | "pending"
+  | "writing"
+  | "completed"
+  | "failed";
+
+/**
+ * Helper function to update feedback from API response
+ */
+export function updateFeedbackFromResponse(
+  data: ArticleStatusData,
+  feedbackCount: { value: number },
+  feedbackLimit: { value: number }
+): void {
+  if (typeof data.feedback?.count === "number") {
+    feedbackCount.value = data.feedback.count;
+  }
+  if (typeof data.feedback?.limit === "number") {
+    feedbackLimit.value = data.feedback.limit;
+  }
+}

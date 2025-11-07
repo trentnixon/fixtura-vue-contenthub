@@ -9,16 +9,10 @@
 
   <template v-else>
     <!-- Video Meta Data Section -->
-    <VideoMetaDataEdit
-      :videoMeta="dataObj.VIDEOMETA"
-      @update="updateVideoMeta"
-    />
+    <VideoMetaDataEdit v-if="dataObj && (dataObj.videoMeta || dataObj.VIDEOMETA)"
+      :videoMeta="dataObj.videoMeta || dataObj.VIDEOMETA" @update="updateVideoMeta" />
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton
-        color="success"
-        @click="saveAllChanges"
-        label="Update Meta Data"
-      />
+      <PrimaryButton color="success" @click="saveAllChanges" label="Update Meta Data" />
     </div>
 
     <!-- Draggable Top Players List -->
@@ -27,25 +21,15 @@
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
         <Container @drop="onDrop">
           <Draggable v-for="(player, index) in players" :key="index">
-            <TopPlayerItem
-              :player="player"
-              :index="index"
-              :lastIndex="players.length - 1"
-              :assetType="assetType"
-              @updatePlayerField="updatePlayer"
-              @savePlayer="savePlayer"
-            />
+            <TopPlayerItem :player="player" :index="index" :lastIndex="players.length - 1" :assetType="assetType"
+              @updatePlayerField="updatePlayer" @savePlayer="savePlayer" />
           </Draggable>
         </Container>
       </v-card>
     </v-card>
 
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton
-        color="success"
-        @click="saveAllChanges"
-        label="Save All Changes"
-      />
+      <PrimaryButton color="success" @click="saveAllChanges" label="Save All Changes" />
     </div>
   </template>
 </template>
@@ -74,9 +58,13 @@ const isAssociation = computed(() => accountState.getAccountType === 2);
 
 // Load players on component mount
 onMounted(async () => {
+  console.log("[Top5Edit] assetType prop:", props.assetType);
   await fetchAssetData();
-  if (dataObj.value.DATA) {
-    players.value = [...dataObj.value.DATA];
+  console.log("[Top5Edit] dataObj loaded:", dataObj.value);
+  // Handle both uppercase (DATA) and lowercase (data) field names
+  const playersData = dataObj.value?.data || dataObj.value?.DATA;
+  if (playersData && Array.isArray(playersData)) {
+    players.value = [...playersData];
   }
   if (isAssociation.value) {
     await accountState.fetchRelatedClubsAction(
@@ -99,21 +87,53 @@ function onDrop(dropResult) {
 
 function updatePlayer({ index, key, newValue }) {
   if (players.value[index]) {
-    players.value[index][key] = newValue;
+    // Handle nested keys if needed
+    const keys = key.split(".");
+    let obj = players.value[index];
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!obj[keys[i]]) {
+        obj[keys[i]] = {};
+      }
+      obj = obj[keys[i]];
+    }
+
+    obj[keys[keys.length - 1]] = newValue;
+
+    // Force reactivity by reassigning the array (this ensures Vue tracks the change)
+    players.value = [...players.value];
+
+    console.log("[Top5Edit] Updated player:", { index, key, newValue, player: players.value[index] });
   }
 }
 
 function savePlayer(index) {
-  dataObj.value.DATA = [...players.value];
+  // Handle both uppercase (DATA) and lowercase (data) field names
+  if (dataObj.value?.data !== undefined) {
+    dataObj.value.data = [...players.value];
+  } else {
+    dataObj.value.DATA = [...players.value];
+  }
   saveToCMS();
 }
 
 function saveAllChanges() {
-  dataObj.value.DATA = [...players.value];
+  // Handle both uppercase (DATA) and lowercase (data) field names
+  if (dataObj.value?.data !== undefined) {
+    dataObj.value.data = [...players.value];
+  } else {
+    dataObj.value.DATA = [...players.value];
+  }
   saveToCMS();
 }
 
 function updateVideoMeta(updatedMeta) {
-  updateDataObj({ VIDEOMETA: { ...dataObj.value.VIDEOMETA, ...updatedMeta } });
+  // Handle both uppercase (VIDEOMETA) and lowercase (videoMeta) field names
+  const currentVideoMeta = dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
+  if (dataObj.value?.videoMeta !== undefined) {
+    updateDataObj({ videoMeta: { ...currentVideoMeta, ...updatedMeta } });
+  } else {
+    updateDataObj({ VIDEOMETA: { ...currentVideoMeta, ...updatedMeta } });
+  }
 }
 </script>

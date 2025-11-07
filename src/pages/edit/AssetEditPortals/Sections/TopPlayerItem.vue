@@ -148,15 +148,33 @@ const isAssociation = computed(() => accountState.getAccountType === 2);
 const getClubLogos = computed(() => accountState.getRelatedClubsLogos || []);
 
 // Determine if the asset type is batting or bowling
-const isBatting = computed(() => props.assetType === "CricketTop5Batting");
-const isBowling = computed(() => props.assetType === "CricketTop5Bowling");
+// Handle both lowercase (from processEdit.vue) and original case variations
+const isBatting = computed(() => {
+  if (!props.assetType) {
+    console.warn("[TopPlayerItem] assetType prop is missing");
+    return false;
+  }
+  const assetTypeLower = props.assetType.toLowerCase();
+  const isBattingType = assetTypeLower === "crickettop5batting";
+  console.log("[TopPlayerItem] assetType:", props.assetType, "isBatting:", isBattingType);
+  return isBattingType;
+});
+const isBowling = computed(() => {
+  if (!props.assetType) return false;
+  const assetTypeLower = props.assetType.toLowerCase();
+  return assetTypeLower === "crickettop5bowling";
+});
 
 // Calculate the primary stat for display (runs for batting, wickets for bowling)
-const primaryStat = computed(() =>
-  isBatting.value
-    ? `${props.player.runs} Runs`
-    : `${props.player.wickets} Wickets`
-);
+const primaryStat = computed(() => {
+  if (isBatting.value) {
+    const runs = props.player?.runs ?? 0;
+    return `${runs} Runs`;
+  } else {
+    const wickets = props.player?.wickets ?? 0;
+    return `${wickets} Wickets`;
+  }
+});
 
 // Helper to find the selected club name
 const getSelectedClubName = computed(() => {

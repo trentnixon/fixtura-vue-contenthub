@@ -1,45 +1,27 @@
 <template>
-  <v-app-bar
-    color="bg-surface"
-    scroll-behavior="elevate"
-    class="border-b-sm px-4"
-  >
+  <v-app-bar color="bg-surface" scroll-behavior="elevate" class="border-b-sm px-4">
     <template v-if="!drawer">
       <v-app-bar-nav-icon @click="toggleDrawer" variant="text" />
     </template>
 
     <!-- Icon Buttons -->
-    <IconButton
-      v-if="!$vuetify.display.smAndDown"
-      :icon="icons.navigation.home"
-      class="mx-1"
-      color="cta1"
-      @click="navigateTo('https://www.fixtura.com.au/', true)"
-    />
+    <IconButton v-if="!$vuetify.display.smAndDown" :icon="icons.navigation.home" class="mx-1" color="cta1"
+      @click="navigateTo('https://www.fixtura.com.au/', true)" />
 
     <template v-if="accountId && !$vuetify.display.smAndDown">
-      <IconButton
-        :icon="icons.bundles.bundle"
-        class="mx-1"
-        color="cta1"
-        @click="navigateTo()"
-      />
+      <IconButton :icon="icons.bundles.bundle" class="mx-1" color="cta1" @click="navigateTo()" />
     </template>
     <v-spacer></v-spacer>
-    <QuickSelectAssetType />
-    <QuickSelectGrouping />
+    <QuickSelectAssetType v-if="!isEditMode" />
+    <QuickSelectGrouping v-if="!isEditMode" />
 
-    <v-avatar
-      v-if="!$vuetify.display.smAndDown"
-      size="36px"
-      image="/img/icons/favicon-32x32.png"
-      rounded="0"
-    ></v-avatar>
+    <v-avatar v-if="!$vuetify.display.smAndDown" size="36px" image="/img/icons/favicon-32x32.png"
+      rounded="0"></v-avatar>
   </v-app-bar>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, inject } from "vue";
+import { defineProps, defineEmits, inject, computed } from "vue";
 const icons = inject("icons");
 import { useRouter, useRoute } from "vue-router";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
@@ -64,6 +46,11 @@ defineProps({
 
 // Consts
 const accountId = Number(route.params.accountid);
+
+// Check if we're in edit mode
+const isEditMode = computed(() => {
+  return route.name === "processEdit" || route.path.includes("/edit/");
+});
 
 const emits = defineEmits(["toggle-drawer"]);
 

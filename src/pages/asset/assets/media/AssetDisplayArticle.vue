@@ -22,7 +22,7 @@
       <!-- Assign a ref to the child component -->
       <v-sheet class="overflow-y-auto" :max-height="maxHeight">
         <component :is="assetComponent" :articles="Array.isArray(articles) ? articles : []" :copyID="generateCopyID()"
-          ref="articleComponent" />
+          ref="articleComponent" :accountId="route.params.accountid" :renderId="route.params.renderid" />
       </v-sheet>
     </template>
 
@@ -92,6 +92,7 @@ const generateCopyID = () => {
   return `copy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 };
 // Watch for changes in the articles prop and update the loading state
+console.log("[articles]", props.articles);
 watch(
   () => props.articles,
   () => {
@@ -124,13 +125,13 @@ function handleCopy() {
   }
 }
 
-function navigateToEdit() {
+/* function navigateToEdit() {
   router.push({
     name: "editAIWriteup",
     params: { ...route.params },
   });
 }
-
+ */
 const maxHeight = computed(() => {
   switch (name.value) {
     case "xs":

@@ -5,11 +5,11 @@
     </v-col>
 
     <!-- Edit button temporarily disabled -->
-    <!-- <v-col class="d-flex justify-end" cols="12" sm="4" v-if="!$vuetify.display.xs">
+    <v-col class="d-flex justify-end" cols="12" sm="4" v-if="!$vuetify.display.xs">
       <div class="d-flex justify-end my-4" v-if="asset !== 'CricketRoster'">
         <PrimaryButton color="success" label="Edit" @click="navigateToEdit()" :icon="icons.ui.edit" size="small" />
       </div>
-    </v-col> -->
+    </v-col>
   </v-row>
 </template>
 <script setup>

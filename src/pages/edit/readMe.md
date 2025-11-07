@@ -14,12 +14,23 @@ Handles asset editing functionality for Fixtura assets including cricket results
 
 Asset-specific edit components:
 
-- `WeekendResultsEdit.vue`: edits fixture results with drag-and-drop reordering
-- `LadderEdit.vue`: edits ladder/standings data
-- `Top5Edit.vue`: edits top 5 player statistics (batting/bowling)
-- `UpComingFixturesEdit.vue`: edits upcoming fixtures
+- `WeekendResultsEdit.vue`: edits fixture results with drag-and-drop reordering, handles case-insensitive data access (`DATA`/`data`, `VIDEOMETA`/`videoMeta`)
+- `LadderEdit.vue`: edits ladder/standings data, handles case-insensitive data access
+- `Top5Edit.vue`: edits top 5 player statistics (batting/bowling), handles case-insensitive asset type matching and data access
+- `UpComingFixturesEdit.vue`: edits upcoming fixtures, handles case-insensitive data access
 - `Sections/`: reusable section components (VideoMetaDataEdit, fixtureResultItem, TopPlayerItem, upcomingFixtureItem)
 - `formElements/`: input components (ColorInput, DropdownInput, ImageInput, MediaImageInput, TextInput, PerformanceEditor)
+
+All edit portals support both uppercase and lowercase field names for backward compatibility and consistent data handling.
+
+## Navigation
+
+- Edit mode detection: Navigation components (`TopNavigation.vue`) automatically hide quick select buttons (asset & category) when in edit mode (`route.name === "processEdit"` or `route.path.includes("/edit/")`).
+
+## Rerender Functionality
+
+- `CricketResultSingle` assets: Added rerender ("Apply Edits") functionality to `WeekendSingleGameResult.vue` component with loading states during processing.
+- All other asset types: Rerender functionality provided through `AssetDefaultView` component which uses `AssetStateRenderer` to handle video and image gallery rerendering.
 
 ## Relations
 

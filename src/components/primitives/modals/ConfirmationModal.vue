@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="isVisible" max-width="500px">
+    <v-dialog v-model="isVisible" max-width="500px" :persistent="persistent">
         <v-card>
             <v-card-title class="text-h5">
                 {{ title }}
@@ -11,8 +11,17 @@
 
             <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary" @click="confirm">Confirm</v-btn>
-                <v-btn color="secondary" @click="close">Cancel</v-btn>
+                <SecondaryButton
+                    label="Cancel"
+                    @click="close"
+                    :disabled="loading || disabled"
+                />
+                <PrimaryButton
+                    label="Confirm"
+                    @click="confirm"
+                    :loading="loading"
+                    :disabled="loading || disabled"
+                />
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -20,6 +29,9 @@
 
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
+import PrimaryButton from '@/components/primitives/buttons/PrimaryButton.vue';
+import SecondaryButton from '@/components/primitives/buttons/SecondaryButton.vue';
+
 const props = defineProps({
     modelValue: {
         type: Boolean,
@@ -29,23 +41,43 @@ const props = defineProps({
         type: String,
         default: 'Confirmation',
     },
+    persistent: {
+        type: Boolean,
+        default: false,
+    },
+    loading: {
+        type: Boolean,
+        default: false,
+    },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emits = defineEmits(['update:modelValue', 'confirm']);
 
 const isVisible = ref(props.modelValue);
 
+watch(() => props.modelValue, (newValue) => {
+    isVisible.value = newValue;
+});
+
 watch(isVisible, (newValue) => {
     emits('update:modelValue', newValue);
 });
 
 const close = () => {
-    isVisible.value = false;
+    if (!props.loading && !props.disabled) {
+        isVisible.value = false;
+    }
 };
 
 const confirm = () => {
-    emits('confirm');
-    close();
+    if (!props.loading && !props.disabled) {
+        emits('confirm');
+        close();
+    }
 };
 </script>
 
