@@ -17,12 +17,25 @@
       <p class="mt-2">Loading articles...</p>
     </template>
 
-    <!-- Body Slot -->
-    <template v-slot:body v-else-if="articles.length > 0">
+    <!-- Legacy Article Check - Show BEFORE routing to article type components -->
+    <template v-slot:body v-else-if="articlesArray.length > 0 && isLegacy">
+      <v-sheet class="overflow-y-auto" :max-height="maxHeight">
+        <div class="text-center pa-8">
+          <v-icon color="warning" size="64" class="mb-6">mdi-alert</v-icon>
+          <p class="text-h6 font-weight-bold mb-3">Legacy Article Detected</p>
+          <p class="article-body mb-4">
+            This Article is no longer compatible with the new AI system.
+          </p>
+        </div>
+      </v-sheet>
+    </template>
+
+    <!-- Body Slot - Show article type components only if NOT legacy -->
+    <template v-slot:body v-else-if="articlesArray.length > 0 && !isLegacy">
       <!-- Assign a ref to the child component -->
       <v-sheet class="overflow-y-auto" :max-height="maxHeight">
-        <component :is="assetComponent" :articles="Array.isArray(articles) ? articles : []" :copyID="generateCopyID()"
-          ref="articleComponent" :accountId="route.params.accountid" :renderId="route.params.renderid" />
+        <component :is="assetComponent" :articles="articlesArray" :copyID="generateCopyID()" ref="articleComponent"
+          :accountId="route.params.accountid" :renderId="route.params.renderid" />
       </v-sheet>
     </template>
 
@@ -46,10 +59,10 @@ import LadderSummary from "./articleTypes/LadderSummary.vue";
 import UpcomingFixtures from "./articleTypes/UpcomingFixtures.vue";
 import WeekendWrapUp from "./articleTypes/WeekendWrapUp.vue";
 import SingleResultArticles from "./articleTypes/SingleResultArticles.vue";
-import { ArticleComponent } from "@/types/ArticleTypes";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import { useLegacyCheck } from "@/composables/aiArticles/useLegacyCheck";
+import type { FlattenedArticle } from "@/types/ArticleTypes";
 
-const router = useRouter();
 const route = useRoute();
 
 const props = defineProps({
@@ -63,12 +76,27 @@ const assetType = ref(route.params.asset);
 const { name } = useDisplay();
 const loading = ref(true);
 
+// Normalize articles to array format
+const articlesArray = computed<FlattenedArticle[]>(() => {
+  if (Array.isArray(props.articles)) {
+    // Handle CricketResults which might be nested array
+    if (props.articles.length > 0 && Array.isArray(props.articles[0])) {
+      return props.articles[0] as FlattenedArticle[];
+    }
+    return props.articles as FlattenedArticle[];
+  }
+  return [];
+});
+
+// Check if articles are legacy BEFORE routing to article type components
+const { isLegacy } = useLegacyCheck(articlesArray);
+
 // Copy button state
 const copyIcon = ref("mdi-content-copy");
 const copyLoading = ref(false);
 
-// Reference to the child component using the common interface
-const articleComponent = ref<ArticleComponent | null>(null);
+// Reference to the child component
+const articleComponent = ref<any>(null);
 
 // Define the dynamic component based on the asset type
 const assetComponent = computed(() => {
@@ -91,8 +119,8 @@ const assetComponent = computed(() => {
 const generateCopyID = () => {
   return `copy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 };
+
 // Watch for changes in the articles prop and update the loading state
-console.log("[articles]", props.articles);
 watch(
   () => props.articles,
   () => {

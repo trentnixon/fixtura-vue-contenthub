@@ -151,6 +151,7 @@ export interface AIArticle {
   name: string;
   structuredOutput: any; // Keeping this flexible
   assetType: string;
+  createdAt?: string; // Article creation date for legacy detection
 }
 
 export interface RenderAssetsResponse {

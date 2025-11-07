@@ -29,9 +29,10 @@
                 @click="$emit('request-writeup')" />
         </div>
 
-        <!-- Check if articles exist (show when status is completed or waiting) -->
+        <!-- Check if articles exist with valid content (show when status is completed or waiting) -->
         <!-- waiting status indicates article exists and is ready (backward compatibility for legacy articles) -->
-        <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0">
+        <!-- Only show if articles have actual content (not just "No Title"/"No Subtitle" placeholders) -->
+        <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.title !== 'No Title' && article.subtitle !== 'No Subtitle')">
             <!-- Iterate through each article -->
             <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
                 <!-- Show ArticleDataForPrompt only for the first result of each article -->

@@ -61,8 +61,9 @@
         @delete="handleDeleteContext" @close="closeContextDialog" />
 
       <!-- Article Display -->
+      <!-- Legacy check happens first in Top5Display, regardless of article content -->
       <Top5Display :articleStatus="articleStatus" :formattedArticles="formattedArticles" :isRequesting="isPending"
-        :isLocked="isLocked" @request-writeup="showConfirmationDialog = true" />
+        :isLocked="isLocked" :isLegacy="isLegacy" @request-writeup="showConfirmationDialog = true" />
     </div>
   </div>
 </template>
@@ -109,6 +110,13 @@ const {
   copyArticle: copyArticleFromComposable,
 } = useTop5Formatting(articlesRef);
 
+// Check if articles have valid content (not just placeholder records)
+const hasValidContent = computed(() => {
+  return formattedArticles.value.some(
+    (article) => article.topScorers && article.topScorers.length > 0
+  );
+});
+
 // Display helpers
 const accountIdDisplay = computed<number | null>(() => {
   const first = props.articles?.[0];
@@ -135,7 +143,7 @@ defineExpose({
 
 // Initialize composables
 const { feedbackCount, isLocked, updateFeedback } = useArticleFeedback();
-const { articleStatus, articlePhase } = useArticleStatus(hasArticle, feedbackCount);
+const { articleStatus, articlePhase, isLegacy } = useArticleStatus(hasArticle, feedbackCount, articlesRef);
 const { startPolling, stopPolling } = useArticlePolling();
 
 // Component state

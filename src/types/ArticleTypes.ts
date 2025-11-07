@@ -44,6 +44,7 @@ export interface FlattenedArticle {
   compositionID: string;
   articleEditor: string;
   ArticleDataForPrompt: { prompt: string }[] | null;
+  createdAt?: string; // Article creation date for legacy detection
 }
 
 /**

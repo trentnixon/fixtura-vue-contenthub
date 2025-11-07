@@ -112,6 +112,7 @@ export function useAssetDownloadData() {
       CompositionID: article.attributes.asset.data.attributes.CompositionID,
       grouping_category: article.attributes.grouping_category,
       structuredOutput: article.attributes?.structuredOutput || null,
+      createdAt: article.attributes?.createdAt, // Include createdAt for legacy detection
     }));
 
     return selectedAssetType === "CricketResults"

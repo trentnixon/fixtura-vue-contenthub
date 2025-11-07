@@ -28,9 +28,10 @@
         @click="$emit('request-writeup')" />
     </div>
 
-    <!-- Check if articles exist (show when status is completed or waiting) -->
+    <!-- Check if articles exist with valid content (show when status is completed or waiting) -->
     <!-- waiting status indicates article exists and is ready (backward compatibility for legacy articles) -->
-    <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0">
+    <!-- Only show if articles have actual content (leagues), not just placeholder records -->
+    <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.leagues && article.leagues.length > 0)">
       <!-- Iterate through each article -->
       <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
         <!-- Iterate through each league -->

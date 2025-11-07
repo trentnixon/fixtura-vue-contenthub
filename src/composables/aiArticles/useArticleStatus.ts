@@ -7,7 +7,8 @@ import { ArticlePhase, ArticleStatus } from "@/types/ArticleTypes";
  */
 export function useArticleStatus(
   hasArticle: Ref<boolean>,
-  feedbackCount: Ref<number>
+  feedbackCount: Ref<number>,
+  articles?: Ref<Array<{ createdAt?: string }>>
 ) {
   const storeState = usePrivateAiArticleState();
   const articleStatus = computed<ArticleStatus>(() => {
@@ -26,6 +27,40 @@ export function useArticleStatus(
     }
 
     return rawStatus as ArticleStatus;
+  });
+
+  /**
+   * Detect if this is a legacy article (incompatible with new system)
+   * Legacy articles are detected ONLY by creation date:
+   * - If createdAt exists and is earlier than November 7, 2025 (7/11/2025), it's legacy
+   * - We don't use status-based detection as articles could have values
+   */
+  const isLegacy = computed(() => {
+    // Legacy cutoff: November 7, 2025 (7/11/2025)
+    const LEGACY_CUTOFF_DATE = new Date("2025-11-07");
+
+    if (!articles?.value || articles.value.length === 0) {
+      return false;
+    }
+
+    const firstArticle = articles.value[0];
+    // Check if createdAt exists and is not "Unknown Date" or empty
+    if (
+      !firstArticle.createdAt ||
+      firstArticle.createdAt === "Unknown Date" ||
+      firstArticle.createdAt.trim() === ""
+    ) {
+      return false;
+    }
+
+    const articleDate = new Date(firstArticle.createdAt);
+
+    // Check if date is valid
+    if (isNaN(articleDate.getTime())) {
+      return false;
+    }
+
+    return articleDate < LEGACY_CUTOFF_DATE;
   });
   const previousStatus = ref<ArticleStatus | null>(null);
 
@@ -81,5 +116,6 @@ export function useArticleStatus(
     articleStatus,
     articlePhase,
     previousStatus,
+    isLegacy,
   };
 }

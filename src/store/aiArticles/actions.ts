@@ -119,10 +119,23 @@ export async function pollWeekendArticleStatus(payload: {
   const state = usePrivateAiArticleState();
   try {
     const res = await fetchWeekendArticleStatusFromService(payload);
+    console.log("[pollWeekendArticleStatus] API Response:", {
+      status: res.data?.status,
+      statusType: typeof res.data?.status,
+      statusIsNull: res.data?.status === null,
+      fullResponse: res.data,
+    });
+
     if (res.data) {
       // Backward compatibility: treat null status as "waiting"
       state.status = res.data.status ?? "waiting";
       state.articleId = payload.articleId; // Already known from payload
+
+      console.log("[pollWeekendArticleStatus] Store State Updated:", {
+        status: state.status,
+        articleId: state.articleId,
+        apiStatus: res.data.status,
+      });
 
       // Handle locked state or other error conditions
       if (res.data.locked) {
@@ -136,8 +149,55 @@ export async function pollWeekendArticleStatus(payload: {
     }
     return res;
   } catch (error) {
-    state.error = (error as Error).message;
-    state.status = "failed";
+    // Handle errors - don't set status to "failed" for 400/404 errors
+    // (legacy articles may not support status API, but legacy detection is now date-based)
+    const errorMessage = (error as Error).message;
+    state.error = errorMessage;
+
+    console.log("[pollWeekendArticleStatus] Error Caught:", {
+      errorMessage,
+      errorType: error instanceof Error ? error.constructor.name : typeof error,
+      currentStatus: state.status,
+    });
+
+    // Check if error suggests the endpoint doesn't exist or isn't supported
+    const isNotFoundError =
+      errorMessage.includes("404") ||
+      errorMessage.includes("Not Found") ||
+      errorMessage.includes("not found");
+
+    const isBadRequestError =
+      errorMessage.includes("400") ||
+      errorMessage.includes("Bad Request") ||
+      errorMessage.includes("bad request");
+
+    const isEndpointError = isNotFoundError || isBadRequestError;
+
+    console.log("[pollWeekendArticleStatus] Error Analysis:", {
+      isNotFoundError,
+      isBadRequestError,
+      isEndpointError,
+      errorMessage,
+      statusCode: errorMessage.match(/\d{3}/)?.[0],
+    });
+
+    if (isEndpointError) {
+      // 404/400 - endpoint doesn't exist or not supported
+      // Don't set status to "failed", keep current status (legacy detection is date-based now)
+      console.log(
+        "[pollWeekendArticleStatus] Endpoint error (400/404) - preserving status:",
+        {
+          currentStatus: state.status,
+        }
+      );
+    } else {
+      // Real error, set to failed
+      state.status = "failed";
+      console.log("[pollWeekendArticleStatus] Treated as Failed:", {
+        status: state.status,
+      });
+    }
+
     throw error;
   }
 }

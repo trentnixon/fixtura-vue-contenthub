@@ -11,6 +11,8 @@ interface PrivateAiArticleState {
   status?: "idle" | "waiting" | "pending" | "writing" | "completed" | "failed";
   jobId?: string | null;
   articleId?: number | null;
+  // Track if status API explicitly returned null (legacy article indicator)
+  statusWasNull?: boolean;
 }
 
 export const usePrivateAiArticleState = defineStore("aiArticles-private", {
@@ -23,5 +25,6 @@ export const usePrivateAiArticleState = defineStore("aiArticles-private", {
     status: "idle",
     jobId: null,
     articleId: null,
+    statusWasNull: false,
   }),
 });

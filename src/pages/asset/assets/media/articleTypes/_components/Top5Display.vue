@@ -1,8 +1,20 @@
 <template>
     <div>
+        <!-- Legacy article incompatibility message - check FIRST before other states -->
+        <div v-if="isLegacy" class="text-center pa-8">
+            <v-icon color="warning" size="64" class="mb-6">mdi-alert</v-icon>
+            <p class="text-h6 font-weight-bold mb-3">Legacy Article Detected</p>
+            <p class="article-body mb-4">
+                This Render is no longer compatible with the new AI system.
+            </p>
+            <p class="text-caption text-grey">
+                Please create a new render to use the latest AI article features.
+            </p>
+        </div>
+
         <!-- Show loading state when status is pending or writing -->
         <!-- pending: article generation queued, writing: article is being written -->
-        <div v-if="articleStatus === 'pending' || articleStatus === 'writing'" class="text-center pa-8">
+        <div v-else-if="articleStatus === 'pending' || articleStatus === 'writing'" class="text-center pa-8">
             <v-progress-circular indeterminate color="primary" size="64" class="mb-6"></v-progress-circular>
             <p class="text-h6 font-weight-bold mb-3">Generating new article...</p>
             <p class="article-body mb-3">
@@ -28,9 +40,11 @@
                 @click="$emit('request-writeup')" />
         </div>
 
-        <!-- Check if articles exist (show when status is completed or waiting) -->
+        <!-- Check if articles exist with valid content (show when status is completed or waiting) -->
         <!-- waiting status indicates article exists and is ready (backward compatibility for legacy articles) -->
-        <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0">
+        <!-- Only show if articles have actual content (topScorers), not just placeholder records -->
+        <div
+            v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.topScorers && article.topScorers.length > 0)">
             <!-- Iterate through each article -->
             <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
                 <!-- Article Title -->
@@ -79,11 +93,12 @@
 import type { FormattedTop5Article } from "../_composables/useTop5Formatting";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 
-defineProps<{
+const props = defineProps<{
     articleStatus: string;
     formattedArticles: FormattedTop5Article[];
     isRequesting?: boolean;
     isLocked?: boolean;
+    isLegacy?: boolean;
 }>();
 
 defineEmits<{

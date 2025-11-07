@@ -23,9 +23,10 @@
 </template>
 
 <script setup>
-import { computed, ref, inject, watch } from "vue";
-import { useRenderAssets } from "@/pages/asset/composables/useRenderAssets"; // Import the composable
-import { useRoute, useRouter } from "vue-router";
+import { computed, ref, watch } from "vue";
+import { useRenderAssets } from "@/pages/asset/composables/useRenderAssets";
+import { useRoute } from "vue-router";
+import { useAiArticlesStore } from "@/store/aiArticles";
 
 import Weekendsinglegameresult from "@/pages/asset/assets/WeekendSingleGameResult.vue";
 import Rosterposter from "@/pages/asset/assets/RosterPoster.vue";
@@ -36,6 +37,9 @@ import AssetDefaultView from "@/pages/asset/assets/AssetDefaultView.vue";
 // Fetch the route to get the renderID
 //const router = useRouter();
 const route = useRoute();
+
+// Get AI articles store to enrich articles with createdAt
+const aiArticlesStore = useAiArticlesStore();
 
 function toPascalCase(str) {
   return str
@@ -98,9 +102,64 @@ const formattedAssets = computed(() => {
   }));
 });
 
-// Pass AI articles directly without formatting
+// Track if we've fetched full articles
+const fullArticlesFetched = ref(false);
+
+// Fetch full articles when articles are available
+watch(
+  () => selectedRenderData.value?.aiArticles,
+  async (articles) => {
+    if (articles && articles.length > 0 && !fullArticlesFetched.value) {
+      const articleIds = articles.map((a) => a.id);
+      try {
+        await aiArticlesStore.fetchFullAiArticlesByIds(articleIds);
+        fullArticlesFetched.value = true;
+      } catch (error) {
+        console.error("[AssetController] Error fetching full articles:", error);
+      }
+    }
+  },
+  { immediate: true }
+);
+
+// Pass AI articles with createdAt field enriched from full article store
 const aiArticles = computed(() => {
-  return selectedRenderData.value?.aiArticles || [];
+  const articles = selectedRenderData.value?.aiArticles || [];
+
+  if (articles.length === 0) {
+    return [];
+  }
+
+  // Get full articles from store to enrich with createdAt
+  const fullArticles = aiArticlesStore.getFullAiArticles();
+
+  // Map createdAt from full articles if available
+  return articles.map((article) => {
+    const fullArticle = fullArticles[article.id];
+    const createdAt = fullArticle?.attributes?.createdAt;
+
+    // Use createdAt if valid, otherwise fall back to publishedAt for legacy detection
+    let dateToUse = null;
+
+    if (createdAt && createdAt !== "Unknown Date" && createdAt.trim() !== "") {
+      dateToUse = createdAt;
+    } else {
+      // Fall back to publishedAt if createdAt is not available
+      const publishedAt = fullArticle?.attributes?.publishedAt;
+      if (publishedAt && publishedAt !== "Unknown Date" && publishedAt.trim() !== "") {
+        dateToUse = publishedAt;
+      }
+    }
+
+    if (dateToUse) {
+      return {
+        ...article,
+        createdAt: dateToUse, // Store in createdAt field for legacy check
+      };
+    }
+
+    return article;
+  });
 });
 
 // Dynamically select the asset component based on the asset type
