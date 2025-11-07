@@ -10,10 +10,23 @@ export function useArticleStatus(
   feedbackCount: Ref<number>
 ) {
   const storeState = usePrivateAiArticleState();
-  const articleStatus = computed<ArticleStatus>(
-    // Backward compatibility: treat null/undefined status as "waiting"
-    () => (storeState.status ?? "waiting") as ArticleStatus
-  );
+  const articleStatus = computed<ArticleStatus>(() => {
+    const rawStatus = storeState.status;
+
+    // Backward compatibility for legacy articles:
+    // - If status is null/undefined → treat as "waiting"
+    // - If status is "idle" but articles exist → treat as "waiting" (legacy articles without status API call)
+    // - Otherwise use the status as-is
+    if (rawStatus == null) {
+      return "waiting";
+    }
+
+    if (rawStatus === "idle" && hasArticle.value) {
+      return "waiting";
+    }
+
+    return rawStatus as ArticleStatus;
+  });
   const previousStatus = ref<ArticleStatus | null>(null);
 
   /**
