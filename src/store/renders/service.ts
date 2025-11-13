@@ -196,3 +196,47 @@ export async function createRosterService(
     throw new Error("Failed to create team roster.");
   }
 }
+
+// Rerender Request Types
+export interface RerenderRequestPayload {
+  accountId: number;
+  renderId: number;
+  reason: "Incorrect Data" | "Missing Content" | "Formatting Issue" | "Other";
+  userEmail: string;
+  additionalNotes?: string;
+  userMeta?: {
+    browser?: string;
+    ip?: string;
+    [key: string]: any;
+  };
+}
+
+export interface RerenderRequestResponse {
+  success: boolean;
+  data: {
+    id: number;
+    accountId: number;
+    renderId: number;
+    reason: string;
+    status: string;
+    createdAt: string;
+  };
+}
+
+export async function submitRerenderRequestService(
+  payload: RerenderRequestPayload
+): Promise<ApiResponse<RerenderRequestResponse>> {
+  try {
+    const response = await fetcher.post<ApiResponse<RerenderRequestResponse>>(
+      `/rerender-request/submit`,
+      payload
+    );
+    return response;
+  } catch (error) {
+    console.error(
+      `Error submitting rerender request for account ${payload.accountId} and render ${payload.renderId}:`,
+      error
+    );
+    throw new Error("Failed to submit rerender request.");
+  }
+}

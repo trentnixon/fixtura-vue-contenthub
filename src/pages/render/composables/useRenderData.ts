@@ -14,6 +14,7 @@ export function useRenderData() {
     getRenderTime,
     getProcessing,
     getComplete,
+    getRerenderRequested,
   } = storeToRefs(renderStore);
 
   // Logic for the render table data
@@ -76,5 +77,6 @@ export function useRenderData() {
     getRenderTime,
     getProcessing,
     getComplete,
+    getRerenderRequested,
   };
 }

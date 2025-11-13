@@ -48,6 +48,7 @@ export interface RenderAttributes {
   EmailSent: boolean;
   forceRerenderEmail: boolean;
   hasTeamRosterEmail: boolean;
+  rerenderRequested: boolean;
   updatedAt: string;
   publishedAt: string;
 
@@ -97,6 +98,7 @@ export interface Render {
   isCreatingRoster: boolean;
   hasTeamRosters: boolean;
   hasTeamRosterEmail: boolean;
+  rerenderRequested: boolean;
   date: string;
   time: string;
   downloads: number;

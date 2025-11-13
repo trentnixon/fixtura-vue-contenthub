@@ -16,6 +16,10 @@ export const getComplete = computed(() => {
   return selectedRender.value?.complete;
 });
 
+export const getRerenderRequested = computed(() => {
+  return selectedRender.value?.rerenderRequested || false;
+});
+
 export const getRenderDate = computed(() => {
   return selectedRender.value?.date;
 });

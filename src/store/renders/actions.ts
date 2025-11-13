@@ -9,6 +9,9 @@ import {
   fetchRenderFromService,
   requestTeamRoster,
   saveRosterToCMS,
+  submitRerenderRequestService,
+  type RerenderRequestPayload,
+  type RerenderRequestResponse,
 } from "./service";
 
 export async function fetchRenderAction(renderId: number) {
@@ -214,5 +217,30 @@ export async function createTeamRosterAction(
     state.error = `Failed to create team roster: ${(error as Error).message}`;
   } finally {
     //state.loading = false;
+  }
+}
+
+export async function submitRerenderRequestAction(
+  payload: RerenderRequestPayload
+): Promise<RerenderRequestResponse | null> {
+  const state = usePrivateRendersState();
+
+  try {
+    state.loading = true;
+    state.error = null;
+
+    const response = await submitRerenderRequestService(payload);
+
+    if (response && response.data) {
+      return response.data;
+    } else {
+      throw new Error("Invalid response structure");
+    }
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    state.error = `Failed to submit rerender request: ${errorMessage}`;
+    throw error;
+  } finally {
+    state.loading = false;
   }
 }
