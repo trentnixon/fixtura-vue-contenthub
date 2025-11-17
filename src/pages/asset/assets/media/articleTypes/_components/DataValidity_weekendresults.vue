@@ -65,29 +65,27 @@
                         </p>
                         <div class="pa-2 bg-error-lighten-5 rounded">
                             <p class="text-caption font-weight-bold text-error mb-1">Missing Data:</p>
-                            <ul class="text-caption text-error mb-2 pl-4" style="list-style-type: disc;">
+                            <ul class="text-caption text-error mb-0 pl-4" style="list-style-type: disc;">
                                 <li v-if="!result.tossWinner.present">Toss Winner</li>
                                 <li v-if="!result.tossResult.present">Toss Result</li>
                                 <li v-if="!result.resultStatement.present">Result Statement</li>
                                 <li v-if="!result.hasPlayerPerformance">Player Performance</li>
                             </ul>
-                            <div class="d-flex flex-column flex-sm-row align-start align-sm-center mt-2"
-                                style="gap: 8px;">
-                                <div class="d-flex align-center flex-wrap justify-center justify-sm-start"
-                                    style="gap: 4px;">
-                                    <v-icon size="12">mdi-information</v-icon>
-                                    <span class="text-caption text-grey-darken-1">To fix: Click the</span>
-                                    <v-icon size="20" color="success" class="flex-shrink-0">mdi-pencil-box</v-icon>
-                                    <span class="text-caption text-grey-darken-1">Find this fixture, and add the
-                                        missing
-                                        data.</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div v-if="fixturesWithMissingData.length === 0" class="text-center pa-4">
                         <v-icon color="success" size="48" class="mb-2">mdi-check-circle</v-icon>
                         <p class="text-body-1 text-success">All fixtures have complete data!</p>
+                    </div>
+                    <!-- Instruction shown once at bottom if there are fixtures with missing data -->
+                    <div v-if="fixturesWithMissingData.length > 0" class="mt-4 pt-3 border-t">
+                        <div class="d-flex align-center flex-wrap justify-center justify-sm-start" style="gap: 4px;">
+                            <v-icon size="12">mdi-information</v-icon>
+                            <span class="text-caption text-grey-darken-1">To fix: Click the</span>
+                            <v-icon size="20" color="success" class="flex-shrink-0">mdi-pencil-box</v-icon>
+                            <span class="text-caption text-grey-darken-1">button, find the fixture, and add the missing
+                                data.</span>
+                        </div>
                     </div>
                 </v-card-text>
                 <v-card-actions>
