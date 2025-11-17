@@ -56,7 +56,7 @@
             <v-card :class="isMobile ? 'ma-2' : ''" style="max-height: 90vh;">
                 <v-card-title class="text-h6 d-flex align-center">
                     <v-icon class="mr-2" color="error">mdi-alert-circle</v-icon>
-                    Missing Data Details
+                    Missing AI Prompt Data
                 </v-card-title>
                 <v-card-text class="pa-3 pa-sm-4">
                     <div v-for="(result, index) in fixturesWithMissingData" :key="index" class="mb-4">
@@ -66,7 +66,6 @@
                         <div class="pa-2 bg-error-lighten-5 rounded">
                             <p class="text-caption font-weight-bold text-error mb-1">Missing Data:</p>
                             <ul class="text-caption text-error mb-0 pl-4" style="list-style-type: disc;">
-                                <li v-if="!result.tossWinner.present">Toss Winner</li>
                                 <li v-if="!result.tossResult.present">Toss Result</li>
                                 <li v-if="!result.resultStatement.present">Result Statement</li>
                                 <li v-if="!result.hasPlayerPerformance">Player Performance</li>
@@ -79,12 +78,24 @@
                     </div>
                     <!-- Instruction shown once at bottom if there are fixtures with missing data -->
                     <div v-if="fixturesWithMissingData.length > 0" class="mt-4 pt-3 border-t">
-                        <div class="d-flex align-center flex-wrap justify-center justify-sm-start" style="gap: 4px;">
-                            <v-icon size="12">mdi-information</v-icon>
-                            <span class="text-caption text-grey-darken-1">To fix: Click the</span>
-                            <v-icon size="20" color="success" class="flex-shrink-0">mdi-pencil-box</v-icon>
-                            <span class="text-caption text-grey-darken-1">button, find the fixture, and add the missing
-                                data.</span>
+                        <div class="mb-2">
+                            <div class="d-flex align-center flex-wrap justify-center justify-sm-start"
+                                style="gap: 4px;">
+                                <v-icon size="12">mdi-information</v-icon>
+                                <span class="text-caption text-grey-darken-1">To fix: Click the</span>
+                                <v-icon size="20" color="success" class="flex-shrink-0">mdi-pencil-box</v-icon>
+                                <span class="text-caption text-grey-darken-1">button, find the fixture, and add the
+                                    missing
+                                    data.</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-start" style="gap: 4px;">
+                            <v-icon size="12" color="warning" class="mt-1">mdi-alert</v-icon>
+                            <span class="text-caption text-grey-darken-1">
+                                <strong>Note:</strong> Missing data in the prompt may cause unexpected results in
+                                AI-generated
+                                articles.
+                            </span>
                         </div>
                     </div>
                 </v-card-text>
@@ -132,8 +143,8 @@ const validationResults = ref<ValidationResult[]>([]);
 const showMissingDataDialog = ref(false);
 const isValidating = ref(false);
 
-// Constants for scoring
-const POINTS_PER_CHECK = 25;
+// Constants for scoring (3 checks: Toss Result, Result Statement, Player Performance)
+const POINTS_PER_CHECK = 33.33; // 100 / 3 = 33.33 points per check
 const PERFECT_SCORE = 100;
 
 // Get fixtures with missing data (score < 100)
@@ -218,14 +229,13 @@ function validateFixtures() {
 
                     totalPlayerCount = countPlayersInTeam(homeTeam) + countPlayersInTeam(awayTeam);
 
-                    // Calculate score: POINTS_PER_CHECK points per check (TOTAL_CHECKS checks = 100 points total)
+                    // Calculate score: POINTS_PER_CHECK points per check (3 checks = 100 points total)
                     const checks = [
-                        !!tossWinner && tossWinner.trim() !== '', // Toss Winner
                         !!tossResult && tossResult.trim() !== '', // Toss Result
                         !!resultStatement && resultStatement.trim() !== '', // Result Statement
                         totalPlayerCount >= 1, // Player Performance
                     ];
-                    const score = checks.filter(Boolean).length * POINTS_PER_CHECK;
+                    const score = Math.round(checks.filter(Boolean).length * POINTS_PER_CHECK);
 
                     results.push({
                         tossWinner: {
@@ -304,9 +314,9 @@ const validitySummary = computed(() => {
 
 // Tooltip text explaining the score
 const scoreTooltipText = computed(() => {
-    const checks = "• Toss Winner • Toss Result • Result Statement • Player Performance";
+    const checks = "• Toss Result • Result Statement • Player Performance";
     const scoreInfo = `Score: ${overallScore.value}/100 (average across ${validationResults.value.length} ${validationResults.value.length === 1 ? 'fixture' : 'fixtures'})`;
-    return `Data validity score calculated from 4 checks (25 points each):\n${checks}\n\n${scoreInfo}`;
+    return `Data validity score calculated from 3 checks (33 points each):\n${checks}\n\n${scoreInfo}`;
 });
 
 // Watch for changes in articles - only watch the ArticleDataForPrompt array to avoid unnecessary re-validation
