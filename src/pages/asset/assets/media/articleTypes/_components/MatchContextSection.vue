@@ -16,15 +16,15 @@
         </div>
         <div class="col-md-6 mb-3">
           <v-text-field :model-value="matchContext.tossWinner" @update:model-value="updateField('tossWinner', $event)"
-            label="Toss Winner" variant="outlined" density="compact" />
+            label="Who won the Toss" variant="outlined" density="compact" />
         </div>
         <div class="col-md-12 mb-3">
           <v-textarea :model-value="matchContext.tossResult" @update:model-value="updateField('tossResult', $event)"
-            label="Toss Result" variant="outlined" density="compact" rows="2" />
+            label="Who batted First" variant="outlined" density="compact" rows="2" />
         </div>
         <div class="col-md-12 mb-3">
           <v-textarea :model-value="matchContext.resultStatement"
-            @update:model-value="updateField('resultStatement', $event)" label="Result Statement" variant="outlined"
+            @update:model-value="updateField('resultStatement', $event)" label="What is the current or final result" variant="outlined"
             density="compact" rows="2" />
         </div>
       </div>
