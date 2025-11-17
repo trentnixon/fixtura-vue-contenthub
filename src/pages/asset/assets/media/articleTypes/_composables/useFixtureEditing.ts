@@ -64,7 +64,8 @@ export function useFixtureEditing(
 
     // Parse each fixture prompt
     const parsed: ParsedFixturePrompt[] = [];
-    for (const fixturePrompt of firstArticle.ArticleDataForPrompt) {
+    for (let i = 0; i < firstArticle.ArticleDataForPrompt.length; i++) {
+      const fixturePrompt = firstArticle.ArticleDataForPrompt[i];
       try {
         const parsedData = parseFixturePrompt(fixturePrompt.prompt);
         parsed.push({
@@ -72,7 +73,9 @@ export function useFixtureEditing(
           parsedData: parsedData,
         });
       } catch (error) {
-        console.error("Failed to parse fixture:", error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error(`Failed to parse fixture at index ${i}:`, errorMessage);
+        console.error("Fixture prompt data (first 500 chars):", fixturePrompt.prompt.substring(0, 500));
         // Skip invalid fixtures but continue with others
       }
     }
@@ -155,10 +158,11 @@ export function useFixtureEditing(
       }));
       unsavedChanges.value.clear();
 
-      // Optionally refresh article data
-      // triggerDataSync();
+      // Return success so caller can handle refresh
+      return true;
     } catch (error: any) {
       fixtureError.value = error?.message || "Failed to save fixtures";
+      return false;
     } finally {
       isSavingFixtures.value = false;
     }

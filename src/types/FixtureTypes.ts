@@ -100,7 +100,7 @@ export interface FixtureData {
   matchContext: MatchContext;
   homeTeam: Team;
   awayTeam: Team;
-  accountBias: AccountBias;
+  accountBias?: AccountBias; // Optional - associations won't have accountBias
 }
 
 /**
@@ -118,22 +118,48 @@ export interface ParsedFixturePrompt {
  * @throws Error if parsing fails or data structure is invalid
  */
 export function parseFixturePrompt(promptString: string): FixtureData {
-  try {
-    const parsed = JSON.parse(promptString) as FixtureData;
+  // Check if prompt string is empty or whitespace
+  if (!promptString || !promptString.trim()) {
+    throw new Error("Fixture prompt string is empty or invalid");
+  }
 
-    // Basic validation - check required top-level fields
-    if (
-      !parsed.matchContext ||
-      !parsed.homeTeam ||
-      !parsed.awayTeam ||
-      !parsed.accountBias
-    ) {
+  try {
+    const parsed = JSON.parse(promptString) as Partial<FixtureData>;
+
+    // Basic validation - check required top-level fields with detailed error messages
+    const missingFields: string[] = [];
+
+    if (!parsed.matchContext) {
+      missingFields.push("matchContext");
+    }
+    if (!parsed.homeTeam) {
+      missingFields.push("homeTeam");
+    }
+    if (!parsed.awayTeam) {
+      missingFields.push("awayTeam");
+    }
+
+    // Validate accountBias structure if present (optional field - associations won't have it)
+    if (parsed.accountBias) {
+      // Ensure arrays exist if accountBias object is present but incomplete
+      if (!Array.isArray(parsed.accountBias.clubTeams)) {
+        parsed.accountBias.clubTeams = [];
+      }
+      if (!Array.isArray(parsed.accountBias.focusedTeams)) {
+        parsed.accountBias.focusedTeams = [];
+      }
+      if (parsed.accountBias.isBias === undefined || parsed.accountBias.isBias === null) {
+        parsed.accountBias.isBias = "";
+      }
+    }
+
+    if (missingFields.length > 0) {
       throw new Error(
-        "Invalid fixture data structure: missing required fields"
+        `Invalid fixture data structure: missing required fields: ${missingFields.join(", ")}`
       );
     }
 
-    return parsed;
+    return parsed as FixtureData;
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error(`Failed to parse fixture prompt JSON: ${error.message}`);
@@ -171,8 +197,7 @@ export function validateFixtureData(fixtureData: FixtureData): boolean {
     if (
       !fixtureData.matchContext ||
       !fixtureData.homeTeam ||
-      !fixtureData.awayTeam ||
-      !fixtureData.accountBias
+      !fixtureData.awayTeam
     ) {
       return false;
     }
@@ -188,12 +213,14 @@ export function validateFixtureData(fixtureData: FixtureData): boolean {
       return false;
     }
 
-    // Validate accountBias structure
-    if (
-      !Array.isArray(fixtureData.accountBias.clubTeams) ||
-      !Array.isArray(fixtureData.accountBias.focusedTeams)
-    ) {
-      return false;
+    // Validate accountBias structure if present (optional field)
+    if (fixtureData.accountBias) {
+      if (
+        !Array.isArray(fixtureData.accountBias.clubTeams) ||
+        !Array.isArray(fixtureData.accountBias.focusedTeams)
+      ) {
+        return false;
+      }
     }
 
     return true;

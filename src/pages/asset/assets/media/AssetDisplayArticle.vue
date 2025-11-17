@@ -5,9 +5,9 @@
       <CategoryHeader title="ARTICLES" icon="mdi-newspaper-variant-outline" />
       <v-spacer></v-spacer>
       <!-- <v-btn color="primary" @click="navigateToEdit()"> Edit Writeup </v-btn> -->
-      <!-- Copy Button in the Header -->
-      <SecondaryButton color="accent" :icon="copyIcon" label="Copy" @click="handleCopy" :loading="copyLoading"
-        size="small" />
+      <!-- Copy Button in the Header - Only show when there's a valid article -->
+      <SecondaryButton v-if="hasValidArticle" color="accent" :icon="copyIcon" label="Copy" @click="handleCopy"
+        :loading="copyLoading" size="small" />
     </template>
 
     <!-- Conditionally rendering named slots -->
@@ -91,6 +91,77 @@ const articlesArray = computed<FlattenedArticle[]>(() => {
 // Check if articles are legacy BEFORE routing to article type components
 const { isLegacy } = useLegacyCheck(articlesArray);
 
+// Check if there's a valid article written (has actual content, not just placeholders)
+const hasValidArticle = computed(() => {
+  // Must have articles and not be legacy
+  if (articlesArray.value.length === 0 || isLegacy.value) {
+    return false;
+  }
+
+  // Check if articles have actual content (structuredOutput with non-placeholder values)
+  return articlesArray.value.some((article: any) => {
+    const structuredOutput = article?.structuredOutput;
+    if (!structuredOutput) return false;
+
+    // For WeekendWrapUp (CricketResults), check results array
+    if (assetType.value === "CricketResults") {
+      const results = structuredOutput.results;
+      if (!Array.isArray(results) || results.length === 0) return false;
+      // Check if any result has valid content
+      return results.some((result: any) => {
+        const hasValidTitle = result.title &&
+          result.title !== "No Title" &&
+          result.title.trim() !== "";
+        const hasValidSubtitle = result.subtitle &&
+          result.subtitle !== "No Subtitle" &&
+          result.subtitle.trim() !== "";
+        const hasValidBody = result.article_body &&
+          result.article_body !== "No Article Body" &&
+          result.article_body.trim() !== "";
+        return hasValidTitle && hasValidSubtitle && hasValidBody;
+      });
+    }
+
+    // For Top5 articles, check topScorers array
+    if (assetType.value === "CricketTop5Bowling" || assetType.value === "CricketTop5Batting") {
+      return structuredOutput.topScorers &&
+        Array.isArray(structuredOutput.topScorers) &&
+        structuredOutput.topScorers.length > 0;
+    }
+
+    // For UpcomingFixtures, check fixtures array
+    if (assetType.value === "CricketUpcoming") {
+      return structuredOutput.fixtures &&
+        Array.isArray(structuredOutput.fixtures) &&
+        structuredOutput.fixtures.length > 0;
+    }
+
+    // For Ladder, check leagues array
+    if (assetType.value === "CricketLadder") {
+      return structuredOutput.leagues &&
+        Array.isArray(structuredOutput.leagues) &&
+        structuredOutput.leagues.length > 0;
+    }
+
+    // For SingleResultArticles, check title/subtitle and article body directly
+    if (assetType.value === "CricketResultSingle") {
+      const hasValidTitle = structuredOutput.title &&
+        structuredOutput.title !== "No Title" &&
+        structuredOutput.title.trim() !== "";
+      const hasValidSubtitle = structuredOutput.subtitle &&
+        structuredOutput.subtitle !== "No Subtitle" &&
+        structuredOutput.subtitle.trim() !== "";
+      const hasValidBody = structuredOutput.article_body &&
+        structuredOutput.article_body !== "No Article Body" &&
+        structuredOutput.article_body.trim() !== "";
+      return hasValidTitle && hasValidSubtitle && hasValidBody;
+    }
+
+    // Default: no valid article for unknown types
+    return false;
+  });
+});
+
 // Copy button state
 const copyIcon = ref("mdi-content-copy");
 const copyLoading = ref(false);
@@ -130,24 +201,31 @@ watch(
 );
 
 // Handle copy action
-function handleCopy() {
+async function handleCopy() {
   if (
     articleComponent.value &&
     typeof articleComponent.value.copyArticle === "function"
   ) {
-    copyLoading.value = true;
-    copyIcon.value = "mdi-loading"; // Optional: Change icon to indicate loading
+    try {
+      copyLoading.value = true;
+      copyIcon.value = "mdi-loading"; // Optional: Change icon to indicate loading
 
-    articleComponent.value.copyArticle();
+      await articleComponent.value.copyArticle();
 
-    // Simulate loading state for 2 seconds
-    setTimeout(() => {
+      // Show success icon
       copyIcon.value = "mdi-check";
+      // Reset to copy icon after 1 second
       setTimeout(() => {
         copyIcon.value = "mdi-content-copy";
         copyLoading.value = false;
       }, 1000);
-    }, 500); // Adjust delay as needed based on copy speed
+    } catch (err) {
+      console.error("Failed to copy article:", err);
+      // Reset to copy icon on error
+      copyIcon.value = "mdi-content-copy";
+      copyLoading.value = false;
+      // Optionally show error message to user
+    }
   } else {
     console.warn("Copy function is not available on the child component.");
   }

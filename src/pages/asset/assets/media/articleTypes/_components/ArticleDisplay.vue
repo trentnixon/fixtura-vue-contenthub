@@ -32,7 +32,8 @@
         <!-- Check if articles exist with valid content (show when status is completed or waiting) -->
         <!-- waiting status indicates article exists and is ready (backward compatibility for legacy articles) -->
         <!-- Only show if articles have actual content (not just "No Title"/"No Subtitle" placeholders) -->
-        <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.title !== 'No Title' && article.subtitle !== 'No Subtitle')">
+        <div
+            v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.title !== 'No Title' && article.subtitle !== 'No Subtitle')">
             <!-- Iterate through each article -->
             <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
                 <!-- Show ArticleDataForPrompt only for the first result of each article -->
@@ -66,21 +67,28 @@
             </div>
         </div>
         <div v-else class="text-center pa-8">
+
             <p class="article-body text-bold mb-2">AI Articles on Demand.</p>
+            <p class="article-body mb-0">
+                Edit, update, and create professional cricket articles instantly.
+            </p>
             <p class="article-body mb-4">
-                Edit, update, and create professional cricket articles instantly. Our AI analyzes match data and
-                generates
-                comprehensive write-ups that you can customize and refine to perfection.
+                Our AI validates your fixture data and generates comprehensive write-ups that you can customize and
+                refine to perfection.
             </p>
             <PrimaryButton label="Create an Article" :loading="isRequesting" :disabled="isRequesting || isLocked"
                 @click="$emit('request-writeup')" />
+            <DataValidity_weekendresults :articles="articles" :isSavingFixtures="isSavingFixtures" />
+
         </div>
     </div>
+
 </template>
 
 <script setup lang="ts">
-import type { FormattedArticle } from "@/types/ArticleTypes";
+import type { FormattedArticle, FlattenedArticle } from "@/types/ArticleTypes";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
+import DataValidity_weekendresults from "./DataValidity_weekendresults.vue";
 
 defineProps<{
     articleStatus: string;
@@ -89,6 +97,8 @@ defineProps<{
     formatPromptData: (promptString: string) => string;
     isRequesting?: boolean;
     isLocked?: boolean;
+    articles?: FlattenedArticle[]; // Add articles prop for DataValidity
+    isSavingFixtures?: boolean; // Add isSavingFixtures prop for DataValidity
 }>();
 
 defineEmits<{

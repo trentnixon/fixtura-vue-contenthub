@@ -8,7 +8,7 @@
         :expandedSections="expandedSections" :error="fixtureError" :hasChanges="hasEditingChanges"
         ref="fixtureFormRefComponent" @save="handleSaveFixture" @cancel="onCancelEdit"
         @update:expandedSections="expandedSections = $event">
-        <AccountBiasSection :accountBias="editingFixtureData.accountBias"
+        <AccountBiasSection v-if="editingFixtureData.accountBias" :accountBias="editingFixtureData.accountBias"
           @update:accountBias="editingFixtureData.accountBias = $event" />
 
         <MatchContextSection :matchContext="editingFixtureData.matchContext"
@@ -161,7 +161,8 @@
       <!-- Article Display -->
       <ArticleDisplay :articleStatus="articleStatus" :formattedArticles="formattedArticles"
         :isFirstResultForArticle="isFirstResultForArticle" :formatPromptData="formatPromptData"
-        :isRequesting="isPending" :isLocked="isLocked" @request-writeup="showConfirmationDialog = true" />
+        :isRequesting="isPending" :isLocked="isLocked" :articles="articles" :isSavingFixtures="isSavingFixtures"
+        @request-writeup="showConfirmationDialog = true" />
     </div>
   </div>
 </template>
@@ -172,7 +173,9 @@ import { useRoute, useRouter } from "vue-router";
 import {
   pollWeekendArticleStatus,
   triggerWeekendArticleAction,
+  fetchFullAiArticlesByIds,
 } from "@/store/aiArticles/actions";
+import { useAiArticlesStore } from "@/store/aiArticles";
 import { useArticleFeedback } from "@/composables/aiArticles/useArticleFeedback";
 import { useArticleStatus } from "@/composables/aiArticles/useArticleStatus";
 import { useArticlePolling } from "@/composables/aiArticles/useArticlePolling";
@@ -202,6 +205,7 @@ const props = defineProps<{
 }>();
 const route = useRoute();
 const router = useRouter();
+const aiArticlesStore = useAiArticlesStore();
 
 // Function to trigger data sync on render (refresh page data)
 function triggerDataSync() {
@@ -296,7 +300,7 @@ const {
   editingFixtureData,
   onMakeEditToFixture,
   onBackToArticle,
-  onSaveAllChanges,
+  onSaveAllChanges: onSaveAllChangesOriginal,
   onEditFixture,
   onCancelEdit,
   onSaveFixture,
@@ -314,6 +318,21 @@ const {
   () => renderIdDisplay.value,
   () => resolvedArticleId.value
 );
+
+// Wrap onSaveAllChanges to add refetch after save
+async function onSaveAllChanges() {
+  const success = await onSaveAllChangesOriginal();
+  if (success && resolvedArticleId.value) {
+    // Refetch the article data after successful save
+    try {
+      await fetchFullAiArticlesByIds([resolvedArticleId.value]);
+      // Trigger data sync to update the articles prop
+      triggerDataSync();
+    } catch (error) {
+      console.error("Failed to refetch article after save:", error);
+    }
+  }
+}
 
 // Initialize fixture search/sort composable
 const {

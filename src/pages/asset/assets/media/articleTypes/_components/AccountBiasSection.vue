@@ -7,7 +7,7 @@
     <v-expansion-panel-text style="padding-left: 8px; padding-right: 8px;">
       <div class="row">
         <div class="col-md-12 mb-3">
-          <v-text-field :model-value="accountBias.isBias" @update:model-value="updateField('isBias', $event)"
+          <v-text-field :model-value="accountBias?.isBias" @update:model-value="updateField('isBias', $event)"
             label="Is Bias" variant="outlined" density="compact" />
         </div>
       </div>
@@ -19,7 +19,7 @@
 import type { AccountBias } from "@/types/FixtureTypes";
 
 const props = defineProps<{
-  accountBias: AccountBias;
+  accountBias?: AccountBias; // Optional - associations won't have accountBias
 }>();
 
 const emit = defineEmits<{
@@ -27,6 +27,7 @@ const emit = defineEmits<{
 }>();
 
 function updateField<K extends keyof AccountBias>(field: K, value: AccountBias[K]) {
+  if (!props.accountBias) return;
   emit("update:accountBias", {
     ...props.accountBias,
     [field]: value,
