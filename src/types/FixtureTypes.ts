@@ -123,6 +123,13 @@ export function parseFixturePrompt(promptString: string): FixtureData {
     throw new Error("Fixture prompt string is empty or invalid");
   }
 
+  // Check if the string looks like JSON (should start with { or [)
+  const trimmed = promptString.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+    const preview = trimmed.length > 50 ? trimmed.substring(0, 50) + '...' : trimmed;
+    throw new Error(`Fixture prompt is not valid JSON. Expected JSON object/array but got: "${preview}"`);
+  }
+
   try {
     const parsed = JSON.parse(promptString) as Partial<FixtureData>;
 
@@ -162,7 +169,11 @@ export function parseFixturePrompt(promptString: string): FixtureData {
     return parsed as FixtureData;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error(`Failed to parse fixture prompt JSON: ${error.message}`);
+      // Extract just the error type and position, not the full invalid JSON snippet
+      const errorMsg = error.message;
+      // Remove the invalid JSON snippet from the error message if present
+      const cleanErrorMsg = errorMsg.split(',')[0] || errorMsg;
+      throw new Error(`Failed to parse fixture prompt JSON: ${cleanErrorMsg}`);
     }
     throw error;
   }

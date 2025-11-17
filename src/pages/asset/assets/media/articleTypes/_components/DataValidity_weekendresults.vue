@@ -249,7 +249,13 @@ function validateFixtures() {
                     });
                 } catch (error) {
                     const errorMessage = error instanceof Error ? error.message : String(error);
-                    console.error('Failed to parse fixture prompt:', errorMessage);
+                    // Only log unexpected errors (not invalid JSON format issues to reduce console noise)
+                    // Invalid JSON errors are expected when prompt data is corrupted or in wrong format
+                    if (!errorMessage.includes('not valid JSON') &&
+                        !errorMessage.includes('Failed to parse fixture prompt JSON') &&
+                        !errorMessage.includes('Expected JSON object/array')) {
+                        console.warn('Failed to parse fixture prompt:', errorMessage);
+                    }
                     // Create a result with all fields missing due to parse error
                     results.push({
                         tossWinner: { present: false, value: null },
