@@ -66,7 +66,7 @@
                         <div class="pa-2 bg-error-lighten-5 rounded">
                             <p class="text-caption font-weight-bold text-error mb-1">Missing Data:</p>
                             <ul class="text-caption text-error mb-0 pl-4" style="list-style-type: disc;">
-                                <li v-if="!result.tossResult.present">Toss Result</li>
+                                <li v-if="!result.tossResult.present">Who batted first?</li>
                                 <li v-if="!result.resultStatement.present">Result Statement</li>
                                 <li v-if="!result.hasPlayerPerformance">Player Performance</li>
                             </ul>
