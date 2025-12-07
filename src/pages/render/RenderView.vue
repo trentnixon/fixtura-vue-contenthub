@@ -1,6 +1,9 @@
 <template>
   <v-container fluid class="pa-0">
     <HeaderSection />
+    <AnnouncementBanner
+      title="We're aware of a fixture date error affecting certain grades and are working to resolve it promptly."
+      message="This bug may cause some renders to display past fixtures in your bundles — if you've been affected, please use the &quot;Request a Re-Render&quot; button." />
     <v-alert v-if="getRerenderRequested" type="success" variant="tonal" class="mx-4 mt-4" prominent>
       <template v-slot:prepend>
         <v-icon>mdi-check-circle</v-icon>
@@ -77,6 +80,7 @@ import CardHeader from "@/components/primitives/headers/CardHeader.vue";
 import FixtureStats from "@/pages/render/components/FixtureStats.vue";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
+import AnnouncementBanner from "@/components/UI/AnnouncementBanner.vue";
 import { useAccountData } from "@/pages/account/composables/useAccountData";
 import { fetchFixturaRenderById, submitRerenderRequestAction } from "@/store/renders/actions";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
