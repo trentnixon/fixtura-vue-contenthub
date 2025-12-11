@@ -1,9 +1,9 @@
 <template>
-  <v-alert v-if="show" type="error" variant="tonal" class="mx-4 mt-4 announcement-banner" prominent dismissible
-    @click:close="dismiss">
+  <v-alert v-if="enabled && show" type="error" variant="tonal" class="mx-4 mt-4 announcement-banner" prominent
+    dismissible @click:close="dismiss">
     <div>
-      <div class="font-weight-medium banner-text mb-1">{{ title }}</div>
-      <div class="text-caption banner-text">{{ message }}</div>
+      <div v-if="title" class="font-weight-medium banner-text mb-1">{{ title }}</div>
+      <div v-if="message" class="text-caption banner-text">{{ message }}</div>
     </div>
   </v-alert>
 </template>
@@ -12,13 +12,17 @@
 import { ref, onMounted } from 'vue';
 
 const props = defineProps({
+  enabled: {
+    type: Boolean,
+    default: false,
+  },
   title: {
     type: String,
     default: '',
   },
   message: {
     type: String,
-    default: 'banner',
+    default: '',
   },
 });
 

@@ -63,7 +63,8 @@
       <!-- Article Display -->
       <!-- Legacy check happens first in Top5Display, regardless of article content -->
       <Top5Display :articleStatus="articleStatus" :formattedArticles="formattedArticles" :isRequesting="isPending"
-        :isLocked="isLocked" :isLegacy="isLegacy" @request-writeup="showConfirmationDialog = true" />
+        :isLocked="isLocked" :isLegacy="isLegacy" :headline-text="displayCopy.headline"
+        :description-text="displayCopy.description" @request-writeup="showConfirmationDialog = true" />
     </div>
   </div>
 </template>
@@ -96,6 +97,7 @@ const props = defineProps<{
 
 const route = useRoute();
 const router = useRouter();
+const assetType = computed(() => String(route.params.asset || ""));
 
 // Function to trigger data sync on render (refresh page data)
 function triggerDataSync() {
@@ -194,6 +196,27 @@ const buttonText = computed(() => {
 
   // Initial or postPending
   return "Request Write-up";
+});
+
+// Empty-state copy based on asset type (Top 5 vs performance assets)
+const displayCopy = computed(() => {
+  const type = assetType.value;
+  const isPerformance =
+    type === "CricketBattingPerformances" || type === "CricketBowlingPerformances";
+
+  if (isPerformance) {
+    return {
+      headline: "AI Performance Articles on Demand.",
+      description:
+        "Create professional batting and bowling performance articles instantly. Our AI analyzes player stats to produce customizable summaries you can refine to perfection.",
+    };
+  }
+
+  return {
+    headline: "AI Top 5 Articles on Demand.",
+    description:
+      "Create professional Top 5 performance articles instantly. Our AI analyzes player data and generates comprehensive listicles that you can customize and refine to perfection.",
+  };
 });
 
 // Show additional buttons (Add Context) whenever article is NOT locked

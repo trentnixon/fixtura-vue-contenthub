@@ -171,6 +171,10 @@ const assetComponent = computed(() => {
       return AssetDefaultView;
     case "CricketTop5Batting":
       return AssetDefaultView;
+    case "CricketBattingPerformances":
+      return AssetDefaultView;
+    case "CricketBowlingPerformances":
+      return AssetDefaultView;
     case "CricketLadder":
       return AssetDefaultView;
     case "CricketUpcoming":

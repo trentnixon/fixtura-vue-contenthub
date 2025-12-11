@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useDisplay } from "vuetify";
 
 import MediaLayout from "@/components/containers/media/mediaLayout.vue";
@@ -123,7 +123,12 @@ const hasValidArticle = computed(() => {
     }
 
     // For Top5 articles, check topScorers array
-    if (assetType.value === "CricketTop5Bowling" || assetType.value === "CricketTop5Batting") {
+    if (
+      assetType.value === "CricketTop5Bowling" ||
+      assetType.value === "CricketTop5Batting" ||
+      assetType.value === "CricketBattingPerformances" ||
+      assetType.value === "CricketBowlingPerformances"
+    ) {
       return structuredOutput.topScorers &&
         Array.isArray(structuredOutput.topScorers) &&
         structuredOutput.topScorers.length > 0;
@@ -174,6 +179,8 @@ const assetComponent = computed(() => {
   switch (assetType.value) {
     case "CricketTop5Bowling":
     case "CricketTop5Batting":
+    case "CricketBattingPerformances":
+    case "CricketBowlingPerformances":
       return Top5Listicle;
     case "CricketLadder":
       return LadderSummary;

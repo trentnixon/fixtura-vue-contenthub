@@ -102,6 +102,8 @@ const assetOrder = [
   "CricketResultSingle",
   "CricketTop5Batting",
   "CricketTop5Bowling",
+  "CricketBattingPerformances",
+  "CricketBowlingPerformances",
   "CricketLadder",
   "CricketUpcoming",
 ];
@@ -162,6 +164,8 @@ function getIcon(type) {
     CricketLadder: icons.categories.ladder,
     CricketTop5Bowling: icons.categories.bowling,
     CricketTop5Batting: icons.categories.batting,
+    CricketBattingPerformances: icons.categories.batting,
+    CricketBowlingPerformances: icons.categories.bowling,
     CricketUpcoming: icons.categories.upcoming,
     CricketResultSingle: icons.categories.singleResult,
     CricketRoster: icons.categories.roster,

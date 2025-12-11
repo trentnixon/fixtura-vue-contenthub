@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0">
     <HeaderSection />
-    <AnnouncementBanner
+    <AnnouncementBanner :enabled="showAnnouncementBanner"
       title="We're aware of a fixture date error affecting certain grades and are working to resolve it promptly."
       message="This bug may cause some renders to display past fixtures in your bundles — if you've been affected, please use the &quot;Request a Re-Render&quot; button." />
     <v-alert v-if="getRerenderRequested" type="success" variant="tonal" class="mx-4 mt-4" prominent>
@@ -93,6 +93,9 @@ const { getRerenderRequested } = useRenderData();
 const route = useRoute();
 const renderId = ref(Number(route.params.renderid));
 const accountId = ref(Number(route.params.accountid));
+
+// Announcement banner state
+const showAnnouncementBanner = ref(true);
 
 // Dialog state
 const showRerenderDialog = ref(false);

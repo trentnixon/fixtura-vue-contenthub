@@ -18,7 +18,7 @@
             <v-progress-circular indeterminate color="primary" size="64" class="mb-6"></v-progress-circular>
             <p class="text-h6 font-weight-bold mb-3">Generating new article...</p>
             <p class="article-body mb-3">
-                Please wait whilst we create your Top 5 article. This may take some time.
+                Please wait whilst we create your article. This may take some time.
             </p>
             <p class="text-caption text-grey">
                 You can leave and check back later if you wish.
@@ -78,10 +78,9 @@
 
         <!-- No articles state -->
         <div v-else class="text-center pa-8">
-            <p class="article-body text-bold mb-2">AI Top 5 Articles on Demand.</p>
+            <p class="article-body text-bold mb-2">{{ headlineText }}</p>
             <p class="article-body mb-4">
-                Create professional Top 5 performance articles instantly. Our AI analyzes player data and generates
-                comprehensive listicles that you can customize and refine to perfection.
+                {{ descriptionText }}
             </p>
             <PrimaryButton label="Create an Article" :loading="isRequesting" :disabled="isRequesting || isLocked"
                 @click="$emit('request-writeup')" />
@@ -90,16 +89,33 @@
 </template>
 
 <script setup lang="ts">
+import { toRefs } from "vue";
 import type { FormattedTop5Article } from "../_composables/useTop5Formatting";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     articleStatus: string;
     formattedArticles: FormattedTop5Article[];
     isRequesting?: boolean;
     isLocked?: boolean;
     isLegacy?: boolean;
-}>();
+    headlineText?: string;
+    descriptionText?: string;
+}>(), {
+    headlineText: "AI Top 5 Articles on Demand.",
+    descriptionText:
+        "Create professional Top 5 performance articles instantly. Our AI analyzes player data and generates comprehensive listicles that you can customize and refine to perfection.",
+});
+
+const {
+    articleStatus,
+    formattedArticles,
+    isRequesting,
+    isLocked,
+    isLegacy,
+    headlineText,
+    descriptionText,
+} = toRefs(props);
 
 defineEmits<{
     "request-writeup": [];
