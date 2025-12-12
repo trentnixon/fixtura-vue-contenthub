@@ -95,7 +95,7 @@ const renderId = ref(Number(route.params.renderid));
 const accountId = ref(Number(route.params.accountid));
 
 // Announcement banner state
-const showAnnouncementBanner = ref(true);
+const showAnnouncementBanner = ref(false);
 
 // Dialog state
 const showRerenderDialog = ref(false);
