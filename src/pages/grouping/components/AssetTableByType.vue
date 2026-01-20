@@ -23,8 +23,13 @@
           variant="flat" rounded>
           <!-- Slot for the asset type display (with icon and name) -->
           <template v-slot:[`item.type`]="{ item }">
-            <v-icon :icon="getIcon(item.type)" class="mr-2" />
-            {{ getDisplayName(toPascalCase(item.type)) }}
+            <div class="d-flex align-center">
+              <v-icon :icon="getIcon(item.type)" class="mr-2" />
+              <span class="mr-2">{{ getDisplayName(toPascalCase(item.type)) }}</span>
+              <v-chip v-if="isNewAsset(item.type)" color="red" size="x-small" variant="tonal">
+                New
+              </v-chip>
+            </div>
           </template>
 
           <!-- Conditionally render download count based on screen size -->
@@ -173,6 +178,16 @@ function getIcon(type) {
     CricketRoster: icons.categories.roster,
   };
   return iconMap[type] || icons.file;
+}
+
+// Check if asset is a new beta feature
+function isNewAsset(type) {
+  const newAssets = [
+    "CricketTeamOfTheWeek",
+    "CricketBattingPerformances",
+    "CricketBowlingPerformances",
+  ];
+  return newAssets.includes(type);
 }
 
 // team roaster handler

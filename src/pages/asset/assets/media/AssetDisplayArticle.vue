@@ -122,7 +122,7 @@ const hasValidArticle = computed(() => {
       });
     }
 
-    // For Top5 articles, check topScorers array
+    // For Top5 articles, check top_scorers array (snake_case as used in structuredOutput)
     if (
       assetType.value === "CricketTop5Bowling" ||
       assetType.value === "CricketTop5Batting" ||
@@ -130,9 +130,9 @@ const hasValidArticle = computed(() => {
       assetType.value === "CricketBattingPerformances" ||
       assetType.value === "CricketBowlingPerformances"
     ) {
-      return structuredOutput.topScorers &&
-        Array.isArray(structuredOutput.topScorers) &&
-        structuredOutput.topScorers.length > 0;
+      return structuredOutput.top_scorers &&
+        Array.isArray(structuredOutput.top_scorers) &&
+        structuredOutput.top_scorers.length > 0;
     }
 
     // For UpcomingFixtures, check fixtures array

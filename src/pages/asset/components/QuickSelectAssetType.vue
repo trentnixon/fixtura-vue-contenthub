@@ -15,9 +15,14 @@
       <v-list>
         <v-list-item v-for="asset in sortedAssets" :key="asset.type" @click="navigateToAsset(asset.type)"
           :active="isActiveAssetType(asset.type)">
-          <v-list-item-title>{{
-            getDisplayName(toPascalCase(asset.type))
-          }}</v-list-item-title>
+          <v-list-item-title class="d-flex align-center">
+            <span class="mr-2">{{
+              getDisplayName(toPascalCase(asset.type))
+            }}</span>
+            <v-chip v-if="isNewAsset(asset.type)" color="red" size="x-small" variant="tonal">
+              New
+            </v-chip>
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -89,6 +94,16 @@ function toPascalCase(str) {
   return str
     .replace(/(^|_|-|\s)+(\w)/g, (_, __, c) => c.toUpperCase())
     .replace(/^(\w)/, (c) => c.toUpperCase());
+}
+
+// Check if asset is a new beta feature
+function isNewAsset(type) {
+  const newAssets = [
+    "CricketTeamOfTheWeek",
+    "CricketBattingPerformances",
+    "CricketBowlingPerformances",
+  ];
+  return newAssets.includes(type);
 }
 
 // Add watch function for route params
