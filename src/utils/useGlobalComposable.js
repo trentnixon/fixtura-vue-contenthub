@@ -5,6 +5,7 @@ export const useGlobalComposable = () => {
       CricketLadder: "Ladder",
       CricketTop5Bowling: "Top 5 Bowling",
       CricketTop5Batting: "Top 5 Batting",
+      CricketTeamOfTheWeek: "Team of the Week",
       CricketBattingPerformances: "Batting Performances",
       CricketBowlingPerformances: "Bowling Performances",
       CricketUpcoming: "Upcoming Fixtures",

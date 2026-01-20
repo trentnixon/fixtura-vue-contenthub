@@ -126,6 +126,7 @@ const hasValidArticle = computed(() => {
     if (
       assetType.value === "CricketTop5Bowling" ||
       assetType.value === "CricketTop5Batting" ||
+      assetType.value === "CricketTeamOfTheWeek" ||
       assetType.value === "CricketBattingPerformances" ||
       assetType.value === "CricketBowlingPerformances"
     ) {
@@ -179,6 +180,7 @@ const assetComponent = computed(() => {
   switch (assetType.value) {
     case "CricketTop5Bowling":
     case "CricketTop5Batting":
+    case "CricketTeamOfTheWeek":
     case "CricketBattingPerformances":
     case "CricketBowlingPerformances":
       return Top5Listicle;

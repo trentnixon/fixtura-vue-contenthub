@@ -179,6 +179,8 @@ const assetComponent = computed(() => {
       return AssetDefaultView;
     case "CricketUpcoming":
       return AssetDefaultView;
+    case "CricketTeamOfTheWeek":
+      return AssetDefaultView;
     case "CricketResultSingle":
       return Weekendsinglegameresult;
     case "CricketRoster":

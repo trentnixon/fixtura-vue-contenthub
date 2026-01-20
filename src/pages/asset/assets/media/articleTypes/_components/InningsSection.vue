@@ -24,6 +24,8 @@
 </template>
 
 <script setup lang="ts">
+console.log("[InningsSection] Script loaded");
+
 import { computed } from "vue";
 import type { Innings } from "@/types/FixtureTypes";
 import PlayerStatsTable from "./PlayerStatsTable.vue";
@@ -32,7 +34,15 @@ import FieldingStatsTable from "./FieldingStatsTable.vue";
 
 const props = defineProps<{
     inning: Innings;
+    teamTotalScore?: string; // Team-level totalScore (e.g., "8/234") to use when innings.score is empty
 }>();
+
+// Log props immediately
+console.log("[InningsSection] Props received:", JSON.stringify(props.inning, null, 2));
+console.log("[InningsSection] Inning keys:", Object.keys(props.inning || {}));
+console.log("[InningsSection] inning.score:", props.inning?.score);
+console.log("[InningsSection] inning.overs:", props.inning?.overs);
+console.log("[InningsSection] inning.wickets:", props.inning?.wickets);
 
 const emit = defineEmits<{
     "update:inning": [value: Innings];
@@ -44,121 +54,90 @@ const emit = defineEmits<{
     "remove-fielder": [index: number];
 }>();
 
-// Combine score, overs, and wickets into a single display string
+// Display score from CMS - construct display from available data on initial load
+// Once user edits, it will save to score field and show that (no auto-formatting after edit)
 const combinedScoreDisplay = computed(() => {
-    let score = props.inning.score || '';
-    let overs = props.inning.overs || '';
+    console.log("[InningsSection] combinedScoreDisplay computed running");
+    const score = props.inning.score || '';
+    const overs = props.inning.overs || '';
     const wickets = props.inning.wickets;
 
-    // If score is empty, try to extract it from fallOfWickets (last wicket shows final score)
-    if (!score && props.inning.fallOfWickets && props.inning.fallOfWickets.length > 0) {
-        const lastWicket = props.inning.fallOfWickets[props.inning.fallOfWickets.length - 1];
-        if (lastWicket && lastWicket.score) {
-            // Last wicket score is in format "333/9" (runs/wickets), we need "9/333" (wickets/runs)
-            const scoreMatch = lastWicket.score.match(/(\d+)\/(\d+)/);
-            if (scoreMatch) {
-                const [, runs, wicketsAtScore] = scoreMatch;
-                // Use the final wickets count if available, otherwise use wickets from score
-                score = `${wickets || wicketsAtScore}/${runs}`;
+    // If score field already contains the full format (e.g., "8/234 (45)"), use it
+    if (score && score.trim()) {
+        // Check if score already includes overs in parentheses
+        if (score.includes('(') && score.includes(')')) {
+            return score; // Already has full format
+        }
+
+        // If score has "/" format (e.g., "8/234"), add overs if available
+        if (score.includes('/') && overs && overs.trim()) {
+            return `${score} (${overs})`;
+        }
+
+        // Otherwise just return score as-is
+        return score;
+    }
+
+    // Score field is empty, construct from available data
+    const parts: string[] = [];
+    let constructedScore = '';
+
+    // FIRST PRIORITY: Use team.totalScore if available (correct CMS score, e.g., "8/234")
+    if (props.teamTotalScore && props.teamTotalScore.trim()) {
+        constructedScore = props.teamTotalScore.trim();
+        parts.push(constructedScore);
+    } else {
+        // FALLBACK: Try to construct score from fallOfWickets (last wicket shows final score)
+        // Note: This may be inaccurate if fallOfWickets doesn't reflect the final score
+        if (props.inning.fallOfWickets && props.inning.fallOfWickets.length > 0) {
+            const lastWicket = props.inning.fallOfWickets[props.inning.fallOfWickets.length - 1];
+            if (lastWicket && lastWicket.score) {
+                // Last wicket score is in format "205/8" (runs/wickets)
+                // We need to display as "8/205" (wickets/runs)
+                const scoreMatch = lastWicket.score.match(/(\d+)\/(\d+)/);
+                if (scoreMatch) {
+                    const [, runs, wicketsAtScore] = scoreMatch;
+                    // Use wickets from prop if available, otherwise from score
+                    const displayWickets = wickets || wicketsAtScore;
+                    constructedScore = `${displayWickets}/${runs}`;
+                    parts.push(constructedScore);
+                }
             }
         }
     }
 
-    // If overs is empty, try to extract from bowling figures
-    // Total innings overs = sum of all overs bowled by all bowlers
-    if (!overs && props.inning.bowlingFigures && props.inning.bowlingFigures.length > 0) {
-        // Parse bowling figures descriptions to extract overs
-        // Format: "Ben Stoyanoff, bowled 10 overs, took 3 wickets..."
-        let totalBalls = 0;
-
+    // Calculate overs from bowling figures if overs field is empty
+    let calculatedOvers = overs;
+    if (!calculatedOvers && props.inning.bowlingFigures && props.inning.bowlingFigures.length > 0) {
+        let totalOvers = 0;
         props.inning.bowlingFigures.forEach((bowler) => {
             if (bowler.description) {
-                // Match "bowled X overs" or "bowled X.Y overs" format
+                // Match "bowled X overs" format
                 const oversMatch = bowler.description.match(/bowled\s+(\d+)(?:\.(\d+))?\s+overs?/i);
                 if (oversMatch) {
                     const fullOvers = parseInt(oversMatch[1], 10);
                     const balls = oversMatch[2] ? parseInt(oversMatch[2], 10) : 0;
-                    // Convert to total balls (6 balls = 1 over)
-                    totalBalls += (fullOvers * 6) + balls;
+                    totalOvers += fullOvers + (balls / 10); // Treat balls as decimal part
                 }
             }
         });
-
-        // Convert total balls back to overs (6 balls = 1 over)
-        if (totalBalls > 0) {
-            const totalOvers = totalBalls / 6;
-            overs = totalOvers % 1 === 0 ? totalOvers.toString() : totalOvers.toFixed(1);
+        if (totalOvers > 0) {
+            calculatedOvers = totalOvers % 1 === 0 ? totalOvers.toString() : totalOvers.toFixed(1);
         }
     }
 
-    // If score already contains a full format (e.g., "8/291" or "10/200"), use it as-is
-    if (score && score.includes('/')) {
-        const parts: string[] = [score];
-        if (overs) {
-            parts.push(`${overs} overs`);
-        }
-        return parts.join(', ');
+    // Add overs if we have it
+    if (calculatedOvers && calculatedOvers.trim()) {
+        parts.push(`(${calculatedOvers})`);
     }
 
-    // If score has content but no slash, try to use it
-    if (score && score.trim()) {
-        // Check if score might be just runs (a number)
-        const scoreNum = Number(score);
-        if (!isNaN(scoreNum) && wickets !== undefined && wickets !== null) {
-            // We have both runs and wickets, format as wickets/runs
-            const parts: string[] = [`${wickets}/${scoreNum}`];
-            if (overs) {
-                parts.push(`${overs} overs`);
-            }
-            return parts.join(', ');
-        } else {
-            // Score might be in a different format, use it as-is
-            const parts: string[] = [score];
-            if (wickets !== undefined && wickets !== null && wickets !== 0) {
-                // Add wickets if not already in score
-                if (!score.toLowerCase().includes('wicket')) {
-                    parts.push(`${wickets} wickets`);
-                }
-            }
-            if (overs) {
-                parts.push(`${overs} overs`);
-            }
-            return parts.join(', ');
-        }
-    }
-
-    // No score data, construct from wickets and overs
-    const parts: string[] = [];
-
-    if (wickets !== undefined && wickets !== null && wickets !== 0) {
-        parts.push(`${wickets} wickets`);
-    }
-
-    if (overs) {
-        parts.push(`${overs} overs`);
-    }
-
-    return parts.join(', ') || '';
+    return parts.join(' ');
 });
 
-// Update the combined score field - store in score field for flexibility
+// Update the score field - save exactly what the user types, no parsing or formatting
 function updateCombinedScore(value: string) {
-    // Store the entire string in the score field for now
-    // Users can write in their preferred format (e.g., "10/291, 45.2 overs" or "291/10 (45.2)")
-    updateField('score', value);
-
-    // Try to parse overs and wickets if possible, but don't force it
-    // This allows backwards compatibility while giving users flexibility
-    const oversMatch = value.match(/(\d+\.?\d*)\s*overs?/i);
-    if (oversMatch) {
-        updateField('overs', oversMatch[1]);
-    }
-
-    // Try to extract wickets if written separately (not in score format like "10/291")
-    const wicketsMatch = value.match(/(\d+)\s*wickets?/i);
-    if (wicketsMatch && !value.includes('/')) {
-        updateField('wickets', Number(wicketsMatch[1]));
-    }
+    // Store exactly what the user types, no auto-parsing or formatting
+    updateField('score', value || '');
 }
 
 function updateField<K extends keyof Innings>(field: K, value: Innings[K]) {

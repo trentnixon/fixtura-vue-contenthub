@@ -31,7 +31,8 @@
     <!-- Check if articles exist with valid content (show when status is completed or waiting) -->
     <!-- waiting status indicates article exists and is ready (backward compatibility for legacy articles) -->
     <!-- Only show if articles have actual content (leagues), not just placeholder records -->
-    <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.leagues && article.leagues.length > 0)">
+    <div
+      v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.leagues && article.leagues.length > 0)">
       <!-- Iterate through each article -->
       <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
         <!-- Iterate through each league -->
@@ -54,7 +55,7 @@
 
     <!-- No articles state -->
     <div v-else class="text-center pa-8">
-      <p class="article-body text-bold mb-2">AI Ladder Summary Articles on Demand.</p>
+      <p class="article-body text-bold mb-2">Ladder Summary Articles on Demand.</p>
       <p class="article-body mb-4">
         Create professional ladder summary articles instantly. Our AI analyzes league standings and generates
         comprehensive summaries that you can customize and refine to perfection.

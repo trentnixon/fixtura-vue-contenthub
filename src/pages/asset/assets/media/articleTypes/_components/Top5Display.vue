@@ -102,7 +102,7 @@ const props = withDefaults(defineProps<{
     headlineText?: string;
     descriptionText?: string;
 }>(), {
-    headlineText: "AI Top 5 Articles on Demand.",
+    headlineText: "Top 5 Articles on Demand.",
     descriptionText:
         "Create professional Top 5 performance articles instantly. Our AI analyzes player data and generates comprehensive listicles that you can customize and refine to perfection.",
 });

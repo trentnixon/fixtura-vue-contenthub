@@ -53,6 +53,10 @@ export function useFixtureEditing(
    */
   async function loadFixtures() {
     const firstArticle = articles.value?.[0];
+    console.log("[useFixtureEditing] First article:", JSON.stringify(firstArticle, null, 2));
+    console.log("[useFixtureEditing] First article keys:", Object.keys(firstArticle || {}));
+    console.log("[useFixtureEditing] ArticleDataForPrompt:", firstArticle?.ArticleDataForPrompt);
+
     if (
       !firstArticle?.ArticleDataForPrompt ||
       firstArticle.ArticleDataForPrompt.length === 0
@@ -64,10 +68,14 @@ export function useFixtureEditing(
 
     // Parse each fixture prompt
     const parsed: ParsedFixturePrompt[] = [];
+    console.log("[useFixtureEditing] ArticleDataForPrompt length:", firstArticle.ArticleDataForPrompt.length);
     for (let i = 0; i < firstArticle.ArticleDataForPrompt.length; i++) {
       const fixturePrompt = firstArticle.ArticleDataForPrompt[i];
+      console.log(`[useFixtureEditing] Fixture ${i} raw prompt (first 500 chars):`, fixturePrompt.prompt.substring(0, 500));
       try {
         const parsedData = parseFixturePrompt(fixturePrompt.prompt);
+        console.log(`[useFixtureEditing] Fixture ${i} parsed data:`, JSON.stringify(parsedData, null, 2));
+        console.log(`[useFixtureEditing] Fixture ${i} homeTeam innings[0]:`, parsedData.homeTeam?.innings?.[0]);
         parsed.push({
           prompt: fixturePrompt.prompt,
           parsedData: parsedData,

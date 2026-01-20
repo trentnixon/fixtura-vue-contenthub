@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineExpose, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   pollWeekendArticleStatus,
@@ -204,16 +204,24 @@ const displayCopy = computed(() => {
   const isPerformance =
     type === "CricketBattingPerformances" || type === "CricketBowlingPerformances";
 
+  if (type === "CricketTeamOfTheWeek") {
+    return {
+      headline: "Team of the Week Articles on Demand.",
+      description:
+        "Create professional Team of the Week articles instantly. Our AI analyzes player performances and generates comprehensive team selections that you can customize and refine to perfection.",
+    };
+  }
+
   if (isPerformance) {
     return {
-      headline: "AI Performance Articles on Demand.",
+      headline: "Performance Articles on Demand.",
       description:
         "Create professional batting and bowling performance articles instantly. Our AI analyzes player stats to produce customizable summaries you can refine to perfection.",
     };
   }
 
   return {
-    headline: "AI Top 5 Articles on Demand.",
+    headline: "Top 5 Articles on Demand.",
     description:
       "Create professional Top 5 performance articles instantly. Our AI analyzes player data and generates comprehensive listicles that you can customize and refine to perfection.",
   };

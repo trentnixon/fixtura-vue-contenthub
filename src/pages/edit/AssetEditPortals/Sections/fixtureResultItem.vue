@@ -91,7 +91,13 @@
       <v-card>
         <v-card-title>Home Team Editor</v-card-title>
         <v-card-text>
-          <PerformanceEditor :performances="fixture.homeTeam.battingPerformances" type="batting" @update="
+          <!-- Score Field -->
+          <p class="card-title mb-4">Score</p>
+          <v-container class="pa-0">
+            <TextInput :value="getInnings1Score()" label="Score" @update="(val) => updateInnings1Score(val)" />
+          </v-container>
+
+          <PerformanceEditor :performances="fixture.homeTeam.battingPerformances || []" type="batting" @update="
             (updatedPerformances) =>
               updateFixtureField(
                 'homeTeam.battingPerformances',
@@ -99,7 +105,7 @@
               )
           " />
 
-          <PerformanceEditor :performances="fixture.awayTeam.bowlingPerformances" type="bowling" @update="
+          <PerformanceEditor :performances="fixture.awayTeam.bowlingPerformances || []" type="bowling" @update="
             (updatedPerformances) =>
               updateFixtureField(
                 'awayTeam.bowlingPerformances',
@@ -120,7 +126,7 @@
         <v-card-title>Away Team Editor</v-card-title>
         <v-card-text>
           <p class="card-title mb-4">Away Team Batting</p>
-          <PerformanceEditor :performances="fixture.awayTeam.battingPerformances" type="batting" @update="
+          <PerformanceEditor :performances="fixture.awayTeam.battingPerformances || []" type="batting" @update="
             (updatedPerformances) =>
               updateFixtureField(
                 'awayTeam.battingPerformances',
@@ -128,7 +134,7 @@
               )
           " />
           <p class="card-title mb-4">Home Team Bowling</p>
-          <PerformanceEditor :performances="fixture.homeTeam.bowlingPerformances" type="bowling" @update="
+          <PerformanceEditor :performances="fixture.homeTeam.bowlingPerformances || []" type="bowling" @update="
             (updatedPerformances) =>
               updateFixtureField(
                 'homeTeam.bowlingPerformances',
@@ -146,7 +152,10 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, inject, ref } from "vue";
+// Simple log to verify script runs
+console.log("[fixtureResultItem] Script loaded");
+
+import { defineProps, defineEmits, inject, ref, onMounted, watch } from "vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import TextInput from "@/pages/edit/AssetEditPortals/formElements/TextInput.vue";
 import PerformanceEditor from "@/pages/edit/AssetEditPortals/formElements/PerformanceEditor.vue";
@@ -158,18 +167,39 @@ import {
 } from "@/pages/edit/validations/genericValidations";
 import FormRowTwoItems from "@/components/forms/structure/FormRowTwoItems.vue";
 
-// Debug: Verify imports are functions
-console.log("[fixtureResultItem] isValidScore type:", typeof isValidScore);
-console.log("[fixtureResultItem] isValidResult type:", typeof isValidResult);
-console.log("[fixtureResultItem] isValidName type:", typeof isValidName);
-console.log("[fixtureResultItem] isRequired type:", typeof isRequired);
-
 const icons = inject("icons");
 
 const props = defineProps({
   fixture: Object,
   index: Number,
 });
+
+// Log immediately after props definition
+console.log("[fixtureResultItem] Props received:", {
+  fixture: props.fixture,
+  index: props.index,
+  fixtureType: typeof props.fixture,
+  fixtureIsNull: props.fixture === null,
+  fixtureIsUndefined: props.fixture === undefined
+});
+
+// Log fixture data when component mounts
+onMounted(() => {
+  console.log("[fixtureResultItem] Component mounted");
+  console.log("[fixtureResultItem] Full fixture object:", JSON.stringify(props.fixture, null, 2));
+  console.log("[fixtureResultItem] Fixture keys:", Object.keys(props.fixture || {}));
+  console.log("[fixtureResultItem] Homescores:", props.fixture?.Homescores);
+  console.log("[fixtureResultItem] HomeOvers:", props.fixture?.HomeOvers);
+  console.log("[fixtureResultItem] Awayscores:", props.fixture?.Awayscores);
+  console.log("[fixtureResultItem] AwayOvers:", props.fixture?.AwayOvers);
+  console.log("[fixtureResultItem] homeTeam:", props.fixture?.homeTeam);
+  console.log("[fixtureResultItem] awayTeam:", props.fixture?.awayTeam);
+});
+
+// Watch for fixture changes
+watch(() => props.fixture, (newFixture) => {
+  console.log("[fixtureResultItem] Fixture changed:", JSON.stringify(newFixture, null, 2));
+}, { deep: true, immediate: true });
 
 const emit = defineEmits(["updateFixtureField", "saveFixture"]);
 
@@ -181,7 +211,14 @@ const isInnings2ModalOpen = ref(false);
 // Open specific modal
 function openModal(modal) {
   if (modal === "result") isResultModalOpen.value = true;
-  if (modal === "innings1") isInnings1ModalOpen.value = true;
+  if (modal === "innings1") {
+    console.log("[fixtureResultItem] Opening Innings 1 modal");
+    console.log("[fixtureResultItem] Full fixture object:", JSON.stringify(props.fixture, null, 2));
+    console.log("[fixtureResultItem] Fixture keys:", Object.keys(props.fixture || {}));
+    console.log("[fixtureResultItem] Homescores:", props.fixture?.Homescores);
+    console.log("[fixtureResultItem] HomeOvers:", props.fixture?.HomeOvers);
+    isInnings1ModalOpen.value = true;
+  }
   if (modal === "innings2") isInnings2ModalOpen.value = true;
 }
 
@@ -196,6 +233,41 @@ function closeModal(modal) {
 // Don't mutate props directly - emit the change and let the parent handle it
 function updateFixtureField(key, value) {
   emit("updateFixtureField", { index: props.index, key, value });
+}
+
+// Get Innings 1 score from Homescores and HomeOvers
+function getInnings1Score() {
+  // Log ALL fixture data for debugging
+  console.log('[fixtureResultItem] Full fixture object:', JSON.stringify(props.fixture, null, 2));
+  console.log('[fixtureResultItem] Fixture keys:', Object.keys(props.fixture || {}));
+  console.log('[fixtureResultItem] Homescores:', props.fixture?.Homescores);
+  console.log('[fixtureResultItem] HomeOvers:', props.fixture?.HomeOvers);
+  console.log('[fixtureResultItem] Awayscores:', props.fixture?.Awayscores);
+  console.log('[fixtureResultItem] AwayOvers:', props.fixture?.AwayOvers);
+  console.log('[fixtureResultItem] homeTeam:', props.fixture?.homeTeam);
+  console.log('[fixtureResultItem] awayTeam:', props.fixture?.awayTeam);
+
+  const scores = props.fixture?.Homescores || '';
+  const overs = props.fixture?.HomeOvers || '';
+
+  // If Homescores already contains full format (with parentheses), return it as-is
+  if (scores && (scores.includes('(') || scores.includes(')'))) {
+    return scores;
+  }
+
+  // Construct display from Homescores and HomeOvers
+  if (scores && overs) {
+    return `${scores} (${overs})`;
+  }
+
+  return scores || overs || '';
+}
+
+// Update Innings 1 score - save exactly what user types, no auto-formatting
+function updateInnings1Score(value) {
+  // Save the entire value to Homescores field (no parsing or auto-formatting)
+  // User can type "8/234 (45)" or any format they want
+  updateFixtureField('Homescores', value);
 }
 
 // Save fixture

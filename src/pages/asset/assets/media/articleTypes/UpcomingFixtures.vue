@@ -40,7 +40,7 @@
       <ConfirmationModal v-model="showConfirmationDialog" :title="`Confirm ${buttonText}`" :persistent="isPending"
         :loading="isPending" :disabled="isPending" @confirm="confirmAndRequest">
         <p v-if="articlePhase === 'initial' || articlePhase === 'postPending'">
-          Are you sure you want to request a new AI Upcoming Fixtures article? This will generate a fresh article
+          Are you sure you want to request a new Upcoming Fixtures article? This will generate a fresh article
           based on the current data.
         </p>
         <p v-else-if="articlePhase === 'articleWritten'">
@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineExpose, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   pollWeekendArticleStatus,

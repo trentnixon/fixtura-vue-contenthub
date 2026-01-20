@@ -38,6 +38,7 @@ const assetEditComponents = {
   crickettop5bowling: "Top 5 Bowling",
   crickettop5batting: "Top 5 Batting",
   cricketupcoming: "Upcoming Fixtures",
+  cricketteamoftheweek: "Team of the Week",
   cricketresultsingle: "Single Game Result",
 };
 const handleBack = () => {

@@ -46,6 +46,7 @@ const assetEditComponents = {
   crickettop5bowling: Top5Edit,
   crickettop5batting: Top5Edit,
   cricketupcoming: UpComingFixturesEdit,
+  cricketteamoftheweek: Top5Edit,
   cricketresultsingle: WeekendResultsEdit,
 };
 

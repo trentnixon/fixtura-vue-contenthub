@@ -35,7 +35,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+console.log("[WeekendResultsEdit] Script setup starting");
+
+import { onMounted, ref, watch } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import { useFetchFixturaAsset } from "../composables/useFixturaAsset.js";
 import { useSaveFixturaAsset } from "../composables/useSaveFixturaAsset.js";
@@ -44,19 +46,40 @@ import LoadingSpinner from "@/components/UI/LoadingSpinner.vue";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 import FixtureResultItem from "@/pages/edit/AssetEditPortals/Sections/fixtureResultItem.vue";
 
+console.log("[WeekendResultsEdit] Imports loaded");
+
 const { fetchAssetData, dataObj, isFetching } = useFetchFixturaAsset();
 const { updateDataObj, saveToCMS, isSaving } = useSaveFixturaAsset();
 
+console.log("[WeekendResultsEdit] Composables initialized");
+
 const fixtures = ref([]);
+
+// Watch fixtures array to see when items are added
+watch(fixtures, (newFixtures) => {
+  console.log("[WeekendResultsEdit] Fixtures array changed, length:", newFixtures.length);
+  if (newFixtures.length > 0) {
+    console.log("[WeekendResultsEdit] First fixture:", JSON.stringify(newFixtures[0], null, 2));
+  }
+}, { deep: true, immediate: true });
 
 // Load fixtures on component mount
 onMounted(async () => {
   await fetchAssetData();
   console.log("[WeekendResultsEdit] dataObj loaded:", dataObj.value);
+  console.log("[WeekendResultsEdit] dataObj keys:", Object.keys(dataObj.value || {}));
   // Handle both uppercase (DATA) and lowercase (data) field names
   const fixturesData = dataObj.value?.data || dataObj.value?.DATA;
+  console.log("[WeekendResultsEdit] fixturesData:", fixturesData);
   if (fixturesData && Array.isArray(fixturesData)) {
     fixtures.value = [...fixturesData];
+    console.log("[WeekendResultsEdit] fixtures array length:", fixtures.value.length);
+    if (fixtures.value.length > 0) {
+      console.log("[WeekendResultsEdit] First fixture object:", JSON.stringify(fixtures.value[0], null, 2));
+      console.log("[WeekendResultsEdit] First fixture keys:", Object.keys(fixtures.value[0] || {}));
+    }
+  } else {
+    console.log("[WeekendResultsEdit] fixturesData is not an array:", typeof fixturesData, fixturesData);
   }
 });
 

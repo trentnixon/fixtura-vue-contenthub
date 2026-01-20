@@ -68,7 +68,7 @@
         </div>
         <div v-else class="text-center pa-8">
 
-            <p class="article-body text-bold mb-2">AI Articles on Demand.</p>
+            <p class="article-body text-bold mb-2">Articles on Demand.</p>
             <p class="article-body mb-0">
                 Edit, update, and create professional cricket articles instantly.
             </p>

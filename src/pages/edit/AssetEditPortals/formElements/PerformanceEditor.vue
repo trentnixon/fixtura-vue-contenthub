@@ -134,7 +134,9 @@ const title =
 
 // Update a specific field in the performance object
 function updatePerformanceField(index, key, value) {
-  const updatedPerformances = [...props.performances];
+  // Ensure performances is always an array
+  const performances = props.performances || [];
+  const updatedPerformances = [...performances];
   updatedPerformances[index][key] = value;
   emits("update", updatedPerformances);
 }

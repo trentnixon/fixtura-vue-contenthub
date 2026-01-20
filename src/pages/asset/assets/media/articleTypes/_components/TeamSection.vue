@@ -15,7 +15,8 @@
         <v-divider class="my-4"></v-divider>
         <template v-if="team.innings">
           <InningsSection v-for="(inning, inningIndex) in team.innings" :key="inningIndex" :inning="inning"
-            @update:inning="updateInning(inningIndex, $event)" @add-player="$emit('add-player', inningIndex)"
+            :teamTotalScore="team.totalScore" @update:inning="updateInning(inningIndex, $event)"
+            @add-player="$emit('add-player', inningIndex)"
             @remove-player="(playerIndex) => $emit('remove-player', inningIndex, playerIndex)"
             @add-bowler="$emit('add-bowler', inningIndex)"
             @remove-bowler="(bowlerIndex) => $emit('remove-bowler', inningIndex, bowlerIndex)"

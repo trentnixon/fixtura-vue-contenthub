@@ -48,6 +48,7 @@ const assetOrder = [
   "CricketResultSingle",
   "CricketTop5Batting",
   "CricketTop5Bowling",
+  "CricketTeamOfTheWeek",
   "CricketLadder",
   "CricketUpcoming",
 ];

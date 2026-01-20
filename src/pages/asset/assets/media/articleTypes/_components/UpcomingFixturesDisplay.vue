@@ -31,7 +31,8 @@
     <!-- Check if articles exist with valid content (show when status is completed or waiting) -->
     <!-- waiting status indicates article exists and is ready (backward compatibility for legacy articles) -->
     <!-- Only show if articles have actual content (fixtures), not just placeholder records -->
-    <div v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.fixtures && article.fixtures.length > 0)">
+    <div
+      v-else-if="(articleStatus === 'completed' || articleStatus === 'waiting') && formattedArticles.length > 0 && formattedArticles.some(article => article.fixtures && article.fixtures.length > 0)">
       <!-- Iterate through each article -->
       <div v-for="(article, index) in formattedArticles" :key="index" class="mb-4">
         <!-- Iterate through each fixture -->
@@ -63,7 +64,7 @@
 
     <!-- No articles state -->
     <div v-else class="text-center pa-8">
-      <p class="article-body text-bold mb-2">AI Upcoming Fixtures Articles on Demand.</p>
+      <p class="article-body text-bold mb-2">Upcoming Fixtures Articles on Demand.</p>
       <p class="article-body mb-4">
         Create professional upcoming fixtures articles instantly. Our AI analyzes fixture data and generates
         comprehensive previews that you can customize and refine to perfection.
