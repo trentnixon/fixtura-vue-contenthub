@@ -27,7 +27,7 @@
 
 <script setup>
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
-import { defineProps, inject } from "vue";
+import { inject } from "vue";
 const icons = inject("icons");
 const props = defineProps({
   title: {

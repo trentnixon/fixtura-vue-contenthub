@@ -13,7 +13,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
 import { useGA } from "@/utils/useGA";
 
 const props = defineProps({

@@ -21,7 +21,7 @@
  * />
  */
 
-import { ref, onMounted, watch, onUnmounted, defineProps } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 import * as echarts from "echarts/core";
 import { PieChart } from "echarts/charts";
 import { LegendComponent } from "echarts/components";

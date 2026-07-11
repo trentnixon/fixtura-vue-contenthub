@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 

@@ -4,11 +4,9 @@ import { storeToRefs } from "pinia";
 
 export function useUpcomingGameData() {
   const upcomingGamesInRenderStore = useUpcomingGamesInRenderStore();
-  const {
-    upcomingGamesInRenderByRenderID,
-    loading,
-    error,
-  } = storeToRefs(upcomingGamesInRenderStore);
+  const { upcomingGamesInRenderByRenderID, loading, error } = storeToRefs(
+    upcomingGamesInRenderStore
+  );
 
   // Fetch upcoming games by render ID
   async function fetchUpcomingGamesByRenderId(renderId: number) {
@@ -39,15 +37,16 @@ export function useUpcomingGameData() {
     }, {} as Record<string, any[]>);
   });
 
-   // Total number of upcoming games
-   const totalUpcomingGames = computed(() => upcomingGamesInRenderByRenderID.value.length);
-
+  // Total number of upcoming games
+  const totalUpcomingGames = computed(
+    () => upcomingGamesInRenderByRenderID.value.length
+  );
 
   return {
     fetchUpcomingGamesByRenderId,
     groupUpcomingGamesBySport,
     loading,
     error,
-    totalUpcomingGames
+    totalUpcomingGames,
   };
 }

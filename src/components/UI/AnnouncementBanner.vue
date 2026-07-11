@@ -1,15 +1,24 @@
 <template>
-  <v-alert v-if="enabled && show" type="error" variant="tonal" class="mx-4 mt-4 announcement-banner" prominent
-    dismissible @click:close="dismiss">
+  <v-alert
+    v-if="enabled && show"
+    type="error"
+    variant="tonal"
+    class="mx-4 mt-4 announcement-banner"
+    prominent
+    dismissible
+    @click:close="dismiss"
+  >
     <div>
-      <div v-if="title" class="font-weight-medium banner-text mb-1">{{ title }}</div>
+      <div v-if="title" class="font-weight-medium banner-text mb-1">
+        {{ title }}
+      </div>
       <div v-if="message" class="text-caption banner-text">{{ message }}</div>
     </div>
   </v-alert>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
 const props = defineProps({
   enabled: {
@@ -18,29 +27,29 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '',
+    default: "",
   },
   message: {
     type: String,
-    default: '',
+    default: "",
   },
 });
 
 const show = ref(true);
 
 // Check localStorage to see if banner was dismissed
-const storageKey = 'announcement-banner-dismissed';
+const storageKey = "announcement-banner-dismissed";
 
 onMounted(() => {
   const dismissed = localStorage.getItem(storageKey);
-  if (dismissed === 'true') {
+  if (dismissed === "true") {
     show.value = false;
   }
 });
 
 function dismiss() {
   show.value = false;
-  localStorage.setItem(storageKey, 'true');
+  localStorage.setItem(storageKey, "true");
 }
 </script>
 

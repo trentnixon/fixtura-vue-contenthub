@@ -36,22 +36,24 @@ export function useLadderFormatting(articles: Ref<FlattenedArticle[]>) {
    */
   const formattedArticles = computed<FormattedLadderArticle[]>(() => {
     const aiArticles = articles.value || [];
-    return aiArticles.map((article: FlattenedArticle): FormattedLadderArticle => {
-      const structuredOutput = article.structuredOutput || {};
-      return {
-        id: article.id,
-        name: article.name || "Unknown Article",
-        leagues: structuredOutput.leagues || [],
-        assetType: article.assetType || "Unknown Type",
-        assetCategory: article.assetCategory || "Unknown Category",
-        hasError: article.hasError || false,
-        errorHandler: article.errorHandler || null,
-        hasCompleted: article.hasCompleted || false,
-        forceRerender: article.forceRerender || false,
-        compositionID: article.compositionID || "Unknown Composition",
-        articleDataForPrompt: article.ArticleDataForPrompt || null,
-      };
-    });
+    return aiArticles.map(
+      (article: FlattenedArticle): FormattedLadderArticle => {
+        const structuredOutput = article.structuredOutput || {};
+        return {
+          id: article.id,
+          name: article.name || "Unknown Article",
+          leagues: structuredOutput.leagues || [],
+          assetType: article.assetType || "Unknown Type",
+          assetCategory: article.assetCategory || "Unknown Category",
+          hasError: article.hasError || false,
+          errorHandler: article.errorHandler || null,
+          hasCompleted: article.hasCompleted || false,
+          forceRerender: article.forceRerender || false,
+          compositionID: article.compositionID || "Unknown Composition",
+          articleDataForPrompt: article.ArticleDataForPrompt || null,
+        };
+      }
+    );
   });
 
   /**

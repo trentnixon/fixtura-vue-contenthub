@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto my-0 pa-3 bg-white" variant="flat" >
+  <v-card class="mx-auto my-0 pa-3 bg-white" variant="flat">
     <v-card-title class="font-weight-bold primary--text">
       <slot name="title">Default Title</slot>
     </v-card-title>

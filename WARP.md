@@ -5,15 +5,18 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 ## Essential Commands
 
 ### Development
+
 - `npm run serve` - Start development server with hot reload
 - `npm run build` - Build for production
 - `npm run lint` - Run ESLint to check code style and errors
 
 ### Testing
+
 - `npm run test:unit` - Run Jest unit tests
 - `npm run test:e2e` - Run Cypress end-to-end tests
 
 ### Single Test Execution
+
 - `npx jest <test-file-name>` - Run a specific unit test file
 - `npx cypress run --spec "cypress/e2e/<test-file>.cy.js"` - Run a specific e2e test
 
@@ -24,32 +27,38 @@ This is a Vue 3 application built with the Composition API, using Vuetify 3 for 
 ### Key Architecture Patterns
 
 **Layout System**: The app uses a hierarchical layout structure:
+
 - `DefaultLayout.vue` - Simple layout for basic pages like home
 - `AccountLayout.vue` - Main application layout with sidebar and top navigation
 - Account-specific routes are nested under `/:accountid` path structure
 
-**Navigation Architecture**: 
+**Navigation Architecture**:
+
 - `TopNavigation.vue` - App bar with quick selectors and account switching
 - `SideNavigation.vue` - Dynamic navigation that adapts based on current account/sport/render context
 - Navigation is context-aware and updates based on URL parameters (accountid, sport, renderid, groupingcategory)
 
 **State Management with Pinia**:
+
 - Modular store structure in `src/store/` with separate modules for each domain
 - Each store module follows the pattern: `index.ts`, `actions.ts`, `getters.ts`, `service.ts`, `private.ts`
 - Key stores: `account`, `accountMediaLibrary`, `aiArticles`, `associationStore`, `clubStore`, `auth`
 
 **Route Structure**:
+
 - Dynamic routing with nested account-specific routes: `/:accountid/sport/:sport/render/:renderid/grouping/:groupingcategory/asset/:asset`
 - Route parameters drive navigation context and data fetching
 - Dynamic page titles based on route context
 
 **Component Organization**:
+
 - `components/` - Reusable UI components organized by type (navigation, containers, UI primitives)
 - `pages/` - Route-specific components and their local components
 - `layouts/` - Application layout components
 - `actions/` - Shared data fetching utilities
 
 **Chart Integration**:
+
 - Uses ECharts with Vue-ECharts wrapper
 - Custom theme configuration for consistent charting appearance
 - ECharts components registered globally as `v-chart`
@@ -68,6 +77,7 @@ This is a Vue 3 application built with the Composition API, using Vuetify 3 for 
 ### Development Patterns
 
 **Composables Usage**: The codebase uses Vue composables extensively for shared logic:
+
 - `useAccountData` - Account-related data and computed properties
 - `useRenderData` - Render/bundle specific data management
 - `useSideNav` - Navigation state and route parameter management

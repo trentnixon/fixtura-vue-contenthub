@@ -52,7 +52,8 @@ onMounted(async () => {
 // Update VideoMeta data within dataObj
 function updateVideoMeta(updatedMeta) {
   // Handle both uppercase (VIDEOMETA) and lowercase (videoMeta) field names
-  const currentVideoMeta = dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
+  const currentVideoMeta =
+    dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
   if (dataObj.value?.videoMeta !== undefined) {
     updateDataObj({ videoMeta: { ...currentVideoMeta, ...updatedMeta } });
   } else {

@@ -8,11 +8,14 @@ interface PrivateGradesInRenderState {
   error: string | null;
 }
 
-export const usePrivateGradesInRenderState = defineStore("gradesInRender-private", {
-  state: (): PrivateGradesInRenderState => ({
-    gradesInRender: null,
-    gradesInRenderByRenderID: [],
-    loading: false,
-    error: null,
-  }),
-});
+export const usePrivateGradesInRenderState = defineStore(
+  "gradesInRender-private",
+  {
+    state: (): PrivateGradesInRenderState => ({
+      gradesInRender: null,
+      gradesInRenderByRenderID: [],
+      loading: false,
+      error: null,
+    }),
+  }
+);

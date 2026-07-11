@@ -5,12 +5,23 @@
   <template v-else>
     <v-row class="mx-0">
       <v-col class="d-flex justify-end py-0 px-2 align-center" cols="12">
-        <CustomChip :label="!getSelectedCategoryStats?.hasErrors
-          ? 'No Errors Detected'
-          : 'Errors'
-          " :value="!getSelectedCategoryStats?.hasErrors" type="boolean" size="small" />
+        <CustomChip
+          :label="
+            !getSelectedCategoryStats?.hasErrors
+              ? 'No Errors Detected'
+              : 'Errors'
+          "
+          :value="!getSelectedCategoryStats?.hasErrors"
+          type="boolean"
+          size="small"
+        />
         <template v-if="getAccountType === 1">
-          <PrimaryButton label="Team Rosters" size="small" :to="rosterLink" color="accent" />
+          <PrimaryButton
+            label="Team Rosters"
+            size="small"
+            :to="rosterLink"
+            color="accent"
+          />
         </template>
       </v-col>
     </v-row>
@@ -19,35 +30,68 @@
     <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-2">
       <div class="text-body py-2 px-4"></div>
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
-        <v-data-table :headers="computedHeaders" :items="filteredItems" class="mx-auto" fixed-header color="cardNeutral"
-          variant="flat" rounded>
+        <v-data-table
+          :headers="computedHeaders"
+          :items="filteredItems"
+          class="mx-auto"
+          fixed-header
+          color="cardNeutral"
+          variant="flat"
+          rounded
+        >
           <!-- Slot for the asset type display (with icon and name) -->
           <template v-slot:[`item.type`]="{ item }">
             <div class="d-flex align-center">
               <v-icon :icon="getIcon(item.type)" class="mr-2" />
-              <span class="mr-2">{{ getDisplayName(toPascalCase(item.type)) }}</span>
-              <v-chip v-if="isNewAsset(item.type)" color="red" size="x-small" variant="tonal">
+              <span class="mr-2">{{
+                getDisplayName(toPascalCase(item.type))
+              }}</span>
+              <v-chip
+                v-if="isNewAsset(item.type)"
+                color="red"
+                size="x-small"
+                variant="tonal"
+              >
                 New
               </v-chip>
             </div>
           </template>
 
           <!-- Conditionally render download count based on screen size -->
-          <template v-if="$vuetify.display.mdAndUp" v-slot:[`item.downloads`]="{ item }">
-            <CustomChip :color="getAssetCountColor(item.downloadCount)" :label="`${item.downloadCount} Downloads`"
-              :icon="icons.assets.download" size="small" />
+          <template
+            v-if="$vuetify.display.mdAndUp"
+            v-slot:[`item.downloads`]="{ item }"
+          >
+            <CustomChip
+              :color="getAssetCountColor(item.downloadCount)"
+              :label="`${item.downloadCount} Downloads`"
+              :icon="icons.assets.download"
+              size="small"
+            />
           </template>
 
           <!-- Conditionally render article count based on screen size -->
-          <template v-if="$vuetify.display.mdAndUp" v-slot:[`item.aiArticles`]="{ item }">
-            <CustomChip :color="getAssetCountColor(item.articleCount)" :label="`${item.articleCount} Articles`"
-              :icon="icons.assets.file" size="small" />
+          <template
+            v-if="$vuetify.display.mdAndUp"
+            v-slot:[`item.aiArticles`]="{ item }"
+          >
+            <CustomChip
+              :color="getAssetCountColor(item.articleCount)"
+              :label="`${item.articleCount} Articles`"
+              :icon="icons.assets.file"
+              size="small"
+            />
           </template>
 
           <!-- Slot for the Action button -->
           <template v-slot:[`item.link`]="{ item }">
-            <IconButton :to="item.link" color="accent" :icon="icons.navigation.internalLink" size="small"
-              variant="tonal" />
+            <IconButton
+              :to="item.link"
+              color="accent"
+              :icon="icons.navigation.internalLink"
+              size="small"
+              variant="tonal"
+            />
           </template>
         </v-data-table>
       </v-card>
@@ -76,7 +120,9 @@ const route = useRoute();
 
 // Search bar state
 const search = ref("");
-const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
+const groupingCategory = ref(
+  decodeURIComponent(String(route.params.groupingcategory))
+);
 
 // Define the full set of table headers with all items
 const fullHeaders = [
@@ -146,7 +192,9 @@ function getCategoryLink(type) {
     groupingCategory.value
   ).replace(/\//g, "%2F");
 
-  return `/${accountId}/${sport}/${renderId}/${encodedGroupingCategory}/${toPascalCase(type)}`;
+  return `/${accountId}/${sport}/${renderId}/${encodedGroupingCategory}/${toPascalCase(
+    type
+  )}`;
 }
 
 // Function to return a display name for the type (enum guide)
@@ -208,7 +256,9 @@ const rosterLink = computed(() => {
 watch(
   () => route.params,
   (newParams) => {
-    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
+    groupingCategory.value = decodeURIComponent(
+      String(newParams.groupingcategory)
+    );
   }
 );
 </script>

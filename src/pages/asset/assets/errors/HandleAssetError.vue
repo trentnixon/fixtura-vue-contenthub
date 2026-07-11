@@ -6,11 +6,23 @@
       <v-spacer />
 
       <!-- Retry Button -->
-      <SecondaryButton v-if="canRetry" color="error" label="Retry Render" @click="handleRerender"
-        :loading="isRerendering" :disabled="!canRetry || isRerendering" />
+      <SecondaryButton
+        v-if="canRetry"
+        color="error"
+        label="Retry Render"
+        @click="handleRerender"
+        :loading="isRerendering"
+        :disabled="!canRetry || isRerendering"
+      />
 
       <!-- Polling Indicator -->
-      <CustomChip v-if="isPolling" label="Processing Asset" :value="isPolling" type="boolean" size="small" />
+      <CustomChip
+        v-if="isPolling"
+        label="Processing Asset"
+        :value="isPolling"
+        type="boolean"
+        size="small"
+      />
     </template>
 
     <!-- Video Body -->
@@ -40,7 +52,10 @@
         <SuccessMessage v-if="rerenderResponse && rerenderResponse.success" />
 
         <!-- CMS Error State -->
-        <ErrorMessage v-if="rerenderResponse && !rerenderResponse.success" :errorMessage="rerenderResponse.error" />
+        <ErrorMessage
+          v-if="rerenderResponse && !rerenderResponse.success"
+          :errorMessage="rerenderResponse.error"
+        />
 
         <!-- Local Error State -->
         <LocalErrorMessage v-if="rerenderError" :errorMessage="rerenderError" />
@@ -51,7 +66,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { defineProps } from "vue";
+
 import MediaLayout from "@/components/containers/media/mediaLayout.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
 import ProcessingState from "./components/ProcessingState.vue";

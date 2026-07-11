@@ -4,7 +4,8 @@
       <v-container>
         <v-row>
           <v-col>
-            <slot /> <!-- Content from the home page will be injected here -->
+            <slot />
+            <!-- Content from the home page will be injected here -->
           </v-col>
         </v-row>
       </v-container>
@@ -13,5 +14,5 @@
 </template>
 
 <script setup>
-import { VApp, VMain, VContainer, VRow, VCol } from 'vuetify/components';
+import { VApp, VMain, VContainer, VRow, VCol } from "vuetify/components";
 </script>

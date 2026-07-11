@@ -1,10 +1,19 @@
 <template>
   <v-row>
     <v-col cols="8">
-      <MainHeader :title="title" :subtitle="`Edit your ${assetEditComponents[assetType]}`" />
+      <MainHeader
+        :title="title"
+        :subtitle="`Edit your ${assetEditComponents[assetType]}`"
+      />
     </v-col>
     <v-col class="d-flex justify-end" cols="4">
-      <SecondaryButton label="Back" @click="handleBack" :icon="icons.ui.arrowLeft" color="error" size="small" />
+      <SecondaryButton
+        label="Back"
+        @click="handleBack"
+        :icon="icons.ui.arrowLeft"
+        color="error"
+        size="small"
+      />
     </v-col>
   </v-row>
 </template>

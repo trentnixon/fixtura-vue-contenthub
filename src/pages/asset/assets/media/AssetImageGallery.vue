@@ -101,7 +101,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, ref } from "vue";
+import { computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 import { useImageDownloads } from "../../composables/useImageDownloads.js";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";

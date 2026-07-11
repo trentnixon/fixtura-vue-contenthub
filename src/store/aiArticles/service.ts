@@ -1,5 +1,4 @@
 import fetcher from "@/actions/fetcher";
-import axios from "axios";
 import { AiArticle } from "@/types";
 
 interface ApiResponse<T> {
@@ -225,6 +224,7 @@ export async function fetchArticleFixtures(_payload: {
   renderId: number;
   articleId: number;
 }): Promise<{ data: { fixtures: { prompt: string }[] } }> {
+  void _payload;
   // Note: Fixtures are currently loaded from article's ArticleDataForPrompt field
   // This function is a placeholder for future fetch endpoint implementation
   return Promise.resolve({ data: { fixtures: [] } });

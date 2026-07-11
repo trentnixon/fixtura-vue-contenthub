@@ -5,7 +5,7 @@
 
 <script setup>
 //text-h4 mt-0 mb-1
-import { defineProps } from "vue";
+
 defineProps({
   title: {
     type: String,

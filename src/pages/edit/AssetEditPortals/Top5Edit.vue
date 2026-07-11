@@ -9,10 +9,17 @@
 
   <template v-else>
     <!-- Video Meta Data Section -->
-    <VideoMetaDataEdit v-if="dataObj && (dataObj.videoMeta || dataObj.VIDEOMETA)"
-      :videoMeta="dataObj.videoMeta || dataObj.VIDEOMETA" @update="updateVideoMeta" />
+    <VideoMetaDataEdit
+      v-if="dataObj && (dataObj.videoMeta || dataObj.VIDEOMETA)"
+      :videoMeta="dataObj.videoMeta || dataObj.VIDEOMETA"
+      @update="updateVideoMeta"
+    />
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton color="success" @click="saveAllChanges" label="Update Meta Data" />
+      <PrimaryButton
+        color="success"
+        @click="saveAllChanges"
+        label="Update Meta Data"
+      />
     </div>
 
     <!-- Draggable Top Players List -->
@@ -21,21 +28,31 @@
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
         <Container @drop="onDrop">
           <Draggable v-for="(player, index) in players" :key="index">
-            <TopPlayerItem :player="player" :index="index" :lastIndex="players.length - 1" :assetType="assetType"
-              @updatePlayerField="updatePlayer" @savePlayer="savePlayer" />
+            <TopPlayerItem
+              :player="player"
+              :index="index"
+              :lastIndex="players.length - 1"
+              :assetType="assetType"
+              @updatePlayerField="updatePlayer"
+              @savePlayer="savePlayer"
+            />
           </Draggable>
         </Container>
       </v-card>
     </v-card>
 
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton color="success" @click="saveAllChanges" label="Save All Changes" />
+      <PrimaryButton
+        color="success"
+        @click="saveAllChanges"
+        label="Save All Changes"
+      />
     </div>
   </template>
 </template>
 
 <script setup>
-import { onMounted, ref, defineProps, computed } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useAccountStore } from "@/store/account";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import { useFetchFixturaAsset } from "../composables/useFixturaAsset.js";
@@ -103,7 +120,12 @@ function updatePlayer({ index, key, newValue }) {
     // Force reactivity by reassigning the array (this ensures Vue tracks the change)
     players.value = [...players.value];
 
-    console.log("[Top5Edit] Updated player:", { index, key, newValue, player: players.value[index] });
+    console.log("[Top5Edit] Updated player:", {
+      index,
+      key,
+      newValue,
+      player: players.value[index],
+    });
   }
 }
 
@@ -129,7 +151,8 @@ function saveAllChanges() {
 
 function updateVideoMeta(updatedMeta) {
   // Handle both uppercase (VIDEOMETA) and lowercase (videoMeta) field names
-  const currentVideoMeta = dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
+  const currentVideoMeta =
+    dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
   if (dataObj.value?.videoMeta !== undefined) {
     updateDataObj({ videoMeta: { ...currentVideoMeta, ...updatedMeta } });
   } else {

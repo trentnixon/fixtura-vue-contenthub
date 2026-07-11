@@ -119,7 +119,10 @@ export interface ParsedFixturePrompt {
  */
 export function parseFixturePrompt(promptString: string): FixtureData {
   // Log the raw prompt string to see what's coming from CMS
-  console.log("[parseFixturePrompt] Raw prompt string (first 1000 chars):", promptString.substring(0, 1000));
+  console.log(
+    "[parseFixturePrompt] Raw prompt string (first 1000 chars):",
+    promptString.substring(0, 1000)
+  );
 
   // Check if prompt string is empty or whitespace
   if (!promptString || !promptString.trim()) {
@@ -128,18 +131,30 @@ export function parseFixturePrompt(promptString: string): FixtureData {
 
   // Check if the string looks like JSON (should start with { or [)
   const trimmed = promptString.trim();
-  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
-    const preview = trimmed.length > 50 ? trimmed.substring(0, 50) + '...' : trimmed;
-    throw new Error(`Fixture prompt is not valid JSON. Expected JSON object/array but got: "${preview}"`);
+  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
+    const preview =
+      trimmed.length > 50 ? trimmed.substring(0, 50) + "..." : trimmed;
+    throw new Error(
+      `Fixture prompt is not valid JSON. Expected JSON object/array but got: "${preview}"`
+    );
   }
 
   try {
     const parsed = JSON.parse(promptString) as Partial<FixtureData>;
 
     // Log the parsed data to see structure
-    console.log("[parseFixturePrompt] Parsed data:", JSON.stringify(parsed, null, 2));
-    console.log("[parseFixturePrompt] homeTeam innings:", parsed.homeTeam?.innings);
-    console.log("[parseFixturePrompt] awayTeam innings:", parsed.awayTeam?.innings);
+    console.log(
+      "[parseFixturePrompt] Parsed data:",
+      JSON.stringify(parsed, null, 2)
+    );
+    console.log(
+      "[parseFixturePrompt] homeTeam innings:",
+      parsed.homeTeam?.innings
+    );
+    console.log(
+      "[parseFixturePrompt] awayTeam innings:",
+      parsed.awayTeam?.innings
+    );
 
     // Basic validation - check required top-level fields with detailed error messages
     const missingFields: string[] = [];
@@ -163,14 +178,19 @@ export function parseFixturePrompt(promptString: string): FixtureData {
       if (!Array.isArray(parsed.accountBias.focusedTeams)) {
         parsed.accountBias.focusedTeams = [];
       }
-      if (parsed.accountBias.isBias === undefined || parsed.accountBias.isBias === null) {
+      if (
+        parsed.accountBias.isBias === undefined ||
+        parsed.accountBias.isBias === null
+      ) {
         parsed.accountBias.isBias = "";
       }
     }
 
     if (missingFields.length > 0) {
       throw new Error(
-        `Invalid fixture data structure: missing required fields: ${missingFields.join(", ")}`
+        `Invalid fixture data structure: missing required fields: ${missingFields.join(
+          ", "
+        )}`
       );
     }
 
@@ -180,7 +200,7 @@ export function parseFixturePrompt(promptString: string): FixtureData {
       // Extract just the error type and position, not the full invalid JSON snippet
       const errorMsg = error.message;
       // Remove the invalid JSON snippet from the error message if present
-      const cleanErrorMsg = errorMsg.split(',')[0] || errorMsg;
+      const cleanErrorMsg = errorMsg.split(",")[0] || errorMsg;
       throw new Error(`Failed to parse fixture prompt JSON: ${cleanErrorMsg}`);
     }
     throw error;

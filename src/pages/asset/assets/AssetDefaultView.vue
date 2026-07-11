@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from "vue";
+import { computed } from "vue";
 import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import AssetTabs from "@/pages/asset/components/AssetTabs.vue";
 import { useAssetState } from "../composables/useAssetState";

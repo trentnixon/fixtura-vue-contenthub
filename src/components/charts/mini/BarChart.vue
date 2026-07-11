@@ -16,7 +16,7 @@
  * />
  */
 
-import { ref, onMounted, watch, onUnmounted, defineProps } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 import * as echarts from "echarts/core";
 import { BarChart } from "echarts/charts";
 import { GridComponent } from "echarts/components";

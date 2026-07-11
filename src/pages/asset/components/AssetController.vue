@@ -1,7 +1,11 @@
 <template>
   <!-- Dynamically load the asset component based on the selected asset type -->
   <template v-if="assetType.toLowerCase() === 'cricketroster'">
-    <component :is="assetComponent" :formattedAssets="formattedAssets" :formattedArticles="aiArticles" />
+    <component
+      :is="assetComponent"
+      :formattedAssets="formattedAssets"
+      :formattedArticles="aiArticles"
+    />
   </template>
   <template v-else-if="formattedAssets.length === 0">
     <div class="text-center">No assets found</div>
@@ -18,7 +22,11 @@
       />
     </div>
  -->
-    <component :is="assetComponent" :formattedAssets="formattedAssets" :formattedArticles="aiArticles" />
+    <component
+      :is="assetComponent"
+      :formattedAssets="formattedAssets"
+      :formattedArticles="aiArticles"
+    />
   </template>
 </template>
 
@@ -146,7 +154,11 @@ const aiArticles = computed(() => {
     } else {
       // Fall back to publishedAt if createdAt is not available
       const publishedAt = fullArticle?.attributes?.publishedAt;
-      if (publishedAt && publishedAt !== "Unknown Date" && publishedAt.trim() !== "") {
+      if (
+        publishedAt &&
+        publishedAt !== "Unknown Date" &&
+        publishedAt.trim() !== ""
+      ) {
         dateToUse = publishedAt;
       }
     }

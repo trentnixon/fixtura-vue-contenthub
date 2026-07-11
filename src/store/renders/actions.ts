@@ -123,7 +123,9 @@ export async function fetchAssetsByRenderAction(
         response
       );
       state.selectedFixturaAsset = null;
-      throw new Error("Invalid assets data structure - response.data is null or undefined");
+      throw new Error(
+        "Invalid assets data structure - response.data is null or undefined"
+      );
     }
   } catch (error) {
     console.error("[fetchAssetsByRenderAction] Error:", error);

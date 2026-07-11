@@ -7,7 +7,11 @@
         </template>
         <div>
           <div class="font-weight-bold mb-1">{{ title }}</div>
-          <div v-for="(message, index) in messages" :key="index" class="text-body-2">
+          <div
+            v-for="(message, index) in messages"
+            :key="index"
+            class="text-body-2"
+          >
             {{ message }}
           </div>
           <slot name="actions"></slot>
@@ -18,8 +22,6 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
-
 const props = defineProps({
   show: {
     type: Boolean,

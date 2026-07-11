@@ -6,10 +6,17 @@
         One wicket per line
       </v-chip>
     </div>
-    <v-textarea :model-value="formattedText" @update:model-value="handleTextChange" label="Fall of Wickets"
-      hint="Format: Wicket Number - Score, Batsman Name (or just: Score - Batsman Name)" persistent-hint
-      variant="outlined" density="compact" rows="5"
-      placeholder="Example:&#10;1 - 10/1, John Smith&#10;2 - 50/2, Jane Doe&#10;Or:&#10;10/1 - John Smith&#10;50/2 - Jane Doe" />
+    <v-textarea
+      :model-value="formattedText"
+      @update:model-value="handleTextChange"
+      label="Fall of Wickets"
+      hint="Format: Wicket Number - Score, Batsman Name (or just: Score - Batsman Name)"
+      persistent-hint
+      variant="outlined"
+      density="compact"
+      rows="5"
+      placeholder="Example:&#10;1 - 10/1, John Smith&#10;2 - 50/2, Jane Doe&#10;Or:&#10;10/1 - John Smith&#10;50/2 - Jane Doe"
+    />
   </div>
 </template>
 
@@ -31,16 +38,30 @@ const formattedText = computed(() => {
   console.log("=== FallOfWickets Debug ===");
   console.log("props.fallOfWickets:", props.fallOfWickets);
   console.log("typeof props.fallOfWickets:", typeof props.fallOfWickets);
-  console.log("Array.isArray(props.fallOfWickets):", Array.isArray(props.fallOfWickets));
+  console.log(
+    "Array.isArray(props.fallOfWickets):",
+    Array.isArray(props.fallOfWickets)
+  );
   console.log("props.fallOfWickets?.length:", props.fallOfWickets?.length);
 
   if (props.fallOfWickets) {
-    console.log("FallOfWickets JSON:", JSON.stringify(props.fallOfWickets, null, 2));
+    console.log(
+      "FallOfWickets JSON:",
+      JSON.stringify(props.fallOfWickets, null, 2)
+    );
     props.fallOfWickets.forEach((wicket, idx) => {
       console.log(`Wicket ${idx}:`, JSON.stringify(wicket, null, 2));
-      console.log(`  - wicketNumber:`, wicket.wicketNumber, `(type: ${typeof wicket.wicketNumber})`);
+      console.log(
+        `  - wicketNumber:`,
+        wicket.wicketNumber,
+        `(type: ${typeof wicket.wicketNumber})`
+      );
       console.log(`  - score:`, wicket.score, `(type: ${typeof wicket.score})`);
-      console.log(`  - batsman:`, wicket.batsman, `(type: ${typeof wicket.batsman})`);
+      console.log(
+        `  - batsman:`,
+        wicket.batsman,
+        `(type: ${typeof wicket.batsman})`
+      );
     });
   }
 
@@ -52,11 +73,17 @@ const formattedText = computed(() => {
   // Filter out empty entries and format valid ones
   const validWickets = props.fallOfWickets
     .map((wicket, index) => {
-      const wicketNum = wicket.wicketNumber && wicket.wicketNumber > 0 ? wicket.wicketNumber : index + 1;
-      const score = wicket.score && wicket.score !== "undefined" ? wicket.score.trim() : "";
+      const wicketNum =
+        wicket.wicketNumber && wicket.wicketNumber > 0
+          ? wicket.wicketNumber
+          : index + 1;
+      const score =
+        wicket.score && wicket.score !== "undefined" ? wicket.score.trim() : "";
       const batsman = wicket.batsman ? wicket.batsman.trim() : "";
 
-      console.log(`Processing wicket ${index}: wicketNum=${wicketNum}, score="${score}", batsman="${batsman}"`);
+      console.log(
+        `Processing wicket ${index}: wicketNum=${wicketNum}, score="${score}", batsman="${batsman}"`
+      );
 
       // Only include if there's meaningful data
       if (score || batsman) {
@@ -70,7 +97,7 @@ const formattedText = computed(() => {
       }
       return null;
     })
-    .filter(line => line !== null);
+    .filter((line) => line !== null);
 
   console.log("Valid wickets result:", validWickets);
   return validWickets.join("\n");
@@ -83,7 +110,7 @@ function handleTextChange(text: string) {
     return;
   }
 
-  const lines = text.split("\n").filter(line => line.trim() !== "");
+  const lines = text.split("\n").filter((line) => line.trim() !== "");
   const wickets: FallOfWickets[] = [];
 
   for (let i = 0; i < lines.length; i++) {

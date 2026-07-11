@@ -25,9 +25,14 @@ export function useArticleContext(
 
   // Context computed properties
   const contextCharCount = computed(() => contextText.value.length);
-  const contextCharRemaining = computed(() => CONTEXT_MAX_LENGTH - contextCharCount.value);
+  const contextCharRemaining = computed(
+    () => CONTEXT_MAX_LENGTH - contextCharCount.value
+  );
   const isContextValid = computed(() => {
-    return contextText.value.trim().length > 0 && contextCharCount.value <= CONTEXT_MAX_LENGTH;
+    return (
+      contextText.value.trim().length > 0 &&
+      contextCharCount.value <= CONTEXT_MAX_LENGTH
+    );
   });
   const contextCharCountClass = computed(() => {
     const remaining = contextCharRemaining.value;
@@ -110,7 +115,8 @@ export function useArticleContext(
     }
 
     if (!isContextValid.value) {
-      contextError.value = "Context must not be empty and within character limit";
+      contextError.value =
+        "Context must not be empty and within character limit";
       return;
     }
 
@@ -128,7 +134,8 @@ export function useArticleContext(
 
       if (response.data?.success) {
         hasContext.value = true;
-        contextSuccess.value = "Context saved successfully! It will be used in future article generations.";
+        contextSuccess.value =
+          "Context saved successfully! It will be used in future article generations.";
 
         // Clear success message after 3 seconds
         setTimeout(() => {
@@ -136,7 +143,8 @@ export function useArticleContext(
         }, 3000);
       }
     } catch (error: any) {
-      contextError.value = error?.message || "Failed to save context. Please try again.";
+      contextError.value =
+        error?.message || "Failed to save context. Please try again.";
     } finally {
       isSavingContext.value = false;
     }
@@ -149,7 +157,11 @@ export function useArticleContext(
     if (!hasContext.value) return;
 
     // Show confirmation
-    if (!confirm("Are you sure you want to delete the context? This cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to delete the context? This cannot be undone."
+      )
+    ) {
       return;
     }
 
@@ -185,7 +197,8 @@ export function useArticleContext(
         }, 1500);
       }
     } catch (error: any) {
-      contextError.value = error?.message || "Failed to delete context. Please try again.";
+      contextError.value =
+        error?.message || "Failed to delete context. Please try again.";
     } finally {
       isSavingContext.value = false;
     }
@@ -216,4 +229,3 @@ export function useArticleContext(
     handleDeleteContext,
   };
 }
-

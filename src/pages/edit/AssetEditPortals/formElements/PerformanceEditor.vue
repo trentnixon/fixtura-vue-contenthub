@@ -108,7 +108,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
 import TextInput from "@/pages/edit/AssetEditPortals/formElements/TextInput.vue";
 import {
   isValidName,

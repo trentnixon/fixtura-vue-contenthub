@@ -1,5 +1,5 @@
 import fetcher from "@/actions/fetcher";
-import { Account, RelatedClub, RelatedClubsResponse } from "@/types/account";
+import { Account, RelatedClubsResponse } from "@/types/account";
 
 /* export async function fetchAccountsFromService() {
   return fetcher.get<{ data: Account[] }>("/accounts?populate=*");

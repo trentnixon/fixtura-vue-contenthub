@@ -4,7 +4,7 @@ import {
   fetchRelatedClubsService,
 } from "./service";
 import { usePrivateAccountState } from "./private";
-import { AccountResponse, RelatedClubsResponse } from "@/types";
+import { AccountResponse } from "@/types";
 
 export async function fetchFilteredAccountDetails(id: number) {
   const state = usePrivateAccountState();

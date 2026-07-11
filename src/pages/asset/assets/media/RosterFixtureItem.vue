@@ -16,7 +16,6 @@
             {{ fixture.grade }} |
             {{ fixture.ageGroup }}
           </div>
-
         </div>
       </template>
 
@@ -36,42 +35,110 @@
             <v-row>
               <v-col cols="12">
                 <ul>
-                  <li v-for="(player, index) in userTeam?.players" :key="'player-' + index"
-                    :class="['d-flex', 'align-center', 'justify-space-between', 'py-1', 'px-2', 'border-b-thin']">
-                    <v-icon :icon="icons.ui.player"
-                      :class="['rounded-md', { 'bg-error-lighten1': player === 'Fill-in' || player === 'Private player' }]" />
+                  <li
+                    v-for="(player, index) in userTeam?.players"
+                    :key="'player-' + index"
+                    :class="[
+                      'd-flex',
+                      'align-center',
+                      'justify-space-between',
+                      'py-1',
+                      'px-2',
+                      'border-b-thin',
+                    ]"
+                  >
+                    <v-icon
+                      :icon="icons.ui.player"
+                      :class="[
+                        'rounded-md',
+                        {
+                          'bg-error-lighten1':
+                            player === 'Fill-in' || player === 'Private player',
+                        },
+                      ]"
+                    />
                     <div class="text-body">
                       {{ player }}
                     </div>
-                    <v-btn-toggle class="ml-2 mb-1" rounded="md" color="primary" variant="outlined" :mandatory="false"
-                      :group="false">
-                      <IconButton :icon="icons.ui.edit" color="primary" @click="editPlayer(index)" variant="outlined"
-                        size="small" tooltip="Edit Player" />
-                      <IconButton :icon="icons.ui.delete" color="error" @click="confirmDeletePlayer(index)"
-                        variant="outlined" size="small" tooltip="Delete Player" />
+                    <v-btn-toggle
+                      class="ml-2 mb-1"
+                      rounded="md"
+                      color="primary"
+                      variant="outlined"
+                      :mandatory="false"
+                      :group="false"
+                    >
+                      <IconButton
+                        :icon="icons.ui.edit"
+                        color="primary"
+                        @click="editPlayer(index)"
+                        variant="outlined"
+                        size="small"
+                        tooltip="Edit Player"
+                      />
+                      <IconButton
+                        :icon="icons.ui.delete"
+                        color="error"
+                        @click="confirmDeletePlayer(index)"
+                        variant="outlined"
+                        size="small"
+                        tooltip="Delete Player"
+                      />
                     </v-btn-toggle>
                   </li>
-
                 </ul>
-                <div class="d-flex justify-space-between pa-2 w-100 ">
-                  <v-btn-toggle class="ml-2 mb-1" rounded="md" color="primary" variant="outlined" :mandatory="false"
-                    :group="false">
-                    <IconButton :icon="icons.ui.extLink" color="primary" size="small" @click="openScoreCard"
-                      tooltip="View Fixture" variant="outlined" />
+                <div class="d-flex justify-space-between pa-2 w-100">
+                  <v-btn-toggle
+                    class="ml-2 mb-1"
+                    rounded="md"
+                    color="primary"
+                    variant="outlined"
+                    :mandatory="false"
+                    :group="false"
+                  >
+                    <IconButton
+                      :icon="icons.ui.extLink"
+                      color="primary"
+                      size="small"
+                      @click="openScoreCard"
+                      tooltip="View Fixture"
+                      variant="outlined"
+                    />
                   </v-btn-toggle>
 
-                  <v-btn-toggle class="ml-2 mb-1" rounded="md" color="primary" variant="outlined" :mandatory="false"
-                    :group="false">
-                    <IconButton :icon="icons.ui.add" size="small" color="primary" @click="addPlayer"
-                      tooltip="Add Player" variant="outlined" />
-                    <IconButton :icon="icons.ui.save" size="small" color="success" @click="saveRoster"
-                      tooltip="Save Changes to Roster" variant="outlined">
+                  <v-btn-toggle
+                    class="ml-2 mb-1"
+                    rounded="md"
+                    color="primary"
+                    variant="outlined"
+                    :mandatory="false"
+                    :group="false"
+                  >
+                    <IconButton
+                      :icon="icons.ui.add"
+                      size="small"
+                      color="primary"
+                      @click="addPlayer"
+                      tooltip="Add Player"
+                      variant="outlined"
+                    />
+                    <IconButton
+                      :icon="icons.ui.save"
+                      size="small"
+                      color="success"
+                      @click="saveRoster"
+                      tooltip="Save Changes to Roster"
+                      variant="outlined"
+                    >
                       <!-- Badge to indicate unsaved changes -->
-
                     </IconButton>
-                    <v-badge v-if="hasUnsavedChanges" content="!" color="error" inline></v-badge>
+                    <v-badge
+                      v-if="hasUnsavedChanges"
+                      content="!"
+                      color="error"
+                      inline
+                    ></v-badge>
                   </v-btn-toggle>
-
                 </div>
               </v-col>
             </v-row>
@@ -87,7 +154,10 @@
           <span class="card-title">Edit Player</span>
         </v-card-title>
         <v-card-text>
-          <v-text-field v-model="editedPlayerName" label="Player Name"></v-text-field>
+          <v-text-field
+            v-model="editedPlayerName"
+            label="Player Name"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -104,18 +174,32 @@
           <span class="headline">Delete Player</span>
         </v-card-title>
         <v-card-text>
-          Are you sure you want to delete {{ userTeam?.players[currentDeleteIndex] }}?
+          Are you sure you want to delete
+          {{ userTeam?.players[currentDeleteIndex] }}?
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <SecondaryButton color="error" label="Cancel" @click="closeDeleteModal" />
-          <PrimaryButton color="success" label="Delete" @click="deletePlayerConfirmed" variant="outlined" />
+          <SecondaryButton
+            color="error"
+            label="Cancel"
+            @click="closeDeleteModal"
+          />
+          <PrimaryButton
+            color="success"
+            label="Delete"
+            @click="deletePlayerConfirmed"
+            variant="outlined"
+          />
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- Snackbar for Notifications -->
-    <v-snackbar v-model="snackbar.visible" :timeout="snackbar.timeout" :color="snackbar.color">
+    <v-snackbar
+      v-model="snackbar.visible"
+      :timeout="snackbar.timeout"
+      :color="snackbar.color"
+    >
       {{ snackbar.message }}
     </v-snackbar>
   </v-col>
@@ -126,7 +210,7 @@ import MediaLayout from "@/components/containers/media/mediaLayout.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
-import { defineProps, ref, computed, inject } from "vue";
+import { ref, computed, inject } from "vue";
 import { useRosterFixtures } from "../../composables/useRenderFixturesForRosters";
 
 const icons = inject("icons");
@@ -141,7 +225,9 @@ const props = defineProps({
 
 const teamRoster = computed(() => props.fixture.TeamRoster);
 const userTeam = computed(() =>
-  props.fixture.isUserHomeTeam ? teamRoster.value?.homeTeam : teamRoster.value?.awayTeam
+  props.fixture.isUserHomeTeam
+    ? teamRoster.value?.homeTeam
+    : teamRoster.value?.awayTeam
 );
 
 const isModalOpen = ref(false);

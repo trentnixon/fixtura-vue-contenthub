@@ -8,11 +8,14 @@ interface PrivateGameResultsInRenderState {
   error: string | null;
 }
 
-export const usePrivateGameResultsInRenderState = defineStore("gameResultsInRender-private", {
-  state: (): PrivateGameResultsInRenderState => ({
-    gameResultsInRender: null,
-    gameResultsInRenderByRenderID: [],
-    loading: false,
-    error: null,
-  }),
-});
+export const usePrivateGameResultsInRenderState = defineStore(
+  "gameResultsInRender-private",
+  {
+    state: (): PrivateGameResultsInRenderState => ({
+      gameResultsInRender: null,
+      gameResultsInRenderByRenderID: [],
+      loading: false,
+      error: null,
+    }),
+  }
+);

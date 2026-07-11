@@ -8,11 +8,14 @@ interface PrivateUpcomingGamesInRenderState {
   error: string | null;
 }
 
-export const usePrivateUpcomingGamesInRenderState = defineStore("upcomingGamesInRender-private", {
-  state: (): PrivateUpcomingGamesInRenderState => ({
-    upcomingGameInRender: null,
-    upcomingGamesInRenderByRenderID: [],
-    loading: false,
-    error: null,
-  }),
-});
+export const usePrivateUpcomingGamesInRenderState = defineStore(
+  "upcomingGamesInRender-private",
+  {
+    state: (): PrivateUpcomingGamesInRenderState => ({
+      upcomingGameInRender: null,
+      upcomingGamesInRenderByRenderID: [],
+      loading: false,
+      error: null,
+    }),
+  }
+);

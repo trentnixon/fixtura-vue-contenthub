@@ -24,5 +24,5 @@ export * from "./scheduler";
 export * from "./team";
 export * from "./gameResultsInRender";
 export * from "./upcomingGameInRender";
-export * from "./gradeInRender"
+export * from "./gradeInRender";
 // Add other type files as needed

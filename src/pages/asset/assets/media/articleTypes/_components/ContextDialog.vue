@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" max-width="600" persistent>
+  <v-dialog
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
+    max-width="600"
+    persistent
+  >
     <v-card>
       <v-card-title class="text-h6 d-flex align-center">
         <v-icon class="mr-2">mdi-information-outline</v-icon>
@@ -8,13 +13,15 @@
       <v-card-text>
         <div class="mb-4">
           <p class="text-body-2 mb-2">
-            <strong>Instructions:</strong> This context applies to the <strong>entire article</strong>, not individual
-            fixtures.
-            Use this to provide overall guidance or information that affects the whole article.
+            <strong>Instructions:</strong> This context applies to the
+            <strong>entire article</strong>, not individual fixtures. Use this
+            to provide overall guidance or information that affects the whole
+            article.
           </p>
           <p class="text-caption text-grey">
-            Examples: "Rain affected conditions throughout the weekend", "Finals week - significant match",
-            "Club anniversary celebration", "Multiple key players returning from injury"
+            Examples: "Rain affected conditions throughout the weekend", "Finals
+            week - significant match", "Club anniversary celebration", "Multiple
+            key players returning from injury"
           </p>
         </div>
 
@@ -40,7 +47,12 @@
               ({{ charRemaining }} remaining)
             </span>
           </span>
-          <v-chip v-if="hasContext" color="success" size="small" variant="tonal">
+          <v-chip
+            v-if="hasContext"
+            color="success"
+            size="small"
+            variant="tonal"
+          >
             <v-icon start size="small">mdi-check-circle</v-icon>
             Context Saved
           </v-chip>
@@ -100,4 +112,3 @@ defineEmits<{
   close: [];
 }>();
 </script>
-

@@ -34,7 +34,7 @@ export function useCreateRoster(): CreateRosterComposable {
   const isPolling = ref<boolean>(false);
 
   const pollInterval = 5000; // Poll every 5 seconds
-  let pollTimeout: ReturnType<typeof setTimeout>;
+  let pollTimeout: ReturnType<typeof setTimeout> | null = null;
   const pollingEnabled = ref<boolean>(true);
 
   // Function to create team roster
@@ -111,7 +111,10 @@ export function useCreateRoster(): CreateRosterComposable {
       return false;
     } finally {
       isPolling.value = false;
-      clearTimeout(pollTimeout);
+      if (pollTimeout) {
+        clearTimeout(pollTimeout);
+        pollTimeout = null;
+      }
     }
   };
 
@@ -133,7 +136,7 @@ export function useCreateRoster(): CreateRosterComposable {
   const stopPolling = () => {
     if (pollTimeout) {
       clearTimeout(pollTimeout);
-      pollTimeout = 0;
+      pollTimeout = null;
     }
     pollingEnabled.value = false;
     isPolling.value = false;

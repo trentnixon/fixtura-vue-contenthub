@@ -64,13 +64,13 @@ export function useFetchFixturaAsset() {
           accountid: route.query.accountid,
           renderid: route.query.renderid,
           groupingcategory: route.query.groupingcategory,
-          asset: route.query.asset
+          asset: route.query.asset,
         });
         await rendersStore.fetchAssetsByRenderAction(
           Number(route.query.accountid),
           Number(route.query.renderid),
           route.query.groupingcategory,
-          route.query.asset  // Pass the asset name as-is from URL
+          route.query.asset // Pass the asset name as-is from URL
         );
         console.log(
           "[useFixturaAsset] Assets fetched:",

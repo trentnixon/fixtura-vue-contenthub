@@ -5,7 +5,9 @@ export async function fetchGameResultsInRenderByRenderId(renderId: number) {
   const state = usePrivateGameResultsInRenderState();
   try {
     state.loading = true;
-    const response = await fetchGameResultsInRenderByRenderIdFromService(renderId);
+    const response = await fetchGameResultsInRenderByRenderIdFromService(
+      renderId
+    );
     if (response && response.data) {
       state.gameResultsInRenderByRenderID = response.data;
       //console.log("Fetched game results for render ID:", renderId, state.gameResultsInRenderByRenderID);

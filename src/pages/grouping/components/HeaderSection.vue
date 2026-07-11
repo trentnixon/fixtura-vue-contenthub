@@ -1,7 +1,10 @@
 <template>
   <v-row>
     <v-col cols="8">
-      <MainHeader :title="groupingCategory.toUpperCase()" :subtitle="`${getRenderDate} Bundle`" />
+      <MainHeader
+        :title="groupingCategory.toUpperCase()"
+        :subtitle="`${getRenderDate} Bundle`"
+      />
     </v-col>
     <v-col class="d-flex justify-end" cols="4">
       <!--  <CustomChip label="Processed" :value="!isProcessing" type="boolean" />
@@ -20,14 +23,18 @@ import { useRenderData } from "@/pages/render/composables/useRenderData";
 import MainHeader from "@/components/primitives/headers/MainHeader.vue";
 
 const route = useRoute();
-const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
+const groupingCategory = ref(
+  decodeURIComponent(String(route.params.groupingcategory))
+);
 
 const { getRenderDate } = useRenderData();
 
 watch(
   () => route.params,
   (newParams) => {
-    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
+    groupingCategory.value = decodeURIComponent(
+      String(newParams.groupingcategory)
+    );
   }
 );
 </script>

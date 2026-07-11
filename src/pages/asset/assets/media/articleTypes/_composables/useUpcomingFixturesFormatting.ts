@@ -32,28 +32,32 @@ export interface FormattedUpcomingFixturesArticle {
 /**
  * Composable for UpcomingFixtures article formatting and display logic
  */
-export function useUpcomingFixturesFormatting(articles: Ref<FlattenedArticle[]>) {
+export function useUpcomingFixturesFormatting(
+  articles: Ref<FlattenedArticle[]>
+) {
   /**
    * Format UpcomingFixtures articles from props into display-ready format
    */
   const formattedArticles = computed<FormattedUpcomingFixturesArticle[]>(() => {
     const aiArticles = articles.value || [];
-    return aiArticles.map((article: FlattenedArticle): FormattedUpcomingFixturesArticle => {
-      const structuredOutput = article.structuredOutput || {};
-      return {
-        id: article.id,
-        name: article.name || "Unknown Article",
-        fixtures: structuredOutput.fixtures || [],
-        assetType: article.assetType || "Unknown Type",
-        assetCategory: article.assetCategory || "Unknown Category",
-        hasError: article.hasError || false,
-        errorHandler: article.errorHandler || null,
-        hasCompleted: article.hasCompleted || false,
-        forceRerender: article.forceRerender || false,
-        compositionID: article.compositionID || "Unknown Composition",
-        articleDataForPrompt: article.ArticleDataForPrompt || null,
-      };
-    });
+    return aiArticles.map(
+      (article: FlattenedArticle): FormattedUpcomingFixturesArticle => {
+        const structuredOutput = article.structuredOutput || {};
+        return {
+          id: article.id,
+          name: article.name || "Unknown Article",
+          fixtures: structuredOutput.fixtures || [],
+          assetType: article.assetType || "Unknown Type",
+          assetCategory: article.assetCategory || "Unknown Category",
+          hasError: article.hasError || false,
+          errorHandler: article.errorHandler || null,
+          hasCompleted: article.hasCompleted || false,
+          forceRerender: article.forceRerender || false,
+          compositionID: article.compositionID || "Unknown Composition",
+          articleDataForPrompt: article.ArticleDataForPrompt || null,
+        };
+      }
+    );
   });
 
   /**
@@ -116,7 +120,9 @@ export function useUpcomingFixturesFormatting(articles: Ref<FlattenedArticle[]>)
         content += article.fixtures
           .map(
             (fixture) =>
-              `${fixture.match}\n${fixture.date} : ${fixture.time}\n${fixture.ground !== 'N/A' ? fixture.ground : ''}\n\n${fixture.summary}\n\n`
+              `${fixture.match}\n${fixture.date} : ${fixture.time}\n${
+                fixture.ground !== "N/A" ? fixture.ground : ""
+              }\n\n${fixture.summary}\n\n`
           )
           .join("\n");
       });

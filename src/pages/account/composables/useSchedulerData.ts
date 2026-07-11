@@ -1,14 +1,12 @@
 // src/pages/scheduler/composables/useSchedulerData.ts
 import { computed } from "vue";
 import { useSchedulerStore } from "@/store/scheduler";
-import { Scheduler } from "@/types";
 
 export function useSchedulerData() {
   const schedulerStore = useSchedulerStore(); // Initialize the scheduler store
 
   // Destructure the store methods and getters directly
-  const { scheduler, schedulerRef, fetchScheduler, loading, error } =
-    schedulerStore;
+  const { scheduler, fetchScheduler, loading, error } = schedulerStore;
 
   // Fetch the scheduler by ID
   async function fetchSchedulerById(id: number) {

@@ -2,14 +2,26 @@
   <div class="mb-3">
     <div class="d-flex align-center justify-space-between mb-2">
       <span class="text-subtitle-2">Batting Order</span>
-      <v-chip size="small" variant="tonal" color="grey" style="color: rgba(0, 0, 0, 0.87);">
+      <v-chip
+        size="small"
+        variant="tonal"
+        color="grey"
+        style="color: rgba(0, 0, 0, 0.87)"
+      >
         One player per line
       </v-chip>
     </div>
-    <v-textarea :model-value="formattedText" @update:model-value="handleTextChange" label="Player Performances"
-      hint="Enter player performance description, one per line" persistent-hint variant="outlined" density="compact"
+    <v-textarea
+      :model-value="formattedText"
+      @update:model-value="handleTextChange"
+      label="Player Performances"
+      hint="Enter player performance description, one per line"
+      persistent-hint
+      variant="outlined"
+      density="compact"
       rows="8"
-      placeholder="Example:&#10;Christian Leopard (vc), scored 86 Runs from (77) balls, with 11 fours and 2 sixes, at a strike Rate of 111.68., they were out: c: Sachin Jayawardena b: Oliver Beale&#10;Harrison Woolley, scored 95 Runs from (81) balls, with 11 fours and 5 sixes, at a strike Rate of 117.28., they were out: c: Luke Kenworthy b: Ben Stoyanoff" />
+      placeholder="Example:&#10;Christian Leopard (vc), scored 86 Runs from (77) balls, with 11 fours and 2 sixes, at a strike Rate of 111.68., they were out: c: Sachin Jayawardena b: Oliver Beale&#10;Harrison Woolley, scored 95 Runs from (81) balls, with 11 fours and 5 sixes, at a strike Rate of 117.28., they were out: c: Luke Kenworthy b: Ben Stoyanoff"
+    />
   </div>
 </template>
 
@@ -33,7 +45,7 @@ const formattedText = computed(() => {
 
   return props.battingOrder
     .map((player) => player.description || "")
-    .filter(desc => desc.trim() !== "")
+    .filter((desc) => desc.trim() !== "")
     .join("\n");
 });
 
@@ -44,7 +56,7 @@ function handleTextChange(text: string) {
     return;
   }
 
-  const lines = text.split("\n").filter(line => line.trim() !== "");
+  const lines = text.split("\n").filter((line) => line.trim() !== "");
   const players: PlayerStats[] = lines.map((line) => ({
     description: line.trim(),
   }));

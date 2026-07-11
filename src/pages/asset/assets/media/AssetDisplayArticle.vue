@@ -6,14 +6,25 @@
       <v-spacer></v-spacer>
       <!-- <v-btn color="primary" @click="navigateToEdit()"> Edit Writeup </v-btn> -->
       <!-- Copy Button in the Header - Only show when there's a valid article -->
-      <SecondaryButton v-if="hasValidArticle" color="accent" :icon="copyIcon" label="Copy" @click="handleCopy"
-        :loading="copyLoading" size="small" />
+      <SecondaryButton
+        v-if="hasValidArticle"
+        color="accent"
+        :icon="copyIcon"
+        label="Copy"
+        @click="handleCopy"
+        :loading="copyLoading"
+        size="small"
+      />
     </template>
 
     <!-- Conditionally rendering named slots -->
     <!-- Loading State -->
     <template v-slot:loading v-if="loading">
-      <v-progress-linear indeterminate color="primary" class="mt-4"></v-progress-linear>
+      <v-progress-linear
+        indeterminate
+        color="primary"
+        class="mt-4"
+      ></v-progress-linear>
       <p class="mt-2">Loading articles...</p>
     </template>
 
@@ -34,14 +45,22 @@
     <template v-slot:body v-else-if="articlesArray.length > 0 && !isLegacy">
       <!-- Assign a ref to the child component -->
       <v-sheet class="overflow-y-auto" :max-height="maxHeight">
-        <component :is="assetComponent" :articles="articlesArray" :copyID="generateCopyID()" ref="articleComponent"
-          :accountId="route.params.accountid" :renderId="route.params.renderid" />
+        <component
+          :is="assetComponent"
+          :articles="articlesArray"
+          :copyID="generateCopyID()"
+          ref="articleComponent"
+          :accountId="route.params.accountid"
+          :renderId="route.params.renderid"
+        />
       </v-sheet>
     </template>
 
     <!-- No Content Slot -->
     <template v-slot:noContent v-else>
-      <v-alert type="info" class="mt-4"> AI Articles are Currently Disabled. </v-alert>
+      <v-alert type="info" class="mt-4">
+        AI Articles are Currently Disabled.
+      </v-alert>
     </template>
   </MediaLayout>
 </template>
@@ -109,13 +128,16 @@ const hasValidArticle = computed(() => {
       if (!Array.isArray(results) || results.length === 0) return false;
       // Check if any result has valid content
       return results.some((result: any) => {
-        const hasValidTitle = result.title &&
+        const hasValidTitle =
+          result.title &&
           result.title !== "No Title" &&
           result.title.trim() !== "";
-        const hasValidSubtitle = result.subtitle &&
+        const hasValidSubtitle =
+          result.subtitle &&
           result.subtitle !== "No Subtitle" &&
           result.subtitle.trim() !== "";
-        const hasValidBody = result.article_body &&
+        const hasValidBody =
+          result.article_body &&
           result.article_body !== "No Article Body" &&
           result.article_body.trim() !== "";
         return hasValidTitle && hasValidSubtitle && hasValidBody;
@@ -130,34 +152,43 @@ const hasValidArticle = computed(() => {
       assetType.value === "CricketBattingPerformances" ||
       assetType.value === "CricketBowlingPerformances"
     ) {
-      return structuredOutput.top_scorers &&
+      return (
+        structuredOutput.top_scorers &&
         Array.isArray(structuredOutput.top_scorers) &&
-        structuredOutput.top_scorers.length > 0;
+        structuredOutput.top_scorers.length > 0
+      );
     }
 
     // For UpcomingFixtures, check fixtures array
     if (assetType.value === "CricketUpcoming") {
-      return structuredOutput.fixtures &&
+      return (
+        structuredOutput.fixtures &&
         Array.isArray(structuredOutput.fixtures) &&
-        structuredOutput.fixtures.length > 0;
+        structuredOutput.fixtures.length > 0
+      );
     }
 
     // For Ladder, check leagues array
     if (assetType.value === "CricketLadder") {
-      return structuredOutput.leagues &&
+      return (
+        structuredOutput.leagues &&
         Array.isArray(structuredOutput.leagues) &&
-        structuredOutput.leagues.length > 0;
+        structuredOutput.leagues.length > 0
+      );
     }
 
     // For SingleResultArticles, check title/subtitle and article body directly
     if (assetType.value === "CricketResultSingle") {
-      const hasValidTitle = structuredOutput.title &&
+      const hasValidTitle =
+        structuredOutput.title &&
         structuredOutput.title !== "No Title" &&
         structuredOutput.title.trim() !== "";
-      const hasValidSubtitle = structuredOutput.subtitle &&
+      const hasValidSubtitle =
+        structuredOutput.subtitle &&
         structuredOutput.subtitle !== "No Subtitle" &&
         structuredOutput.subtitle.trim() !== "";
-      const hasValidBody = structuredOutput.article_body &&
+      const hasValidBody =
+        structuredOutput.article_body &&
         structuredOutput.article_body !== "No Article Body" &&
         structuredOutput.article_body.trim() !== "";
       return hasValidTitle && hasValidSubtitle && hasValidBody;

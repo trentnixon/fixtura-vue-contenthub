@@ -3,35 +3,75 @@
     <!-- Fixture Edit View -->
     <div v-if="isEditingFixtures">
       <!-- Fixture Edit Form (when editing a specific fixture) -->
-      <FixtureEditForm v-if="editingFixtureIndex !== null && editingFixture && editingFixtureData"
-        :editingFixtureIndex="editingFixtureIndex" :editingFixtureData="editingFixtureData"
-        :expandedSections="expandedSections" :error="fixtureError" :hasChanges="hasEditingChanges"
-        ref="fixtureFormRefComponent" @save="handleSaveFixture" @cancel="onCancelEdit"
-        @update:expandedSections="expandedSections = $event">
-        <AccountBiasSection v-if="editingFixtureData.accountBias" :accountBias="editingFixtureData.accountBias"
-          @update:accountBias="editingFixtureData.accountBias = $event" />
+      <FixtureEditForm
+        v-if="
+          editingFixtureIndex !== null && editingFixture && editingFixtureData
+        "
+        :editingFixtureIndex="editingFixtureIndex"
+        :editingFixtureData="editingFixtureData"
+        :expandedSections="expandedSections"
+        :error="fixtureError"
+        :hasChanges="hasEditingChanges"
+        ref="fixtureFormRefComponent"
+        @save="handleSaveFixture"
+        @cancel="onCancelEdit"
+        @update:expandedSections="expandedSections = $event"
+      >
+        <AccountBiasSection
+          v-if="editingFixtureData.accountBias"
+          :accountBias="editingFixtureData.accountBias"
+          @update:accountBias="editingFixtureData.accountBias = $event"
+        />
 
-        <MatchContextSection :matchContext="editingFixtureData.matchContext"
+        <MatchContextSection
+          :matchContext="editingFixtureData.matchContext"
           :validationRules="{ requiredRule, dateRule }"
-          @update:matchContext="editingFixtureData.matchContext = $event" />
+          @update:matchContext="editingFixtureData.matchContext = $event"
+        />
 
-        <TeamSection :team="editingFixtureData.homeTeam" teamType="homeTeam" :validationRules="{ requiredRule }"
+        <TeamSection
+          :team="editingFixtureData.homeTeam"
+          teamType="homeTeam"
+          :validationRules="{ requiredRule }"
           @update:team="editingFixtureData.homeTeam = $event"
           @add-player="(inningIndex) => addPlayer('homeTeam', inningIndex)"
-          @remove-player="(inningIndex, playerIndex) => removePlayer('homeTeam', inningIndex, playerIndex)"
+          @remove-player="
+            (inningIndex, playerIndex) =>
+              removePlayer('homeTeam', inningIndex, playerIndex)
+          "
           @add-bowler="(inningIndex) => addBowler('homeTeam', inningIndex)"
-          @remove-bowler="(inningIndex, bowlerIndex) => removeBowler('homeTeam', inningIndex, bowlerIndex)"
+          @remove-bowler="
+            (inningIndex, bowlerIndex) =>
+              removeBowler('homeTeam', inningIndex, bowlerIndex)
+          "
           @add-fielder="(inningIndex) => addFielder('homeTeam', inningIndex)"
-          @remove-fielder="(inningIndex, fielderIndex) => removeFielder('homeTeam', inningIndex, fielderIndex)" />
+          @remove-fielder="
+            (inningIndex, fielderIndex) =>
+              removeFielder('homeTeam', inningIndex, fielderIndex)
+          "
+        />
 
-        <TeamSection :team="editingFixtureData.awayTeam" teamType="awayTeam" :validationRules="{ requiredRule }"
+        <TeamSection
+          :team="editingFixtureData.awayTeam"
+          teamType="awayTeam"
+          :validationRules="{ requiredRule }"
           @update:team="editingFixtureData.awayTeam = $event"
           @add-player="(inningIndex) => addPlayer('awayTeam', inningIndex)"
-          @remove-player="(inningIndex, playerIndex) => removePlayer('awayTeam', inningIndex, playerIndex)"
+          @remove-player="
+            (inningIndex, playerIndex) =>
+              removePlayer('awayTeam', inningIndex, playerIndex)
+          "
           @add-bowler="(inningIndex) => addBowler('awayTeam', inningIndex)"
-          @remove-bowler="(inningIndex, bowlerIndex) => removeBowler('awayTeam', inningIndex, bowlerIndex)"
+          @remove-bowler="
+            (inningIndex, bowlerIndex) =>
+              removeBowler('awayTeam', inningIndex, bowlerIndex)
+          "
           @add-fielder="(inningIndex) => addFielder('awayTeam', inningIndex)"
-          @remove-fielder="(inningIndex, fielderIndex) => removeFielder('awayTeam', inningIndex, fielderIndex)" />
+          @remove-fielder="
+            (inningIndex, fielderIndex) =>
+              removeFielder('awayTeam', inningIndex, fielderIndex)
+          "
+        />
       </FixtureEditForm>
 
       <!-- Fixture List View (when not editing) -->
@@ -39,37 +79,57 @@
         <!-- Header with navigation -->
         <div class="mb-4 d-flex align-center justify-space-between">
           <div class="d-flex align-center">
-            <IconButton icon="mdi-arrow-left" tooltip="Back to Article" size="small" color="error"
-              @click="onBackToArticle" />
+            <IconButton
+              icon="mdi-arrow-left"
+              tooltip="Back to Article"
+              size="small"
+              color="error"
+              @click="onBackToArticle"
+            />
           </div>
           <div class="d-flex align-center">
-            <IconButton icon="mdi-content-save-all" tooltip="Save all changes to fixtures" size="small"
-              :color="hasUnsavedChanges ? 'success' : 'grey'" :loading="isSavingFixtures"
-              :disabled="!hasUnsavedChanges || isSavingFixtures" @click="onSaveAllChanges" />
+            <IconButton
+              icon="mdi-content-save-all"
+              tooltip="Save all changes to fixtures"
+              size="small"
+              :color="hasUnsavedChanges ? 'success' : 'grey'"
+              :loading="isSavingFixtures"
+              :disabled="!hasUnsavedChanges || isSavingFixtures"
+              @click="onSaveAllChanges"
+            />
           </div>
         </div>
 
         <!-- Error message -->
-        <div v-if="fixtureError" class="mb-4 pa-3 bg-error-lighten-5 rounded text-error">
+        <div
+          v-if="fixtureError"
+          class="mb-4 pa-3 bg-error-lighten-5 rounded text-error"
+        >
           {{ fixtureError }}
         </div>
         <!-- Title -->
         <div class="mb-4">
           <h2 class="text-title">Edit Fixtures</h2>
           <div v-if="fixtureCount > 0" class="text-caption text-grey mt-1">
-            {{ fixtureCount }} {{ fixtureCount === 1 ? 'fixture' : 'fixtures' }}
+            {{ fixtureCount }} {{ fixtureCount === 1 ? "fixture" : "fixtures" }}
           </div>
         </div>
         <!-- Search Controls -->
-        <SearchSortControls v-model:searchQuery="searchQuery" :filteredCount="filteredAndSortedFixtures.length"
-          :totalCount="fixtureCount" />
-
-
+        <SearchSortControls
+          v-model:searchQuery="searchQuery"
+          :filteredCount="filteredAndSortedFixtures.length"
+          :totalCount="fixtureCount"
+        />
 
         <!-- Fixture List -->
-        <FixtureList :fixtures="fixtures" :filteredAndSortedFixtures="filteredAndSortedFixtures"
-          :unsavedChanges="unsavedChanges" :error="fixtureError" :getFixtureSummary="getFixtureSummary"
-          @edit-fixture="onEditFixture" />
+        <FixtureList
+          :fixtures="fixtures"
+          :filteredAndSortedFixtures="filteredAndSortedFixtures"
+          :unsavedChanges="unsavedChanges"
+          :error="fixtureError"
+          :getFixtureSummary="getFixtureSummary"
+          @edit-fixture="onEditFixture"
+        />
       </div>
     </div>
 
@@ -84,91 +144,168 @@
 
         <!-- Normal state: Show buttons -->
         <template v-else>
-          <div class="d-flex align-center justify-space-between w-100" style="gap: 8px;">
-            <IconButton icon="mdi-file-document-edit" :tooltip="buttonText" size="small" color="primary"
-              :loading="isPending" :disabled="isPending" @click="showConfirmationDialog = true" />
-            <div class="d-flex align-center ms-auto" style="gap: 8px;">
+          <div
+            class="d-flex align-center justify-space-between w-100"
+            style="gap: 8px"
+          >
+            <IconButton
+              icon="mdi-file-document-edit"
+              :tooltip="buttonText"
+              size="small"
+              color="primary"
+              :loading="isPending"
+              :disabled="isPending"
+              @click="showConfirmationDialog = true"
+            />
+            <div class="d-flex align-center ms-auto" style="gap: 8px">
               <!-- Additional buttons shown when article is written -->
               <template v-if="showAdditionalButtons">
                 <v-tooltip v-if="hasContext" location="top">
                   <template v-slot:activator="{ props }">
-                    <v-chip v-bind="props" color="orange" size="small" variant="tonal">
+                    <v-chip
+                      v-bind="props"
+                      color="orange"
+                      size="small"
+                      variant="tonal"
+                    >
                       <v-icon start size="x-small">mdi-check-circle</v-icon>
                       Context
                     </v-chip>
                   </template>
                   <span>Context has been added to this article</span>
                 </v-tooltip>
-                <IconButton icon="mdi-text-box-plus" tooltip="Add Context" size="small" color="success"
-                  :loading="isPending" :disabled="isPending" @click="onAddContext" />
-                <IconButton icon="mdi-pencil-box" tooltip="Edit Fixtures" size="small" color="success"
-                  :loading="isPending" :disabled="isPending" @click="onMakeEditToFixture" />
+                <IconButton
+                  icon="mdi-text-box-plus"
+                  tooltip="Add Context"
+                  size="small"
+                  color="success"
+                  :loading="isPending"
+                  :disabled="isPending"
+                  @click="onAddContext"
+                />
+                <IconButton
+                  icon="mdi-pencil-box"
+                  tooltip="Edit Fixtures"
+                  size="small"
+                  color="success"
+                  :loading="isPending"
+                  :disabled="isPending"
+                  @click="onMakeEditToFixture"
+                />
               </template>
             </div>
           </div>
         </template>
 
-        <div v-if="requestError" class="ml-3 text-error">{{ requestError }}</div>
+        <div v-if="requestError" class="ml-3 text-error">
+          {{ requestError }}
+        </div>
       </div>
 
       <!-- Confirmation Dialog -->
-      <ConfirmationModal v-model="showConfirmationDialog" :title="`Confirm ${buttonText}`" :persistent="isPending"
-        :loading="isPending" :disabled="isPending" @confirm="confirmAndRequest">
+      <ConfirmationModal
+        v-model="showConfirmationDialog"
+        :title="`Confirm ${buttonText}`"
+        :persistent="isPending"
+        :loading="isPending"
+        :disabled="isPending"
+        @confirm="confirmAndRequest"
+      >
         <p v-if="articlePhase === 'initial' || articlePhase === 'postPending'">
-          Are you sure you want to request a new AI write-up? This will generate a fresh article based on the current
-          data.
+          Are you sure you want to request a new AI write-up? This will generate
+          a fresh article based on the current data.
         </p>
         <p v-else-if="articlePhase === 'articleWritten'">
-          Are you sure you want to request a review? This will generate a new version of the article based on your
-          feedback.
+          Are you sure you want to request a review? This will generate a new
+          version of the article based on your feedback.
         </p>
-        <p v-else>
-          Are you sure you want to proceed with this request?
-        </p>
+        <p v-else>Are you sure you want to proceed with this request?</p>
       </ConfirmationModal>
 
       <!-- Context Dialog -->
-      <ContextDialog v-model="showContextDialog" v-model:contextText="contextText" :hasContext="hasContext"
-        :isSaving="isSavingContext" :error="contextError" :success="contextSuccess" :maxLength="CONTEXT_MAX_LENGTH"
-        :charCount="contextCharCount" :charRemaining="contextCharRemaining" :charCountClass="contextCharCountClass"
-        :isValid="isContextValid" :cancelLabel="cancelButtonLabel" @save="handleSaveContext"
-        @delete="handleDeleteContext" @close="closeContextDialog" />
+      <ContextDialog
+        v-model="showContextDialog"
+        v-model:contextText="contextText"
+        :hasContext="hasContext"
+        :isSaving="isSavingContext"
+        :error="contextError"
+        :success="contextSuccess"
+        :maxLength="CONTEXT_MAX_LENGTH"
+        :charCount="contextCharCount"
+        :charRemaining="contextCharRemaining"
+        :charCountClass="contextCharCountClass"
+        :isValid="isContextValid"
+        :cancelLabel="cancelButtonLabel"
+        @save="handleSaveContext"
+        @delete="handleDeleteContext"
+        @close="closeContextDialog"
+      />
 
       <!-- Debug: Show trigger response -->
-      <div v-if="false && triggerResponse" class="mb-4 pa-3 bg-grey-lighten-4 rounded">
+      <div
+        v-if="false && triggerResponse"
+        class="mb-4 pa-3 bg-grey-lighten-4 rounded"
+      >
         <div class="text-caption font-weight-bold mb-2">Trigger Response:</div>
-        <pre class="text-caption" style="white-space: pre-wrap; word-break: break-all;">{{ JSON.stringify(triggerResponse,
-          null, 2) }}</pre>
+        <pre
+          class="text-caption"
+          style="white-space: pre-wrap; word-break: break-all"
+          >{{ JSON.stringify(triggerResponse, null, 2) }}</pre
+        >
       </div>
 
       <!-- Debug: Polling status -->
       <div v-if="false" class="mb-4 pa-3 bg-blue-lighten-5 rounded">
         <div class="text-caption font-weight-bold mb-2">Polling Debug:</div>
         <div class="text-caption">
-          <div>Article Status: <strong>{{ articleStatus }}</strong></div>
-          <div>Phase: <strong>{{ articlePhase }}</strong></div>
-          <div>Feedback Count: <strong>{{ feedbackCount }}</strong> / Limit: <strong>{{ feedbackLimit }}</strong></div>
-          <div>Locked: <span :class="isLocked ? 'text-warning' : 'text-success'">{{ isLocked ? 'Yes' : 'No' }}</span>
+          <div>
+            Article Status: <strong>{{ articleStatus }}</strong>
           </div>
-          <div>Polling: <span :class="isPollingActiveComputed ? 'text-success' : 'text-grey'">{{ pollingStatusText
-          }}</span>
+          <div>
+            Phase: <strong>{{ articlePhase }}</strong>
           </div>
-          <div>Poll Count: <strong>{{ pollCount }}</strong></div>
+          <div>
+            Feedback Count: <strong>{{ feedbackCount }}</strong> / Limit:
+            <strong>{{ feedbackLimit }}</strong>
+          </div>
+          <div>
+            Locked:
+            <span :class="isLocked ? 'text-warning' : 'text-success'">{{
+              isLocked ? "Yes" : "No"
+            }}</span>
+          </div>
+          <div>
+            Polling:
+            <span
+              :class="isPollingActiveComputed ? 'text-success' : 'text-grey'"
+              >{{ pollingStatusText }}</span
+            >
+          </div>
+          <div>
+            Poll Count: <strong>{{ pollCount }}</strong>
+          </div>
           <div v-if="isPollingActiveComputed">Next poll in: ~5s</div>
         </div>
       </div>
 
       <!-- Article Display -->
-      <ArticleDisplay :articleStatus="articleStatus" :formattedArticles="formattedArticles"
-        :isFirstResultForArticle="isFirstResultForArticle" :formatPromptData="formatPromptData"
-        :isRequesting="isPending" :isLocked="isLocked" :articles="articles" :isSavingFixtures="isSavingFixtures"
-        @request-writeup="showConfirmationDialog = true" />
+      <ArticleDisplay
+        :articleStatus="articleStatus"
+        :formattedArticles="formattedArticles"
+        :isFirstResultForArticle="isFirstResultForArticle"
+        :formatPromptData="formatPromptData"
+        :isRequesting="isPending"
+        :isLocked="isLocked"
+        :articles="articles"
+        :isSavingFixtures="isSavingFixtures"
+        @request-writeup="showConfirmationDialog = true"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineExpose, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   pollWeekendArticleStatus,
@@ -229,7 +366,8 @@ const {
 // Display helpers
 const accountIdDisplay = computed<number | null>(() => {
   const first = props.articles?.[0];
-  if (first && typeof (first as any).accountId === "number") return (first as any).accountId;
+  if (first && typeof (first as any).accountId === "number")
+    return (first as any).accountId;
   const fromRoute = Number(route.params.accountid);
   return Number.isFinite(fromRoute) ? fromRoute : null;
 });
@@ -238,7 +376,6 @@ const renderIdDisplay = computed<number | null>(() => {
   const fromRoute = Number(route.params.renderid);
   return Number.isFinite(fromRoute) ? fromRoute : null;
 });
-
 
 // copyArticle is now provided by useArticleFormatting composable
 const copyArticle = copyArticleFromComposable;
@@ -249,9 +386,14 @@ defineExpose({
 });
 
 // Initialize composables
-const { feedbackCount, feedbackLimit, isLocked, updateFeedback } = useArticleFeedback();
-const { articleStatus, articlePhase } = useArticleStatus(hasArticle, feedbackCount);
-const { pollCount, isPollingActive, startPolling, stopPolling } = useArticlePolling();
+const { feedbackCount, feedbackLimit, isLocked, updateFeedback } =
+  useArticleFeedback();
+const { articleStatus, articlePhase } = useArticleStatus(
+  hasArticle,
+  feedbackCount
+);
+const { pollCount, isPollingActive, startPolling, stopPolling } =
+  useArticlePolling();
 
 // Component state
 const isPending = ref(false);
@@ -344,10 +486,7 @@ const {
 } = useFixtureSearchSort(fixtures);
 
 // Initialize fixture validation composable
-const {
-  requiredRule,
-  dateRule,
-} = useFixtureValidation();
+const { requiredRule, dateRule } = useFixtureValidation();
 
 // Form ref for validation
 const fixtureFormRefComponent = ref<any>(null);
@@ -438,15 +577,25 @@ async function onRequestWriteup() {
       typeof renderId !== "number" ||
       typeof articleId !== "number"
     ) {
-      throw new Error("Missing required identifiers (accountId, renderId, articleId)");
+      throw new Error(
+        "Missing required identifiers (accountId, renderId, articleId)"
+      );
     }
 
     // Capture and display the trigger response
-    const response = await triggerWeekendArticleAction({ accountId, renderId, articleId });
+    const response = await triggerWeekendArticleAction({
+      accountId,
+      renderId,
+      articleId,
+    });
     triggerResponse.value = response;
 
     // Check status endpoint to determine if polling is needed
-    const statusRes = await pollWeekendArticleStatus({ accountId, renderId, articleId });
+    const statusRes = await pollWeekendArticleStatus({
+      accountId,
+      renderId,
+      articleId,
+    });
 
     if (statusRes.data) {
       const status = statusRes.data.status;
@@ -488,7 +637,6 @@ async function onRequestWriteup() {
 
 // All context, fixture handler, and array manipulation functions are now provided by composables
 
-
 // Check status on mount and resume polling if needed
 onMounted(async () => {
   const accountId = accountIdDisplay.value;
@@ -505,7 +653,11 @@ onMounted(async () => {
 
   try {
     // Check current status
-    const statusRes = await pollWeekendArticleStatus({ accountId, renderId, articleId });
+    const statusRes = await pollWeekendArticleStatus({
+      accountId,
+      renderId,
+      articleId,
+    });
 
     if (statusRes.data) {
       const status = statusRes.data.status;
@@ -533,7 +685,8 @@ onMounted(async () => {
       } else if (status === "failed") {
         // Article failed, show error
         if (statusRes.data.locked) {
-          requestError.value = "Article is locked (feedback limit reached or article too old)";
+          requestError.value =
+            "Article is locked (feedback limit reached or article too old)";
         } else {
           requestError.value = "Article generation failed";
         }

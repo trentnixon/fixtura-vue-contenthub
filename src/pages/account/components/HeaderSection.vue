@@ -5,7 +5,10 @@
     </v-col>
     <v-col class="d-flex justify-end" cols="4">
       <v-avatar class="mb-0" v-if="getOrganizationDetails" size="x-large">
-        <v-img :alt="getAccountName" :src="getOrganizationDetails.ParentLogo"></v-img>
+        <v-img
+          :alt="getAccountName"
+          :src="getOrganizationDetails.ParentLogo"
+        ></v-img>
       </v-avatar>
     </v-col>
   </v-row>

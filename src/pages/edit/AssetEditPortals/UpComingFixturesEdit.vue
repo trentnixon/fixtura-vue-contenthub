@@ -106,7 +106,12 @@ function updateFixture({ index, key, newValue }) {
     // Force reactivity by reassigning the array (this ensures Vue tracks the change)
     fixtures.value = [...fixtures.value];
 
-    console.log("[UpComingFixturesEdit] Updated fixture:", { index, key, newValue, fixture: fixtures.value[index] });
+    console.log("[UpComingFixturesEdit] Updated fixture:", {
+      index,
+      key,
+      newValue,
+      fixture: fixtures.value[index],
+    });
   }
 }
 
@@ -132,7 +137,8 @@ function saveAllChanges() {
 
 function updateVideoMeta(updatedMeta) {
   // Handle both uppercase (VIDEOMETA) and lowercase (videoMeta) field names
-  const currentVideoMeta = dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
+  const currentVideoMeta =
+    dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
   if (dataObj.value?.videoMeta !== undefined) {
     updateDataObj({ videoMeta: { ...currentVideoMeta, ...updatedMeta } });
   } else {

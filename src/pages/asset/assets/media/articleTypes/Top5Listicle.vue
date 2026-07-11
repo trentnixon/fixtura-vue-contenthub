@@ -11,60 +11,106 @@
 
         <!-- Normal state: Show buttons -->
         <template v-else>
-          <div class="d-flex align-center justify-space-between w-100" style="gap: 8px;">
-            <IconButton icon="mdi-file-document-edit" :tooltip="buttonText" size="small" color="primary"
-              :loading="isPending" :disabled="isPending" @click="showConfirmationDialog = true" />
-            <div class="d-flex align-center ms-auto" style="gap: 8px;">
+          <div
+            class="d-flex align-center justify-space-between w-100"
+            style="gap: 8px"
+          >
+            <IconButton
+              icon="mdi-file-document-edit"
+              :tooltip="buttonText"
+              size="small"
+              color="primary"
+              :loading="isPending"
+              :disabled="isPending"
+              @click="showConfirmationDialog = true"
+            />
+            <div class="d-flex align-center ms-auto" style="gap: 8px">
               <!-- Additional buttons shown when article is written -->
               <template v-if="showAdditionalButtons">
                 <v-tooltip v-if="hasContext" location="top">
                   <template v-slot:activator="{ props }">
-                    <v-chip v-bind="props" color="orange" size="small" variant="tonal">
+                    <v-chip
+                      v-bind="props"
+                      color="orange"
+                      size="small"
+                      variant="tonal"
+                    >
                       <v-icon start size="x-small">mdi-check-circle</v-icon>
                       Context
                     </v-chip>
                   </template>
                   <span>Context has been added to this article</span>
                 </v-tooltip>
-                <IconButton icon="mdi-text-box-plus" tooltip="Add Context" size="small" color="success"
-                  :loading="isPending" :disabled="isPending" @click="onAddContext" />
+                <IconButton
+                  icon="mdi-text-box-plus"
+                  tooltip="Add Context"
+                  size="small"
+                  color="success"
+                  :loading="isPending"
+                  :disabled="isPending"
+                  @click="onAddContext"
+                />
               </template>
             </div>
           </div>
         </template>
 
-        <div v-if="requestError" class="ml-3 text-error">{{ requestError }}</div>
+        <div v-if="requestError" class="ml-3 text-error">
+          {{ requestError }}
+        </div>
       </div>
 
       <!-- Confirmation Dialog -->
-      <ConfirmationModal v-model="showConfirmationDialog" :title="`Confirm ${buttonText}`" :persistent="isPending"
-        :loading="isPending" :disabled="isPending" @confirm="confirmAndRequest">
+      <ConfirmationModal
+        v-model="showConfirmationDialog"
+        :title="`Confirm ${buttonText}`"
+        :persistent="isPending"
+        :loading="isPending"
+        :disabled="isPending"
+        @confirm="confirmAndRequest"
+      >
         <p v-if="articlePhase === 'initial' || articlePhase === 'postPending'">
-          Are you sure you want to request a new AI Top 5 article? This will generate a fresh article based on the
-          current
-          data.
+          Are you sure you want to request a new AI Top 5 article? This will
+          generate a fresh article based on the current data.
         </p>
         <p v-else-if="articlePhase === 'articleWritten'">
-          Are you sure you want to request a review? This will generate a new version of the article based on your
-          feedback.
+          Are you sure you want to request a review? This will generate a new
+          version of the article based on your feedback.
         </p>
-        <p v-else>
-          Are you sure you want to proceed with this request?
-        </p>
+        <p v-else>Are you sure you want to proceed with this request?</p>
       </ConfirmationModal>
 
       <!-- Context Dialog -->
-      <ContextDialog v-model="showContextDialog" v-model:contextText="contextText" :hasContext="hasContext"
-        :isSaving="isSavingContext" :error="contextError" :success="contextSuccess" :maxLength="CONTEXT_MAX_LENGTH"
-        :charCount="contextCharCount" :charRemaining="contextCharRemaining" :charCountClass="contextCharCountClass"
-        :isValid="isContextValid" :cancelLabel="cancelButtonLabel" @save="handleSaveContext"
-        @delete="handleDeleteContext" @close="closeContextDialog" />
+      <ContextDialog
+        v-model="showContextDialog"
+        v-model:contextText="contextText"
+        :hasContext="hasContext"
+        :isSaving="isSavingContext"
+        :error="contextError"
+        :success="contextSuccess"
+        :maxLength="CONTEXT_MAX_LENGTH"
+        :charCount="contextCharCount"
+        :charRemaining="contextCharRemaining"
+        :charCountClass="contextCharCountClass"
+        :isValid="isContextValid"
+        :cancelLabel="cancelButtonLabel"
+        @save="handleSaveContext"
+        @delete="handleDeleteContext"
+        @close="closeContextDialog"
+      />
 
       <!-- Article Display -->
       <!-- Legacy check happens first in Top5Display, regardless of article content -->
-      <Top5Display :articleStatus="articleStatus" :formattedArticles="formattedArticles" :isRequesting="isPending"
-        :isLocked="isLocked" :isLegacy="isLegacy" :headline-text="displayCopy.headline"
-        :description-text="displayCopy.description" @request-writeup="showConfirmationDialog = true" />
+      <Top5Display
+        :articleStatus="articleStatus"
+        :formattedArticles="formattedArticles"
+        :isRequesting="isPending"
+        :isLocked="isLocked"
+        :isLegacy="isLegacy"
+        :headline-text="displayCopy.headline"
+        :description-text="displayCopy.description"
+        @request-writeup="showConfirmationDialog = true"
+      />
     </div>
   </div>
 </template>
@@ -122,8 +168,13 @@ const hasValidContent = computed(() => {
 // Display helpers
 const accountIdDisplay = computed<number | null>(() => {
   const first = props.articles?.[0];
-  if (first && typeof (first as FlattenedArticle & { accountId?: number }).accountId === "number") {
-    const accountId = (first as FlattenedArticle & { accountId?: number }).accountId;
+  if (
+    first &&
+    typeof (first as FlattenedArticle & { accountId?: number }).accountId ===
+      "number"
+  ) {
+    const accountId = (first as FlattenedArticle & { accountId?: number })
+      .accountId;
     return accountId ?? null;
   }
   const fromRoute = Number(route.params.accountid);
@@ -145,7 +196,11 @@ defineExpose({
 
 // Initialize composables
 const { feedbackCount, isLocked, updateFeedback } = useArticleFeedback();
-const { articleStatus, articlePhase, isLegacy } = useArticleStatus(hasArticle, feedbackCount, articlesRef);
+const { articleStatus, articlePhase, isLegacy } = useArticleStatus(
+  hasArticle,
+  feedbackCount,
+  articlesRef
+);
 const { startPolling, stopPolling } = useArticlePolling();
 
 // Component state
@@ -202,7 +257,8 @@ const buttonText = computed(() => {
 const displayCopy = computed(() => {
   const type = assetType.value;
   const isPerformance =
-    type === "CricketBattingPerformances" || type === "CricketBowlingPerformances";
+    type === "CricketBattingPerformances" ||
+    type === "CricketBowlingPerformances";
 
   if (type === "CricketTeamOfTheWeek") {
     return {
@@ -275,16 +331,26 @@ async function onRequestWriteup() {
       typeof renderId !== "number" ||
       typeof articleId !== "number"
     ) {
-      throw new Error("Missing required identifiers (accountId, renderId, articleId)");
+      throw new Error(
+        "Missing required identifiers (accountId, renderId, articleId)"
+      );
     }
 
     // Capture and display the trigger response
     // Note: Using weekend article action for now - replace with Top5-specific action when available
-    const response = await triggerWeekendArticleAction({ accountId, renderId, articleId });
+    const response = await triggerWeekendArticleAction({
+      accountId,
+      renderId,
+      articleId,
+    });
     triggerResponse.value = response;
 
     // Check status endpoint to determine if polling is needed
-    const statusRes = await pollWeekendArticleStatus({ accountId, renderId, articleId });
+    const statusRes = await pollWeekendArticleStatus({
+      accountId,
+      renderId,
+      articleId,
+    });
 
     if (statusRes.data) {
       const status = statusRes.data.status;
@@ -341,7 +407,11 @@ onMounted(async () => {
 
   try {
     // Check current status
-    const statusRes = await pollWeekendArticleStatus({ accountId, renderId, articleId });
+    const statusRes = await pollWeekendArticleStatus({
+      accountId,
+      renderId,
+      articleId,
+    });
 
     if (statusRes.data) {
       const status = statusRes.data.status;
@@ -369,7 +439,8 @@ onMounted(async () => {
       } else if (status === "failed") {
         // Article failed, show error
         if (statusRes.data.locked) {
-          requestError.value = "Article is locked (feedback limit reached or article too old)";
+          requestError.value =
+            "Article is locked (feedback limit reached or article too old)";
         } else {
           requestError.value = "Article generation failed";
         }

@@ -4,7 +4,10 @@
   <!-- Display download stats for the grouping category -->
   <AssetTableByType />
   <v-divider class="my-4" />
-  <CardHeader :title="`${groupingCategory} render statistics`" subtitle="Download breakdown" />
+  <CardHeader
+    :title="`${groupingCategory} render statistics`"
+    subtitle="Download breakdown"
+  />
   <CategoryDownloadsStats :groupingCategory="groupingCategory" />
   <!--   <v-divider class="my-4" />
   <CardHeader :title="`${groupingCategory} Fixtures`" subtitle="The fixtures were used when creating the render" /> -->
@@ -29,7 +32,9 @@ const { fetchGroupingDetails } = useRendersStore();
 const route = useRoute();
 const renderId = ref(Number(route.params.renderid));
 const accountId = ref(Number(route.params.accountid));
-const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
+const groupingCategory = ref(
+  decodeURIComponent(String(route.params.groupingcategory))
+);
 
 // Function to fetch data based on route parameters
 async function fetchData() {
@@ -53,7 +58,9 @@ watch(
   (newParams) => {
     accountId.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
-    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
+    groupingCategory.value = decodeURIComponent(
+      String(newParams.groupingcategory)
+    );
     fetchData(); // Refetch data when route changes
   }
 );

@@ -1,5 +1,5 @@
 import { computed, ref, type Ref } from "vue";
-import type { ParsedFixturePrompt, FixtureData } from "@/types/FixtureTypes";
+import type { ParsedFixturePrompt } from "@/types/FixtureTypes";
 import {
   parseFixturePrompt,
   stringifyFixtureData,
@@ -53,9 +53,18 @@ export function useFixtureEditing(
    */
   async function loadFixtures() {
     const firstArticle = articles.value?.[0];
-    console.log("[useFixtureEditing] First article:", JSON.stringify(firstArticle, null, 2));
-    console.log("[useFixtureEditing] First article keys:", Object.keys(firstArticle || {}));
-    console.log("[useFixtureEditing] ArticleDataForPrompt:", firstArticle?.ArticleDataForPrompt);
+    console.log(
+      "[useFixtureEditing] First article:",
+      JSON.stringify(firstArticle, null, 2)
+    );
+    console.log(
+      "[useFixtureEditing] First article keys:",
+      Object.keys(firstArticle || {})
+    );
+    console.log(
+      "[useFixtureEditing] ArticleDataForPrompt:",
+      firstArticle?.ArticleDataForPrompt
+    );
 
     if (
       !firstArticle?.ArticleDataForPrompt ||
@@ -68,22 +77,38 @@ export function useFixtureEditing(
 
     // Parse each fixture prompt
     const parsed: ParsedFixturePrompt[] = [];
-    console.log("[useFixtureEditing] ArticleDataForPrompt length:", firstArticle.ArticleDataForPrompt.length);
+    console.log(
+      "[useFixtureEditing] ArticleDataForPrompt length:",
+      firstArticle.ArticleDataForPrompt.length
+    );
     for (let i = 0; i < firstArticle.ArticleDataForPrompt.length; i++) {
       const fixturePrompt = firstArticle.ArticleDataForPrompt[i];
-      console.log(`[useFixtureEditing] Fixture ${i} raw prompt (first 500 chars):`, fixturePrompt.prompt.substring(0, 500));
+      console.log(
+        `[useFixtureEditing] Fixture ${i} raw prompt (first 500 chars):`,
+        fixturePrompt.prompt.substring(0, 500)
+      );
       try {
         const parsedData = parseFixturePrompt(fixturePrompt.prompt);
-        console.log(`[useFixtureEditing] Fixture ${i} parsed data:`, JSON.stringify(parsedData, null, 2));
-        console.log(`[useFixtureEditing] Fixture ${i} homeTeam innings[0]:`, parsedData.homeTeam?.innings?.[0]);
+        console.log(
+          `[useFixtureEditing] Fixture ${i} parsed data:`,
+          JSON.stringify(parsedData, null, 2)
+        );
+        console.log(
+          `[useFixtureEditing] Fixture ${i} homeTeam innings[0]:`,
+          parsedData.homeTeam?.innings?.[0]
+        );
         parsed.push({
           prompt: fixturePrompt.prompt,
           parsedData: parsedData,
         });
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         console.error(`Failed to parse fixture at index ${i}:`, errorMessage);
-        console.error("Fixture prompt data (first 500 chars):", fixturePrompt.prompt.substring(0, 500));
+        console.error(
+          "Fixture prompt data (first 500 chars):",
+          fixturePrompt.prompt.substring(0, 500)
+        );
         // Skip invalid fixtures but continue with others
       }
     }

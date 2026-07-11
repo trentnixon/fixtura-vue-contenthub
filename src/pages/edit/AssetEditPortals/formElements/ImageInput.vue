@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, computed, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required, url } from "@vuelidate/validators";
 

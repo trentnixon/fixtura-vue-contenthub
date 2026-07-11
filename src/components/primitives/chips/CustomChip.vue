@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed, inject } from "vue";
+import { computed, inject } from "vue";
 const icons = inject("icons");
 const props = defineProps({
   label: {

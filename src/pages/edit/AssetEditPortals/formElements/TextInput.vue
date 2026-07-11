@@ -1,10 +1,17 @@
 <template>
-  <v-text-field :label="label" v-model="internalValue" :error-messages="errorMessage" @blur="validateAndEmit"
-    variant="outlined" clearable class="mb-0" />
+  <v-text-field
+    :label="label"
+    v-model="internalValue"
+    :error-messages="errorMessage"
+    @blur="validateAndEmit"
+    variant="outlined"
+    clearable
+    class="mb-0"
+  />
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 // Define props and emits
 const props = defineProps({
@@ -37,27 +44,24 @@ watch(
 
 // Watch for changes in internalValue and emit updates to parent
 // This keeps the parent in sync while the user is typing
-watch(
-  internalValue,
-  (newValue) => {
-    // Only emit if the value is different from the prop to avoid unnecessary updates
-    if (newValue !== props.value) {
-      isUserInput = true;
-      emits("update", newValue);
-      // Reset flag after a short delay to allow prop updates to come through
-      setTimeout(() => {
-        isUserInput = false;
-      }, 100);
-    }
+watch(internalValue, (newValue) => {
+  // Only emit if the value is different from the prop to avoid unnecessary updates
+  if (newValue !== props.value) {
+    isUserInput = true;
+    emits("update", newValue);
+    // Reset flag after a short delay to allow prop updates to come through
+    setTimeout(() => {
+      isUserInput = false;
+    }, 100);
   }
-);
+});
 
 // Validate the input value
 function validate(value) {
   for (const validation of props.validations) {
     // Skip if validation is not a function
-    if (typeof validation !== 'function') {
-      console.warn('[TextInput] Invalid validation function:', validation);
+    if (typeof validation !== "function") {
+      console.warn("[TextInput] Invalid validation function:", validation);
       continue;
     }
     const result = validation(value);

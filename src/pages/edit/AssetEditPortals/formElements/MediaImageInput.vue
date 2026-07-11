@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, computed, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { useAccountStore } from "@/store/account";
 import { storeToRefs } from "pinia";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";

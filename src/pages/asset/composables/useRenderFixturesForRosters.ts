@@ -22,7 +22,7 @@ export function useRosterFixtures() {
   const isPolling = ref(false);
 
   const pollInterval = 5000; // Poll every 2 seconds
-  let pollTimeout: ReturnType<typeof setTimeout>;
+  let pollTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Getter to get the roster poster fixtures from the store
   const rosterFixtures = computed(() => rendersStore.getRosterPosterFixtures);
@@ -107,7 +107,10 @@ export function useRosterFixtures() {
       return false;
     } finally {
       isPolling.value = false;
-      clearTimeout(pollTimeout);
+      if (pollTimeout) {
+        clearTimeout(pollTimeout);
+        pollTimeout = null;
+      }
     }
   };
 
@@ -153,7 +156,7 @@ export function useRosterFixtures() {
   const stopPolling = () => {
     if (pollTimeout) {
       clearTimeout(pollTimeout);
-      pollTimeout = 0;
+      pollTimeout = null;
     }
     isPolling.value = false;
   };

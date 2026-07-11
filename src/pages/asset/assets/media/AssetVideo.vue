@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 import { useVideoDownload } from "../../composables/useVideoDownload";
 import CategoryHeader from "@/components/primitives/headers/CategoryHeader.vue";
 import MediaLayout from "@/components/containers/media/mediaLayout.vue";

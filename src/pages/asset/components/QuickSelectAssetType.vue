@@ -1,25 +1,41 @@
 <template>
   <template v-if="groupingCategory">
-    <v-menu v-model="isMenuOpen" close-on-content-click transition="slide-y-transition">
+    <v-menu
+      v-model="isMenuOpen"
+      close-on-content-click
+      transition="slide-y-transition"
+    >
       <template v-slot:activator="{ props }">
-        <v-btn class="mr-2" v-bind="props" variant="tonal" color="primary"><span
-            v-if="$vuetify.display.smAndDown">Assets</span>
-          <span v-else>{{
-            groupingCategory.length > 20
-              ? groupingCategory.slice(0, 20) + "[...]"
-              : groupingCategory
-          }}
-            Assets</span></v-btn>
+        <v-btn class="mr-2" v-bind="props" variant="tonal" color="primary"
+          ><span v-if="$vuetify.display.smAndDown">Assets</span>
+          <span v-else
+            >{{
+              groupingCategory.length > 20
+                ? groupingCategory.slice(0, 20) + "[...]"
+                : groupingCategory
+            }}
+            Assets</span
+          ></v-btn
+        >
       </template>
 
       <v-list>
-        <v-list-item v-for="asset in sortedAssets" :key="asset.type" @click="navigateToAsset(asset.type)"
-          :active="isActiveAssetType(asset.type)">
+        <v-list-item
+          v-for="asset in sortedAssets"
+          :key="asset.type"
+          @click="navigateToAsset(asset.type)"
+          :active="isActiveAssetType(asset.type)"
+        >
           <v-list-item-title class="d-flex align-center">
             <span class="mr-2">{{
               getDisplayName(toPascalCase(asset.type))
             }}</span>
-            <v-chip v-if="isNewAsset(asset.type)" color="red" size="x-small" variant="tonal">
+            <v-chip
+              v-if="isNewAsset(asset.type)"
+              color="red"
+              size="x-small"
+              variant="tonal"
+            >
               New
             </v-chip>
           </v-list-item-title>
@@ -41,7 +57,9 @@ const route = useRoute();
 const accountId = ref(Number(route.params.accountid));
 const renderId = ref(Number(route.params.renderid));
 const sport = ref(route.params.sport);
-const groupingCategory = ref(decodeURIComponent(String(route.params.groupingcategory)));
+const groupingCategory = ref(
+  decodeURIComponent(String(route.params.groupingcategory || ""))
+);
 const assetType = ref(route.params.asset);
 
 const isMenuOpen = ref(false);
@@ -74,8 +92,9 @@ const sortedAssets = computed(() => {
 });
 
 function getCategoryLink(type) {
-  return `/${accountId.value}/${sport.value}/${renderId.value}/${groupingCategory.value
-    }/${type.toLowerCase()}`;
+  return `/${accountId.value}/${sport.value}/${renderId.value}/${
+    groupingCategory.value
+  }/${type.toLowerCase()}`;
 }
 
 function navigateToAsset(type) {
@@ -85,7 +104,8 @@ function navigateToAsset(type) {
   ).replace(/\//g, "%2F");
 
   router.push(
-    `/${accountId.value}/${sport.value}/${renderId.value
+    `/${accountId.value}/${sport.value}/${
+      renderId.value
     }/${encodedType}/${toPascalCase(type)}`
   );
 }
@@ -113,7 +133,9 @@ watch(
     accountId.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
     sport.value = newParams.sport;
-    groupingCategory.value = decodeURIComponent(String(newParams.groupingcategory));
+    groupingCategory.value = decodeURIComponent(
+      String(newParams.groupingcategory || "")
+    );
     assetType.value = newParams.asset;
   },
   { deep: true }

@@ -23,7 +23,7 @@
  *   height="150px"
  * />
  */
-import { ref, onMounted, watch, onUnmounted, defineProps, computed } from "vue";
+import { ref, onMounted, watch, onUnmounted, computed } from "vue";
 import * as echarts from "echarts/core";
 import { LineChart } from "echarts/charts";
 import { GridComponent } from "echarts/components";

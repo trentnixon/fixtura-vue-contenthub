@@ -24,7 +24,7 @@
 
 <script setup>
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
-import { computed, defineEmits, defineProps } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
   icon: {

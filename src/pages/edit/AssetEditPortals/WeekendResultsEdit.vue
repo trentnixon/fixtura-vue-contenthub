@@ -9,10 +9,17 @@
 
   <template v-else>
     <!-- Video Meta Data Section -->
-    <VideoMetaDataEdit v-if="dataObj && (dataObj.videoMeta || dataObj.VIDEOMETA)"
-      :videoMeta="dataObj.videoMeta || dataObj.VIDEOMETA" @update="updateVideoMeta" />
+    <VideoMetaDataEdit
+      v-if="dataObj && (dataObj.videoMeta || dataObj.VIDEOMETA)"
+      :videoMeta="dataObj.videoMeta || dataObj.VIDEOMETA"
+      @update="updateVideoMeta"
+    />
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton color="success" @click="saveAllChanges" label="Update Meta Data" />
+      <PrimaryButton
+        color="success"
+        @click="saveAllChanges"
+        label="Update Meta Data"
+      />
     </div>
 
     <!-- Draggable Fixtures List -->
@@ -21,15 +28,24 @@
       <v-card class="pa-2 elevation-0 bg-surface rounded-md">
         <Container @drop="onDrop">
           <Draggable v-for="(fixture, index) in fixtures" :key="fixture.gameID">
-            <FixtureResultItem :fixture="fixture" :index="index" :lastIndex="fixtures.length - 1"
-              @updateFixtureField="updateFixture" @saveFixture="saveFixture" />
+            <FixtureResultItem
+              :fixture="fixture"
+              :index="index"
+              :lastIndex="fixtures.length - 1"
+              @updateFixtureField="updateFixture"
+              @saveFixture="saveFixture"
+            />
           </Draggable>
         </Container>
       </v-card>
     </v-card>
 
     <div class="d-flex justify-end align-center items-center my-2 w-full">
-      <PrimaryButton color="success" @click="saveAllChanges" label="Save All Changes" />
+      <PrimaryButton
+        color="success"
+        @click="saveAllChanges"
+        label="Save All Changes"
+      />
     </div>
   </template>
 </template>
@@ -56,30 +72,56 @@ console.log("[WeekendResultsEdit] Composables initialized");
 const fixtures = ref([]);
 
 // Watch fixtures array to see when items are added
-watch(fixtures, (newFixtures) => {
-  console.log("[WeekendResultsEdit] Fixtures array changed, length:", newFixtures.length);
-  if (newFixtures.length > 0) {
-    console.log("[WeekendResultsEdit] First fixture:", JSON.stringify(newFixtures[0], null, 2));
-  }
-}, { deep: true, immediate: true });
+watch(
+  fixtures,
+  (newFixtures) => {
+    console.log(
+      "[WeekendResultsEdit] Fixtures array changed, length:",
+      newFixtures.length
+    );
+    if (newFixtures.length > 0) {
+      console.log(
+        "[WeekendResultsEdit] First fixture:",
+        JSON.stringify(newFixtures[0], null, 2)
+      );
+    }
+  },
+  { deep: true, immediate: true }
+);
 
 // Load fixtures on component mount
 onMounted(async () => {
   await fetchAssetData();
   console.log("[WeekendResultsEdit] dataObj loaded:", dataObj.value);
-  console.log("[WeekendResultsEdit] dataObj keys:", Object.keys(dataObj.value || {}));
+  console.log(
+    "[WeekendResultsEdit] dataObj keys:",
+    Object.keys(dataObj.value || {})
+  );
   // Handle both uppercase (DATA) and lowercase (data) field names
   const fixturesData = dataObj.value?.data || dataObj.value?.DATA;
   console.log("[WeekendResultsEdit] fixturesData:", fixturesData);
   if (fixturesData && Array.isArray(fixturesData)) {
     fixtures.value = [...fixturesData];
-    console.log("[WeekendResultsEdit] fixtures array length:", fixtures.value.length);
+    console.log(
+      "[WeekendResultsEdit] fixtures array length:",
+      fixtures.value.length
+    );
     if (fixtures.value.length > 0) {
-      console.log("[WeekendResultsEdit] First fixture object:", JSON.stringify(fixtures.value[0], null, 2));
-      console.log("[WeekendResultsEdit] First fixture keys:", Object.keys(fixtures.value[0] || {}));
+      console.log(
+        "[WeekendResultsEdit] First fixture object:",
+        JSON.stringify(fixtures.value[0], null, 2)
+      );
+      console.log(
+        "[WeekendResultsEdit] First fixture keys:",
+        Object.keys(fixtures.value[0] || {})
+      );
     }
   } else {
-    console.log("[WeekendResultsEdit] fixturesData is not an array:", typeof fixturesData, fixturesData);
+    console.log(
+      "[WeekendResultsEdit] fixturesData is not an array:",
+      typeof fixturesData,
+      fixturesData
+    );
   }
 });
 
@@ -114,7 +156,12 @@ function updateFixture({ index, key, value }) {
     // Force reactivity by reassigning the array (this ensures Vue tracks the change)
     fixtures.value = [...fixtures.value];
 
-    console.log("[WeekendResultsEdit] Updated fixture:", { index, key, value, fixture: fixtures.value[index] });
+    console.log("[WeekendResultsEdit] Updated fixture:", {
+      index,
+      key,
+      value,
+      fixture: fixtures.value[index],
+    });
   }
 }
 
@@ -140,7 +187,8 @@ function saveAllChanges() {
 
 function updateVideoMeta(updatedMeta) {
   // Handle both uppercase (VIDEOMETA) and lowercase (videoMeta) field names
-  const currentVideoMeta = dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
+  const currentVideoMeta =
+    dataObj.value?.videoMeta || dataObj.value?.VIDEOMETA || {};
   if (dataObj.value?.videoMeta !== undefined) {
     updateDataObj({ videoMeta: { ...currentVideoMeta, ...updatedMeta } });
   } else {

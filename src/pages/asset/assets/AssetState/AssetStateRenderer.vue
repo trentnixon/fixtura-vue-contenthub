@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps } from "vue";
+import { computed } from "vue";
 import HandleAssetError from "../errors/HandleAssetError.vue";
 import AssetVideo from "../media/AssetVideo.vue";
 import AssetImageGallery from "../media/AssetImageGallery.vue";

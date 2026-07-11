@@ -153,7 +153,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, inject, ref } from "vue";
+import { inject, ref } from "vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import FormRowTwoItems from "@/components/forms/structure/FormRowTwoItems.vue";
 import TextInput from "@/pages/edit/AssetEditPortals/formElements/TextInput.vue";

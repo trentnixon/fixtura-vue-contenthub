@@ -30,7 +30,6 @@ export async function fetchResultCollectionDetails(id: number) {
     const response = await fetchResultCollectionDetailsFromService(id);
     if (response && response.data) {
       state.resultCollectionDetails = response.data;
-
     } else {
       throw new Error("Invalid data structure");
     }
@@ -48,7 +47,6 @@ export async function fetchAccountResultCollections(accountId: number) {
     const response = await fetchAccountResultCollectionsFromService(accountId);
     if (response && response.data) {
       state.accountResultCollections = response.data;
-
     } else {
       throw new Error("Invalid data structure");
     }

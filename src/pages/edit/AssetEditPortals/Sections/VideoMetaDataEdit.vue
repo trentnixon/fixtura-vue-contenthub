@@ -5,7 +5,9 @@
   <v-container v-else class="pa-0 w-100">
     <v-row>
       <v-col cols="12" sm="6" class="pa-4">
-        <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4">
+        <v-card
+          class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4"
+        >
           <div class="card-title py-2 px-4">Organisation Details</div>
           <v-card class="pa-4 elevation-0 bg-surface rounded-md">
             <!-- Organisation Logo -->
@@ -13,8 +15,11 @@
             <!-- <MediaImageInput v-if="clubData && clubData.logo" :value="clubData.logo" @update="updateClubLogo" /> -->
 
             <!-- Hero Image - Only show when useBackground is "Image" -->
-            <MediaImageInput v-if="shouldShowHeroImage && videoMedia && videoMedia.HeroImage"
-              :value="videoMedia.HeroImage" @update="updateHeroImage" />
+            <MediaImageInput
+              v-if="shouldShowHeroImage && videoMedia && videoMedia.HeroImage"
+              :value="videoMedia.HeroImage"
+              @update="updateHeroImage"
+            />
 
             <FormRowTwoItems>
               <template #description>
@@ -24,20 +29,32 @@
 
               <template #form-element>
                 <!-- Form element content here -->
-                <TextInput v-if="clubData" label="Organisation Name" :value="clubData.Name || clubData.name"
-                  @update="(val) => updateClubName(val)" />
+                <TextInput
+                  v-if="clubData"
+                  label="Organisation Name"
+                  :value="clubData.Name || clubData.name"
+                  @update="(val) => updateClubName(val)"
+                />
               </template>
             </FormRowTwoItems>
             <FormRowTwoItems>
               <template #description>
-                <ColorInput v-if="themeData" label="Primary Color" :value="themeData.primary"
-                  @update="(val) => updateThemePrimary(val)" />
+                <ColorInput
+                  v-if="themeData"
+                  label="Primary Color"
+                  :value="themeData.primary"
+                  @update="(val) => updateThemePrimary(val)"
+                />
               </template>
 
               <template #form-element>
                 <!-- Form element content here -->
-                <ColorInput v-if="themeData" label="Secondary Color" :value="themeData.secondary"
-                  @update="(val) => updateThemeSecondary(val)" />
+                <ColorInput
+                  v-if="themeData"
+                  label="Secondary Color"
+                  :value="themeData.secondary"
+                  @update="(val) => updateThemeSecondary(val)"
+                />
               </template>
             </FormRowTwoItems>
           </v-card>
@@ -45,28 +62,48 @@
       </v-col>
 
       <v-col cols="12" sm="6" class="pa-4">
-        <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4">
+        <v-card
+          class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md mt-4"
+        >
           <div class="card-title py-2 px-4">Titles</div>
           <v-card class="pa-4 elevation-0 bg-surface rounded-md">
             <v-row>
               <v-col cols="12" class="px-0">
-                <div class="pa-2 d-flex justify-start content-center align-center">
-                  <TextInput v-if="videoData && videoMetadata" label="Opening Video Title"
-                    :value="videoMetadata.title || videoMetadata.Title || videoData.Title || videoData.videoTitle"
-                    @update="(val) => updateVideoTitle(val)" />
+                <div
+                  class="pa-2 d-flex justify-start content-center align-center"
+                >
+                  <TextInput
+                    v-if="videoData && videoMetadata"
+                    label="Opening Video Title"
+                    :value="
+                      videoMetadata.title ||
+                      videoMetadata.Title ||
+                      videoData.Title ||
+                      videoData.videoTitle
+                    "
+                    @update="(val) => updateVideoTitle(val)"
+                  />
                 </div>
               </v-col>
             </v-row>
             <FormRowTwoItems>
               <template #description>
-                <TextInput v-if="videoMetadata && videoMetadata.titleSplit" label="Section Title"
-                  :value="videoMetadata.titleSplit[0]" @update="(val) => updateTitleSplit(0, val)" />
+                <TextInput
+                  v-if="videoMetadata && videoMetadata.titleSplit"
+                  label="Section Title"
+                  :value="videoMetadata.titleSplit[0]"
+                  @update="(val) => updateTitleSplit(0, val)"
+                />
               </template>
 
               <template #form-element>
                 <!-- Form element content here -->
-                <TextInput v-if="videoMetadata && videoMetadata.titleSplit" label="Section Subtitle"
-                  :value="videoMetadata.titleSplit[1]" @update="(val) => updateTitleSplit(1, val)" />
+                <TextInput
+                  v-if="videoMetadata && videoMetadata.titleSplit"
+                  label="Section Subtitle"
+                  :value="videoMetadata.titleSplit[1]"
+                  @update="(val) => updateTitleSplit(1, val)"
+                />
               </template>
             </FormRowTwoItems>
           </v-card>
@@ -78,7 +115,7 @@
 
 <script setup>
 import { ref, watch, computed } from "vue";
-import { defineProps, defineEmits } from "vue";
+
 import TextInput from "@/pages/edit/AssetEditPortals/formElements/TextInput.vue";
 import ColorInput from "@/pages/edit/AssetEditPortals/formElements/ColorInput.vue";
 import FormRowTwoItems from "@/components/forms/structure/FormRowTwoItems.vue";
@@ -139,10 +176,12 @@ const videoMedia = computed(() => {
 const shouldShowHeroImage = computed(() => {
   if (!videoData.value) return false;
   // Check templateVariation.useBackground (handle both uppercase and lowercase)
-  const templateVariation = videoData.value.templateVariation || videoData.value.TemplateVariation;
+  const templateVariation =
+    videoData.value.templateVariation || videoData.value.TemplateVariation;
   if (!templateVariation) return false;
 
-  const useBackground = templateVariation.useBackground || templateVariation.UseBackground;
+  const useBackground =
+    templateVariation.useBackground || templateVariation.UseBackground;
   return useBackground === "Image" || useBackground === "image";
 });
 /* const mediaData = ref({
@@ -283,7 +322,7 @@ function updateTitleSplit(index, val) {
         titleSplit[index] = val;
       } else {
         // Create titleSplit array if it doesn't exist
-        metadata.titleSplit = metadata.titleSplit || ['', ''];
+        metadata.titleSplit = metadata.titleSplit || ["", ""];
         metadata.titleSplit[index] = val;
       }
     }
@@ -291,7 +330,10 @@ function updateTitleSplit(index, val) {
 }
 
 console.log("[VideoMetaDataEdit] props.videoMeta:", props.videoMeta);
-console.log("[VideoMetaDataEdit] localMeta.value after initialization:", localMeta.value);
+console.log(
+  "[VideoMetaDataEdit] localMeta.value after initialization:",
+  localMeta.value
+);
 watch(
   () => props.videoMeta,
   (newValue) => {

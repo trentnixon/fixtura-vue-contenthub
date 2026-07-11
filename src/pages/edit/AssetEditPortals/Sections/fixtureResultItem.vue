@@ -20,15 +20,33 @@
     <!-- Append: Edit Buttons -->
     <template v-slot:append>
       <!-- Edit Result Modal -->
-      <IconButton :icon="icons.ui.metaData" color="success" @click="openModal('result')" variant="tonal" size="small"
-        tooltip="Edit Result" />
+      <IconButton
+        :icon="icons.ui.metaData"
+        color="success"
+        @click="openModal('result')"
+        variant="tonal"
+        size="small"
+        tooltip="Edit Result"
+      />
       &nbsp;
       <!-- Edit Innings 1 Modal -->
-      <IconButton :icon="icons.ui.home" color="primary" @click="openModal('innings1')" variant="tonal" size="small"
-        tooltip="Edit Home Team Innings" />&nbsp;
+      <IconButton
+        :icon="icons.ui.home"
+        color="primary"
+        @click="openModal('innings1')"
+        variant="tonal"
+        size="small"
+        tooltip="Edit Home Team Innings"
+      />&nbsp;
       <!-- Edit Innings 2 Modal -->
-      <IconButton :icon="icons.ui.away" color="secondary" @click="openModal('innings2')" variant="tonal" size="small"
-        tooltip="Edit Away Team Innings" />
+      <IconButton
+        :icon="icons.ui.away"
+        color="secondary"
+        @click="openModal('innings2')"
+        variant="tonal"
+        size="small"
+        tooltip="Edit Away Team Innings"
+      />
     </template>
 
     <!-- Result Modal -->
@@ -41,22 +59,38 @@
           <v-container class="pa-0">
             <FormRowTwoItems>
               <template #description>
-                <TextInput label="Home Team" :value="fixture.homeTeam.name" :validations="[isValidName, isRequired]"
-                  @update="(val) => updateFixtureField('homeTeam.name', val)" />
+                <TextInput
+                  label="Home Team"
+                  :value="fixture.homeTeam.name"
+                  :validations="[isValidName, isRequired]"
+                  @update="(val) => updateFixtureField('homeTeam.name', val)"
+                />
               </template>
               <template #form-element>
-                <TextInput label="Home Team Score" :value="fixture.homeTeam.score" :validations="[isValidScore]"
-                  @update="(val) => updateFixtureField('homeTeam.score', val)" />
+                <TextInput
+                  label="Home Team Score"
+                  :value="fixture.homeTeam.score"
+                  :validations="[isValidScore]"
+                  @update="(val) => updateFixtureField('homeTeam.score', val)"
+                />
               </template>
             </FormRowTwoItems>
             <FormRowTwoItems>
               <template #description>
-                <TextInput label="Away Team" :value="fixture.awayTeam.name" :validations="[isValidName, isRequired]"
-                  @update="(val) => updateFixtureField('awayTeam.name', val)" />
+                <TextInput
+                  label="Away Team"
+                  :value="fixture.awayTeam.name"
+                  :validations="[isValidName, isRequired]"
+                  @update="(val) => updateFixtureField('awayTeam.name', val)"
+                />
               </template>
               <template #form-element>
-                <TextInput label="Away Team Score" :value="fixture.awayTeam.score" :validations="[isValidScore]"
-                  @update="(val) => updateFixtureField('awayTeam.score', val)" />
+                <TextInput
+                  label="Away Team Score"
+                  :value="fixture.awayTeam.score"
+                  :validations="[isValidScore]"
+                  @update="(val) => updateFixtureField('awayTeam.score', val)"
+                />
               </template>
             </FormRowTwoItems>
           </v-container>
@@ -64,16 +98,28 @@
           <!-- Fixture Details -->
           <v-container class="pa-0">
             <p class="card-title mb-4">Fixture Details</p>
-            <TextInput label="Result" :value="fixture.result" :validations="[isValidResult, isRequired]"
-              @update="(val) => updateFixtureField('result', val)" />
+            <TextInput
+              label="Result"
+              :value="fixture.result"
+              :validations="[isValidResult, isRequired]"
+              @update="(val) => updateFixtureField('result', val)"
+            />
             <FormRowTwoItems>
               <template #description>
-                <TextInput label="Ground" :value="fixture.ground" :validations="[isValidName]"
-                  @update="(val) => updateFixtureField('ground', val)" />
+                <TextInput
+                  label="Ground"
+                  :value="fixture.ground"
+                  :validations="[isValidName]"
+                  @update="(val) => updateFixtureField('ground', val)"
+                />
               </template>
               <template #form-element>
-                <TextInput label="Date" :value="fixture.date" :validations="[isDate]"
-                  @update="(val) => updateFixtureField('date', val)" />
+                <TextInput
+                  label="Date"
+                  :value="fixture.date"
+                  :validations="[isDate]"
+                  @update="(val) => updateFixtureField('date', val)"
+                />
               </template>
             </FormRowTwoItems>
           </v-container>
@@ -94,24 +140,36 @@
           <!-- Score Field -->
           <p class="card-title mb-4">Score</p>
           <v-container class="pa-0">
-            <TextInput :value="getInnings1Score()" label="Score" @update="(val) => updateInnings1Score(val)" />
+            <TextInput
+              :value="getInnings1Score()"
+              label="Score"
+              @update="(val) => updateInnings1Score(val)"
+            />
           </v-container>
 
-          <PerformanceEditor :performances="fixture.homeTeam.battingPerformances || []" type="batting" @update="
-            (updatedPerformances) =>
-              updateFixtureField(
-                'homeTeam.battingPerformances',
-                updatedPerformances
-              )
-          " />
+          <PerformanceEditor
+            :performances="fixture.homeTeam.battingPerformances || []"
+            type="batting"
+            @update="
+              (updatedPerformances) =>
+                updateFixtureField(
+                  'homeTeam.battingPerformances',
+                  updatedPerformances
+                )
+            "
+          />
 
-          <PerformanceEditor :performances="fixture.awayTeam.bowlingPerformances || []" type="bowling" @update="
-            (updatedPerformances) =>
-              updateFixtureField(
-                'awayTeam.bowlingPerformances',
-                updatedPerformances
-              )
-          " />
+          <PerformanceEditor
+            :performances="fixture.awayTeam.bowlingPerformances || []"
+            type="bowling"
+            @update="
+              (updatedPerformances) =>
+                updateFixtureField(
+                  'awayTeam.bowlingPerformances',
+                  updatedPerformances
+                )
+            "
+          />
         </v-card-text>
         <v-card-actions>
           <v-btn text @click="closeModal('innings1')">Cancel</v-btn>
@@ -126,21 +184,29 @@
         <v-card-title>Away Team Editor</v-card-title>
         <v-card-text>
           <p class="card-title mb-4">Away Team Batting</p>
-          <PerformanceEditor :performances="fixture.awayTeam.battingPerformances || []" type="batting" @update="
-            (updatedPerformances) =>
-              updateFixtureField(
-                'awayTeam.battingPerformances',
-                updatedPerformances
-              )
-          " />
+          <PerformanceEditor
+            :performances="fixture.awayTeam.battingPerformances || []"
+            type="batting"
+            @update="
+              (updatedPerformances) =>
+                updateFixtureField(
+                  'awayTeam.battingPerformances',
+                  updatedPerformances
+                )
+            "
+          />
           <p class="card-title mb-4">Home Team Bowling</p>
-          <PerformanceEditor :performances="fixture.homeTeam.bowlingPerformances || []" type="bowling" @update="
-            (updatedPerformances) =>
-              updateFixtureField(
-                'homeTeam.bowlingPerformances',
-                updatedPerformances
-              )
-          " />
+          <PerformanceEditor
+            :performances="fixture.homeTeam.bowlingPerformances || []"
+            type="bowling"
+            @update="
+              (updatedPerformances) =>
+                updateFixtureField(
+                  'homeTeam.bowlingPerformances',
+                  updatedPerformances
+                )
+            "
+          />
         </v-card-text>
         <v-card-actions>
           <v-btn text @click="closeModal('innings2')">Cancel</v-btn>
@@ -155,7 +221,7 @@
 // Simple log to verify script runs
 console.log("[fixtureResultItem] Script loaded");
 
-import { defineProps, defineEmits, inject, ref, onMounted, watch } from "vue";
+import { inject, ref, onMounted, watch } from "vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import TextInput from "@/pages/edit/AssetEditPortals/formElements/TextInput.vue";
 import PerformanceEditor from "@/pages/edit/AssetEditPortals/formElements/PerformanceEditor.vue";
@@ -180,14 +246,20 @@ console.log("[fixtureResultItem] Props received:", {
   index: props.index,
   fixtureType: typeof props.fixture,
   fixtureIsNull: props.fixture === null,
-  fixtureIsUndefined: props.fixture === undefined
+  fixtureIsUndefined: props.fixture === undefined,
 });
 
 // Log fixture data when component mounts
 onMounted(() => {
   console.log("[fixtureResultItem] Component mounted");
-  console.log("[fixtureResultItem] Full fixture object:", JSON.stringify(props.fixture, null, 2));
-  console.log("[fixtureResultItem] Fixture keys:", Object.keys(props.fixture || {}));
+  console.log(
+    "[fixtureResultItem] Full fixture object:",
+    JSON.stringify(props.fixture, null, 2)
+  );
+  console.log(
+    "[fixtureResultItem] Fixture keys:",
+    Object.keys(props.fixture || {})
+  );
   console.log("[fixtureResultItem] Homescores:", props.fixture?.Homescores);
   console.log("[fixtureResultItem] HomeOvers:", props.fixture?.HomeOvers);
   console.log("[fixtureResultItem] Awayscores:", props.fixture?.Awayscores);
@@ -197,9 +269,16 @@ onMounted(() => {
 });
 
 // Watch for fixture changes
-watch(() => props.fixture, (newFixture) => {
-  console.log("[fixtureResultItem] Fixture changed:", JSON.stringify(newFixture, null, 2));
-}, { deep: true, immediate: true });
+watch(
+  () => props.fixture,
+  (newFixture) => {
+    console.log(
+      "[fixtureResultItem] Fixture changed:",
+      JSON.stringify(newFixture, null, 2)
+    );
+  },
+  { deep: true, immediate: true }
+);
 
 const emit = defineEmits(["updateFixtureField", "saveFixture"]);
 
@@ -213,8 +292,14 @@ function openModal(modal) {
   if (modal === "result") isResultModalOpen.value = true;
   if (modal === "innings1") {
     console.log("[fixtureResultItem] Opening Innings 1 modal");
-    console.log("[fixtureResultItem] Full fixture object:", JSON.stringify(props.fixture, null, 2));
-    console.log("[fixtureResultItem] Fixture keys:", Object.keys(props.fixture || {}));
+    console.log(
+      "[fixtureResultItem] Full fixture object:",
+      JSON.stringify(props.fixture, null, 2)
+    );
+    console.log(
+      "[fixtureResultItem] Fixture keys:",
+      Object.keys(props.fixture || {})
+    );
     console.log("[fixtureResultItem] Homescores:", props.fixture?.Homescores);
     console.log("[fixtureResultItem] HomeOvers:", props.fixture?.HomeOvers);
     isInnings1ModalOpen.value = true;
@@ -238,20 +323,26 @@ function updateFixtureField(key, value) {
 // Get Innings 1 score from Homescores and HomeOvers
 function getInnings1Score() {
   // Log ALL fixture data for debugging
-  console.log('[fixtureResultItem] Full fixture object:', JSON.stringify(props.fixture, null, 2));
-  console.log('[fixtureResultItem] Fixture keys:', Object.keys(props.fixture || {}));
-  console.log('[fixtureResultItem] Homescores:', props.fixture?.Homescores);
-  console.log('[fixtureResultItem] HomeOvers:', props.fixture?.HomeOvers);
-  console.log('[fixtureResultItem] Awayscores:', props.fixture?.Awayscores);
-  console.log('[fixtureResultItem] AwayOvers:', props.fixture?.AwayOvers);
-  console.log('[fixtureResultItem] homeTeam:', props.fixture?.homeTeam);
-  console.log('[fixtureResultItem] awayTeam:', props.fixture?.awayTeam);
+  console.log(
+    "[fixtureResultItem] Full fixture object:",
+    JSON.stringify(props.fixture, null, 2)
+  );
+  console.log(
+    "[fixtureResultItem] Fixture keys:",
+    Object.keys(props.fixture || {})
+  );
+  console.log("[fixtureResultItem] Homescores:", props.fixture?.Homescores);
+  console.log("[fixtureResultItem] HomeOvers:", props.fixture?.HomeOvers);
+  console.log("[fixtureResultItem] Awayscores:", props.fixture?.Awayscores);
+  console.log("[fixtureResultItem] AwayOvers:", props.fixture?.AwayOvers);
+  console.log("[fixtureResultItem] homeTeam:", props.fixture?.homeTeam);
+  console.log("[fixtureResultItem] awayTeam:", props.fixture?.awayTeam);
 
-  const scores = props.fixture?.Homescores || '';
-  const overs = props.fixture?.HomeOvers || '';
+  const scores = props.fixture?.Homescores || "";
+  const overs = props.fixture?.HomeOvers || "";
 
   // If Homescores already contains full format (with parentheses), return it as-is
-  if (scores && (scores.includes('(') || scores.includes(')'))) {
+  if (scores && (scores.includes("(") || scores.includes(")"))) {
     return scores;
   }
 
@@ -260,14 +351,14 @@ function getInnings1Score() {
     return `${scores} (${overs})`;
   }
 
-  return scores || overs || '';
+  return scores || overs || "";
 }
 
 // Update Innings 1 score - save exactly what user types, no auto-formatting
 function updateInnings1Score(value) {
   // Save the entire value to Homescores field (no parsing or auto-formatting)
   // User can type "8/234 (45)" or any format they want
-  updateFixtureField('Homescores', value);
+  updateFixtureField("Homescores", value);
 }
 
 // Save fixture

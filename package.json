@@ -6,8 +6,14 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
+    "test:unit:ci": "vue-cli-service test:unit --coverage --ci",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lint:check": "vue-cli-service lint --no-fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "vue-tsc --noEmit",
+    "check": "npm run type-check && npm run lint:check && npm run format"
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.3",
@@ -61,8 +67,9 @@
     "sass": "^1.77.8",
     "sass-loader": "^12.6.0",
     "ts-jest": "^29.2.4",
-    "typescript": "^5.5.4",
+    "typescript": "^5.1.6",
     "vue-cli-plugin-vuetify": "^2.5.8",
+    "vue-tsc": "^1.8.27",
     "webpack-plugin-vuetify": "^3.0.3"
   },
   "_id": "fixtura-content-hub@0.1.0",

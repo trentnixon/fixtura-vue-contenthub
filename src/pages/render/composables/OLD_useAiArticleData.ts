@@ -104,7 +104,10 @@ export function useAiArticleData() {
     }, {} as Record<string, number>);
   });
 
-console.log("getAiArticleCountByGroupingCategory ", getAiArticleCountByGroupingCategory.value)
+  console.log(
+    "getAiArticleCountByGroupingCategory ",
+    getAiArticleCountByGroupingCategory.value
+  );
 
   return {
     aiArticle,

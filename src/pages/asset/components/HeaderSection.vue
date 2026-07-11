@@ -1,13 +1,34 @@
 <template>
   <v-row>
     <v-col cols="12" sm="8">
-      <MainHeader :title="getDisplayName(toPascalCase(asset))" :subtitle="`Render ${renderId}`" />
+      <MainHeader
+        :title="getDisplayName(toPascalCase(asset))"
+        :subtitle="`Render ${renderId}`"
+      />
     </v-col>
 
     <!-- Edit button temporarily disabled -->
-    <v-col class="d-flex justify-end" cols="12" sm="4" v-if="!$vuetify.display.xs">
-      <div class="d-flex justify-end my-4" v-if="asset !== 'CricketRoster' && !isBetaFeature">
-        <PrimaryButton color="success" label="Edit" @click="navigateToEdit()" :icon="icons.ui.edit" size="small" />
+    <v-col
+      class="d-flex justify-end"
+      cols="12"
+      sm="4"
+      v-if="!$vuetify.display.xs"
+    >
+      <div
+        class="d-flex justify-end my-4"
+        v-if="
+          asset !== 'CricketRoster' &&
+          asset !== 'CricketResultSingle' &&
+          !isBetaFeature
+        "
+      >
+        <PrimaryButton
+          color="success"
+          label="Edit"
+          @click="navigateToEdit()"
+          :icon="icons.ui.edit"
+          size="small"
+        />
       </div>
     </v-col>
   </v-row>
@@ -73,7 +94,10 @@ const betaMessages = computed(() => {
     ];
   }
 
-  if (pascalAsset === "CricketBattingPerformances" || pascalAsset === "CricketBowlingPerformances") {
+  if (
+    pascalAsset === "CricketBattingPerformances" ||
+    pascalAsset === "CricketBowlingPerformances"
+  ) {
     return [
       `${featureName} is currently in testing, and we would love some feedback.`,
       `If you have any issues or would like a change to ${featureName}, please let us know.`,

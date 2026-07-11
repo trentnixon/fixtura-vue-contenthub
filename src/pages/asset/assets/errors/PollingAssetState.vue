@@ -22,7 +22,7 @@
 
 <script setup>
 import { onMounted } from "vue";
-import { defineProps } from "vue";
+
 import MediaLayout from "@/components/containers/media/mediaLayout.vue";
 import CustomChip from "@/components/primitives/chips/CustomChip.vue";
 import { useAssetRerender } from "./composables/useRerender.ts";

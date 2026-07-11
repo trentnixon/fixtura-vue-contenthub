@@ -1,16 +1,30 @@
 <template>
-  <!-- Header with Apply Edits Button -->
-  <v-container v-if="asset && asset.editTrigger" class="pa-0 mt-4" fluid>
+  <!-- Header with Download All and Apply Edits -->
+  <v-container v-if="imageUrls.length" class="pa-0 mt-4" fluid>
     <div class="d-flex justify-end align-center">
-      <PrimaryButton
-        v-if="canRetry"
-        color="success"
-        label="Apply Edits"
-        @click="handleRerender"
-        :loading="isRerendering"
-        :disabled="!canRetry || isRerendering"
+      <SecondaryButton
+        color="accent"
+        :label="
+          isBulkDownloading
+            ? 'Downloading...'
+            : `Download All (${imageUrls.length})`
+        "
+        @click="handleBulkDownload(imageUrls)"
+        :loading="isBulkDownloading || isPolling"
+        :disabled="!imageUrls.length || isBulkDownloading"
         size="small"
       />
+      <div v-if="asset && asset.editTrigger" class="ml-2">
+        <PrimaryButton
+          v-if="canRetry"
+          color="success"
+          label="Apply Edits"
+          @click="handleRerender"
+          :loading="isRerendering"
+          :disabled="!canRetry || isRerendering"
+          size="small"
+        />
+      </div>
     </div>
   </v-container>
 
@@ -28,17 +42,41 @@
     <!-- Images Display -->
     <template v-else>
       <v-row>
-        <v-col v-for="(img, idx) in props.formattedAssets[0]?.downloads || []" :key="idx" cols="12" sm="6" md="4"
-          class="mb-4">
+        <v-col
+          v-for="(img, idx) in imageUrls"
+          :key="idx"
+          cols="12"
+          sm="6"
+          md="4"
+          class="mb-4"
+        >
           <v-card class="mx-auto" elevation="0">
-            <v-img :src="img" :alt="`Asset Image ${idx + 1}`" aspect-ratio="16/9" cover class="rounded" />
+            <v-img
+              :src="img"
+              :alt="`Asset Image ${idx + 1}`"
+              aspect-ratio="16/9"
+              cover
+              class="rounded"
+            />
             <v-card-actions class="d-flex flex-row justify-end pa-2">
               <!-- View Button -->
-              <IconButton size="x-small" color="accent-lighten1" icon="mdi-eye" variant="elevated" class="mr-1"
-                @click="viewImage(img)" />
+              <IconButton
+                size="x-small"
+                color="accent-lighten1"
+                icon="mdi-eye"
+                variant="elevated"
+                class="mr-1"
+                @click="viewImage(img)"
+              />
               <!-- Download Button -->
-              <IconButton size="x-small" color="accent-darken1" icon="mdi-download" variant="elevated" class="ml-1"
-                @click="downloadImage(img)" />
+              <IconButton
+                size="x-small"
+                color="accent-darken1"
+                icon="mdi-download"
+                variant="elevated"
+                class="ml-1"
+                @click="downloadImage(img)"
+              />
             </v-card-actions>
           </v-card>
         </v-col>
@@ -47,13 +85,35 @@
   </v-container>
 
   <!-- Image View Modal -->
-  <v-dialog v-model="isModalOpen" max-width="90vw" max-height="90vh" transition="dialog-bottom-transition">
+  <v-dialog
+    v-model="isModalOpen"
+    max-width="90vw"
+    max-height="90vh"
+    transition="dialog-bottom-transition"
+  >
     <v-card>
-      <v-img :src="currentImage" :aspect-ratio="4 / 5" class="bg-grey-lighten-2" cover>
+      <v-img
+        :src="currentImage"
+        :aspect-ratio="4 / 5"
+        class="bg-grey-lighten-2"
+        cover
+      >
         <v-container class="d-flex justify-end">
-          <IconButton size="x-small" color="success" icon="mdi-download" class="mr-1" variant="elevated"
-            @click="downloadImage(currentImage)" />
-          <IconButton size="x-small" color="error" icon="mdi-close" variant="elevated" @click="isModalOpen = false" />
+          <IconButton
+            size="x-small"
+            color="success"
+            icon="mdi-download"
+            class="mr-1"
+            variant="elevated"
+            @click="downloadImage(currentImage)"
+          />
+          <IconButton
+            size="x-small"
+            color="error"
+            icon="mdi-close"
+            variant="elevated"
+            @click="isModalOpen = false"
+          />
         </v-container>
       </v-img>
     </v-card>
@@ -61,9 +121,10 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
+import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
 import { useImageDownloads } from "@/pages/asset/composables/useImageDownloads.js";
 import { useAssetRerender } from "@/pages/asset/assets/errors/composables/useRerender";
 
@@ -77,9 +138,13 @@ const props = defineProps({
 const {
   isModalOpen,
   currentImage,
+  isBulkDownloading,
   downloadImage,
+  handleBulkDownload,
   viewImage,
 } = useImageDownloads();
+
+const imageUrls = computed(() => props.formattedAssets?.[0]?.downloads || []);
 
 // Get the asset from formattedAssets (first asset with editTrigger)
 const asset = computed(() => {
@@ -90,7 +155,8 @@ const asset = computed(() => {
 const canRetry = ref(true);
 
 // Composable handling rerender logic
-const { triggerRerender, isRerendering, rerenderResponse, isPolling } = useAssetRerender();
+const { triggerRerender, isRerendering, rerenderResponse, isPolling } =
+  useAssetRerender();
 
 const handleRerender = async () => {
   if (!asset.value) return;
