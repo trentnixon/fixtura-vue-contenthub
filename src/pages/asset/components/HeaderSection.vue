@@ -76,7 +76,6 @@ function toPascalCase(str) {
 const isBetaFeature = computed(() => {
   const pascalAsset = toPascalCase(asset.value);
   return (
-    pascalAsset === "CricketTeamOfTheWeek" ||
     pascalAsset === "CricketBattingPerformances" ||
     pascalAsset === "CricketBowlingPerformances"
   );
@@ -86,13 +85,6 @@ const isBetaFeature = computed(() => {
 const betaMessages = computed(() => {
   const pascalAsset = toPascalCase(asset.value);
   const featureName = getDisplayName(pascalAsset);
-
-  if (pascalAsset === "CricketTeamOfTheWeek") {
-    return [
-      "Our Team of the Week is currently in testing, and we would love some feedback.",
-      "If you have any issues or would like a change to the Team of the Week, please let us know.",
-    ];
-  }
 
   if (
     pascalAsset === "CricketBattingPerformances" ||

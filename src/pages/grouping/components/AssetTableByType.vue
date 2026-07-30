@@ -231,7 +231,6 @@ function getIcon(type) {
 // Check if asset is a new beta feature
 function isNewAsset(type) {
   const newAssets = [
-    "CricketTeamOfTheWeek",
     "CricketBattingPerformances",
     "CricketBowlingPerformances",
   ];

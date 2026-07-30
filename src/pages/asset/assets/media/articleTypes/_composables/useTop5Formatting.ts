@@ -1,5 +1,6 @@
 import { computed, type Ref } from "vue";
 import type { FlattenedArticle } from "@/types/ArticleTypes";
+import { extractPlayerList } from "./extractPlayerList";
 
 /**
  * Top Scorer interface for Top5 articles
@@ -48,7 +49,7 @@ export function useTop5Formatting(articles: Ref<FlattenedArticle[]>) {
         name: article.name || "Unknown Article",
         title: structuredOutput.title || "No Title",
         subtitle: structuredOutput.subtitle || "No Subtitle",
-        topScorers: structuredOutput.top_scorers || [],
+        topScorers: extractPlayerList(structuredOutput),
         socialMediaPost: structuredOutput.social_media_post || "",
         twitterPost: structuredOutput.twitter_post || "",
         assetType: article.assetType || "Unknown Type",

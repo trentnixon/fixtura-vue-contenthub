@@ -81,6 +81,7 @@ import SingleResultArticles from "./articleTypes/SingleResultArticles.vue";
 import { useRoute } from "vue-router";
 import { useLegacyCheck } from "@/composables/aiArticles/useLegacyCheck";
 import type { FlattenedArticle } from "@/types/ArticleTypes";
+import { hasPlayerListContent } from "./articleTypes/_composables/extractPlayerList";
 
 const route = useRoute();
 
@@ -144,7 +145,7 @@ const hasValidArticle = computed(() => {
       });
     }
 
-    // For Top5 articles, check top_scorers array (snake_case as used in structuredOutput)
+    // For Top5-family articles, check player list via shared extractor
     if (
       assetType.value === "CricketTop5Bowling" ||
       assetType.value === "CricketTop5Batting" ||
@@ -152,11 +153,7 @@ const hasValidArticle = computed(() => {
       assetType.value === "CricketBattingPerformances" ||
       assetType.value === "CricketBowlingPerformances"
     ) {
-      return (
-        structuredOutput.top_scorers &&
-        Array.isArray(structuredOutput.top_scorers) &&
-        structuredOutput.top_scorers.length > 0
-      );
+      return hasPlayerListContent(structuredOutput);
     }
 
     // For UpcomingFixtures, check fixtures array

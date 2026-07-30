@@ -70,8 +70,7 @@
         @confirm="confirmAndRequest"
       >
         <p v-if="articlePhase === 'initial' || articlePhase === 'postPending'">
-          Are you sure you want to request a new AI Top 5 article? This will
-          generate a fresh article based on the current data.
+          {{ confirmationCopy.initial }}
         </p>
         <p v-else-if="articlePhase === 'articleWritten'">
           Are you sure you want to request a review? This will generate a new
@@ -280,6 +279,33 @@ const displayCopy = computed(() => {
     headline: "Top 5 Articles on Demand.",
     description:
       "Create professional Top 5 performance articles instantly. Our AI analyzes player data and generates comprehensive listicles that you can customize and refine to perfection.",
+  };
+});
+
+// Confirmation dialog copy based on asset type
+const confirmationCopy = computed(() => {
+  const type = assetType.value;
+  const isPerformance =
+    type === "CricketBattingPerformances" ||
+    type === "CricketBowlingPerformances";
+
+  if (type === "CricketTeamOfTheWeek") {
+    return {
+      initial:
+        "Are you sure you want to request a new Team of the Week article? This will generate a fresh article based on the current data.",
+    };
+  }
+
+  if (isPerformance) {
+    return {
+      initial:
+        "Are you sure you want to request a new performance article? This will generate a fresh article based on the current data.",
+    };
+  }
+
+  return {
+    initial:
+      "Are you sure you want to request a new AI Top 5 article? This will generate a fresh article based on the current data.",
   };
 });
 

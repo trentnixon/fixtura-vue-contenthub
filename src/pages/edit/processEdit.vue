@@ -30,6 +30,7 @@ import { useDisplay } from "vuetify";
 import WeekendResultsEdit from "@/pages/edit/AssetEditPortals/WeekendResultsEdit.vue";
 import LadderEdit from "@/pages/edit/AssetEditPortals/LadderEdit.vue";
 import Top5Edit from "@/pages/edit/AssetEditPortals/Top5Edit.vue";
+import TeamOfTheWeekEdit from "@/pages/edit/AssetEditPortals/TeamOfTheWeekEdit.vue";
 import UpComingFixturesEdit from "@/pages/edit/AssetEditPortals/UpComingFixturesEdit.vue";
 
 // Responsive handling
@@ -46,7 +47,7 @@ const assetEditComponents = {
   crickettop5bowling: Top5Edit,
   crickettop5batting: Top5Edit,
   cricketupcoming: UpComingFixturesEdit,
-  cricketteamoftheweek: Top5Edit,
+  cricketteamoftheweek: TeamOfTheWeekEdit,
   cricketresultsingle: WeekendResultsEdit,
 };
 
