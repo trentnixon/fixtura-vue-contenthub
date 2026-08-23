@@ -15,7 +15,13 @@ export function isAnalyticsEnabled(): boolean {
 }
 
 function canCapture(): boolean {
-  return isAnalyticsEnabled() && initialized && hasAnalyticsConsent();
+  if (!isAnalyticsEnabled() || !initialized || !hasAnalyticsConsent()) {
+    return false;
+  }
+
+  // Cookie may flip after init with opt_out_capturing_by_default — align SDK.
+  posthog.opt_in_capturing();
+  return true;
 }
 
 export function initAnalytics(): void {

@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { useDownloadsStore } from "@/store/downloads";
-import { parseHubRoute, trackAssetEditSaved } from "@/lib/analytics";
+import { parseHubRoute } from "@/lib/analytics";
 import _ from "lodash";
 
 export function useSaveFixturaAsset() {
@@ -30,19 +30,25 @@ export function useSaveFixturaAsset() {
 
     try {
       isSaving.value = true;
+      const routeContext = parseHubRoute(route);
       for (const download of downloads) {
         if (download.id) {
-          await downloadsStore.saveFixturaAsset(download.id, dataObjRef.value);
-          const routeContext = parseHubRoute(route);
-          trackAssetEditSaved({
-            download_id: download.id,
-            account_id: routeContext.account_id,
-            render_id: routeContext.render_id,
-            asset_type: routeContext.asset_type,
-          });
-          console.log(
-            `Data for download ID ${download.id} saved successfully.`
+          const saved = await downloadsStore.saveFixturaAsset(
+            download.id,
+            dataObjRef.value,
+            {
+              account_id: routeContext.account_id,
+              render_id: routeContext.render_id,
+              asset_type: routeContext.asset_type,
+            }
           );
+          if (saved) {
+            console.log(
+              `Data for download ID ${download.id} saved successfully.`
+            );
+          } else {
+            console.warn(`Save failed for download ID ${download.id}.`);
+          }
         } else {
           console.warn("Download has no ID and cannot be saved.");
         }

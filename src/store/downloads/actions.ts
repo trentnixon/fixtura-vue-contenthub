@@ -9,7 +9,7 @@ import {
   fetchAssetByLinkIDFromService,
 } from "./service";
 import { Download } from "@/types";
-import { trackPackRerun } from "@/lib/analytics";
+import { trackAssetEditSaved, trackPackRerun } from "@/lib/analytics";
 
 export async function fetchDownload(id: number) {
   const state = usePrivateDownloadState();
@@ -89,15 +89,24 @@ export async function triggerRerender(
 
     // Make the API call to trigger the rerender
     const response = await triggerRerenderInService(id);
-    if (response) {
-      // Ensure response is treated as a single object
-      state.rerenderResponse = response as unknown as RerenderResponse;
+    if (response?.data === true) {
+      state.rerenderResponse = {
+        success: true,
+        message: "Rerender triggered",
+        error: null,
+      };
       trackPackRerun({
         asset_id: id,
         render_id: context?.render_id,
         account_id: context?.account_id,
         trigger: "asset",
       });
+    } else if (response) {
+      state.rerenderResponse = {
+        success: false,
+        message: "Failed to trigger rerender",
+        error: null,
+      };
     } else {
       throw new Error("Invalid response structure");
     }
@@ -181,7 +190,15 @@ export async function fetchAssetByLinkID(assetLinkID: string) {
 }
 
 // Save updated Fixtura asset to Strapi
-export async function saveFixturaAsset(downloadId: number, updatedData: any) {
+export async function saveFixturaAsset(
+  downloadId: number,
+  updatedData: any,
+  analytics?: {
+    account_id?: number;
+    render_id?: number;
+    asset_type?: string;
+  }
+): Promise<boolean> {
   const state = usePrivateDownloadState();
   try {
     state.loading = true;
@@ -197,15 +214,20 @@ export async function saveFixturaAsset(downloadId: number, updatedData: any) {
       },
     });
     if (response) {
-      // Update the state for this specific download if save was successful
-      console.log("[response]", response);
-      //state.fullDownloads[downloadId] = response.data as Download;
-    } else {
-      throw new Error(`Failed to save asset with ID: ${downloadId}`);
+      trackAssetEditSaved({
+        download_id: downloadId,
+        account_id: analytics?.account_id,
+        render_id: analytics?.render_id,
+        asset_type: analytics?.asset_type,
+      });
+      return true;
     }
+
+    throw new Error(`Failed to save asset with ID: ${downloadId}`);
   } catch (error) {
     state.error = (error as Error).message;
     console.error("Error saving Fixtura asset:", error);
+    return false;
   } finally {
     state.loading = false;
   }
