@@ -75,7 +75,10 @@ export function useAssetRerender() {
     rerenderError.value = null;
 
     try {
-      await downloadsStore.triggerRerender(asset.id);
+      await downloadsStore.triggerRerender(asset.id, {
+        account_id: routeParams.accountId.value,
+        render_id: routeParams.renderId.value,
+      });
 
       if (rerenderResponse.value?.success) {
         await pollDownloadStatus(asset.id);

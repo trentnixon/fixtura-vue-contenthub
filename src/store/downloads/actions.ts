@@ -9,6 +9,7 @@ import {
   fetchAssetByLinkIDFromService,
 } from "./service";
 import { Download } from "@/types";
+import { trackPackRerun } from "@/lib/analytics";
 
 export async function fetchDownload(id: number) {
   const state = usePrivateDownloadState();
@@ -76,7 +77,10 @@ export interface RerenderResponse {
 }
 
 // Asset render and polling
-export async function triggerRerender(id: number) {
+export async function triggerRerender(
+  id: number,
+  context?: { render_id?: number; account_id?: number }
+) {
   const state = usePrivateDownloadState();
 
   try {
@@ -88,6 +92,12 @@ export async function triggerRerender(id: number) {
     if (response) {
       // Ensure response is treated as a single object
       state.rerenderResponse = response as unknown as RerenderResponse;
+      trackPackRerun({
+        asset_id: id,
+        render_id: context?.render_id,
+        account_id: context?.account_id,
+        trigger: "asset",
+      });
     } else {
       throw new Error("Invalid response structure");
     }

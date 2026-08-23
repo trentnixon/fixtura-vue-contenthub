@@ -1,18 +1,18 @@
 // src/composables/useVideoDownload.js
 import { ref } from "vue";
+import { trackAssetDownloaded } from "@/lib/analytics";
 
 export function useVideoDownload() {
   const isDownloading = ref(false);
   const downloadError = ref(null);
 
-  // Function to download a single video as a blob
-  async function downloadVideo(url) {
+  async function downloadVideo(url, analyticsContext = null) {
     isDownloading.value = true;
     downloadError.value = null;
 
     try {
       const response = await fetch(url, {
-        mode: "cors", // Ensure CORS is handled
+        mode: "cors",
       });
 
       if (!response.ok) {
@@ -27,7 +27,11 @@ export function useVideoDownload() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl); // Clean up
+      URL.revokeObjectURL(blobUrl);
+
+      if (analyticsContext) {
+        trackAssetDownloaded(analyticsContext);
+      }
     } catch (error) {
       console.error("Download failed:", error);
       downloadError.value = "Failed to download video. Please try again.";
@@ -36,7 +40,6 @@ export function useVideoDownload() {
     }
   }
 
-  // Helper to extract the filename from the URL
   function getFilenameFromUrl(url) {
     return url.substring(url.lastIndexOf("/") + 1) || "video.mp4";
   }

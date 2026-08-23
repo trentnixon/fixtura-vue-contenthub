@@ -1,14 +1,14 @@
 // src/composables/useImageDownloads.js
 import { ref } from "vue";
 import JSZip from "jszip";
+import { trackAssetDownloaded } from "@/lib/analytics";
 
 export function useImageDownloads() {
   const isModalOpen = ref(false);
   const currentImage = ref("");
   const isBulkDownloading = ref(false);
 
-  // Method to download a single image
-  const downloadImage = async (imageUrl) => {
+  const downloadImage = async (imageUrl, analyticsContext = null) => {
     try {
       const response = await fetch(imageUrl, {
         headers: {
@@ -34,19 +34,21 @@ export function useImageDownloads() {
       document.body.removeChild(link);
 
       URL.revokeObjectURL(url);
+
+      if (analyticsContext) {
+        trackAssetDownloaded(analyticsContext);
+      }
     } catch (error) {
       console.error("Error downloading the image:", error);
     }
   };
 
-  // Method to handle bulk download of images
-  const handleBulkDownload = async (imageUrls) => {
+  const handleBulkDownload = async (imageUrls, analyticsContext = null) => {
     isBulkDownloading.value = true;
 
     try {
       const zip = new JSZip();
 
-      // Download all images and add them to the zip file
       const downloads = imageUrls.map(async (item) => {
         const response = await fetch(item, {
           headers: {
@@ -68,7 +70,6 @@ export function useImageDownloads() {
       const zipFilename =
         firstFilename.split("_").slice(0, -1).join("_") + ".zip";
 
-      // Generate the zip file and download
       const content = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(content);
       const link = document.createElement("a");
@@ -79,6 +80,13 @@ export function useImageDownloads() {
       document.body.removeChild(link);
 
       URL.revokeObjectURL(url);
+
+      if (analyticsContext) {
+        trackAssetDownloaded({
+          ...analyticsContext,
+          asset_type: "image_bulk",
+        });
+      }
     } catch (error) {
       console.error("Error in bulk download:", error);
     } finally {
@@ -86,13 +94,11 @@ export function useImageDownloads() {
     }
   };
 
-  // **New Function: View Image**
   const viewImage = (imageUrl) => {
     currentImage.value = imageUrl;
     isModalOpen.value = true;
   };
 
-  // Optional: Function to close the modal
   const closeModal = () => {
     isModalOpen.value = false;
     currentImage.value = "";

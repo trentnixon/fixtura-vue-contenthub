@@ -3,6 +3,15 @@ const path = require("path");
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  devServer: {
+    proxy: {
+      "/ingest": {
+        target: "https://us.i.posthog.com",
+        changeOrigin: true,
+        pathRewrite: { "^/ingest": "" },
+      },
+    },
+  },
   configureWebpack: {
     resolve: {
       alias: {

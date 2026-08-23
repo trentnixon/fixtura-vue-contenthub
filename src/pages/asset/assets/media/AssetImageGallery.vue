@@ -54,7 +54,7 @@
               title="Image Asset"
               subtitle="Downloadable"
               description="Click the button to download or view the image"
-              @download="downloadImage(url)"
+              @download="handleImageDownload(url)"
               @view="viewImage(url)"
             />
           </v-col>
@@ -80,7 +80,7 @@
                 icon="mdi-download"
                 class="mr-1"
                 variant="elevated"
-                @click="downloadImage(currentImage)"
+                @click="handleImageDownload(currentImage)"
               />
               <IconButton
                 size="x-small"
@@ -104,6 +104,7 @@
 import { computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 import { useImageDownloads } from "../../composables/useImageDownloads.js";
+import { useAssetDownloadAnalytics } from "../../composables/useAssetDownloadAnalytics";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
 import AssetCard from "@/components/primitives/cards/AssetCard.vue";
 import CategoryHeader from "@/components/primitives/headers/CategoryHeader.vue";
@@ -143,9 +144,19 @@ const {
   currentImage,
   isBulkDownloading,
   downloadImage,
-  handleBulkDownload,
+  handleBulkDownload: bulkDownloadImages,
   viewImage,
 } = useImageDownloads();
+const { buildDownloadContext } = useAssetDownloadAnalytics();
+const downloadContext = computed(() => buildDownloadContext(props.asset, "image"));
+
+function handleImageDownload(url) {
+  downloadImage(url, downloadContext.value);
+}
+
+function handleBulkDownload(urls) {
+  bulkDownloadImages(urls, downloadContext.value);
+}
 
 // State for whether the user can retry
 const canRetry = ref(true);

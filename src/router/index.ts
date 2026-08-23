@@ -4,6 +4,7 @@ import accountRoutes from "./accountRoutes";
 import { useAccountStore } from "@/store/account";
 import { storeToRefs } from "pinia";
 import { watch, nextTick } from "vue";
+import { capturePageview } from "@/lib/analytics";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -63,6 +64,10 @@ router.beforeEach((to, from, next) => {
   );
 
   next();
+});
+
+router.afterEach((to) => {
+  capturePageview(to.fullPath);
 });
 
 export default router;

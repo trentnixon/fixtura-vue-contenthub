@@ -7,7 +7,7 @@
       <SecondaryButton
         color="accent"
         label="Download"
-        @click="downloadVideo(videoUrl)"
+        @click="handleDownload"
         :loading="isDownloading || isPolling"
         :disabled="isDownloading"
         size="small"
@@ -44,6 +44,7 @@
 <script setup>
 import { ref } from "vue";
 import { useVideoDownload } from "../../composables/useVideoDownload";
+import { useAssetDownloadAnalytics } from "../../composables/useAssetDownloadAnalytics";
 import CategoryHeader from "@/components/primitives/headers/CategoryHeader.vue";
 import MediaLayout from "@/components/containers/media/mediaLayout.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
@@ -65,8 +66,13 @@ const props = defineProps({
 
 // Since we only expect one video URL, extract it directly
 const videoUrl = ref(props.videoUrls);
-// Destructure the video download composable
 const { isDownloading, downloadVideo } = useVideoDownload();
+const { buildDownloadContext } = useAssetDownloadAnalytics();
+
+async function handleDownload() {
+  const context = buildDownloadContext(props.asset, "video");
+  await downloadVideo(videoUrl.value, context);
+}
 // State for whether the user can retry
 const canRetry = ref(true);
 

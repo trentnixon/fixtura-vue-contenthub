@@ -13,8 +13,6 @@
 </template>
 
 <script setup>
-import { useGA } from "@/utils/useGA";
-
 const props = defineProps({
   label: {
     type: String,
@@ -39,14 +37,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["click"]);
-const { trackEvent } = useGA(); // Use the GA composable
 
 function handleClick() {
   if (!props.disabled) {
-    // Track the button click event
-    trackEvent("button_click", "interaction", props.label);
-
-    // Emit the click event
     emit("click");
   }
 }

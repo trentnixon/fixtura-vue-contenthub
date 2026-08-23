@@ -31,6 +31,7 @@
 import { onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useAccountData } from "@/pages/account/composables/useAccountData";
+import { onAccountLoaded } from "@/lib/analytics";
 
 import HeaderSection from "@/pages/account/components/HeaderSection.vue";
 import SchedulerSection from "@/pages/account/components/SchedulerSection.vue";
@@ -44,15 +45,22 @@ import AssetMetrics from "@/pages/account/components/AssetMetrics.vue";
 const route = useRoute();
 const accountId = Number(route.params.accountid);
 
-const { fetchAccountById, loading, error } = useAccountData();
+const { fetchAccountById, loading, error, getOrganizationDetails, getAccountSport } =
+  useAccountData();
 // Fetch account data only once when the component is mounted
 onMounted(() => {
   fetchAccountById(accountId);
 });
 
-watch(loading, () => {
-  if (!loading.value) {
-    //console.log("Account data loaded");
+watch([loading, getOrganizationDetails, getAccountSport], () => {
+  if (loading.value || !getOrganizationDetails.value) {
+    return;
   }
+
+  onAccountLoaded(
+    accountId,
+    getOrganizationDetails.value,
+    getAccountSport.value || undefined
+  );
 });
 </script>

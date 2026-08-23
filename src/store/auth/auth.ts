@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { resetAnalytics } from "@/lib/analytics";
 
 export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = ref(
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore("auth", () => {
   const logout = () => {
     isAuthenticated.value = false;
     localStorage.removeItem("isAuthenticated");
+    resetAnalytics();
   };
 
   return {
