@@ -75,7 +75,7 @@
                 icon="mdi-download"
                 variant="elevated"
                 class="ml-1"
-                @click="downloadImage(img)"
+                @click="handleImageDownload(img)"
               />
             </v-card-actions>
           </v-card>
@@ -105,7 +105,7 @@
             icon="mdi-download"
             class="mr-1"
             variant="elevated"
-            @click="downloadImage(currentImage)"
+            @click="handleImageDownload(currentImage)"
           />
           <IconButton
             size="x-small"
@@ -126,6 +126,7 @@ import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import PrimaryButton from "@/components/primitives/buttons/PrimaryButton.vue";
 import SecondaryButton from "@/components/primitives/buttons/SecondaryButton.vue";
 import { useImageDownloads } from "@/pages/asset/composables/useImageDownloads.js";
+import { useAssetDownloadAnalytics } from "@/pages/asset/composables/useAssetDownloadAnalytics";
 import { useAssetRerender } from "@/pages/asset/assets/errors/composables/useRerender";
 
 // Define component props
@@ -140,9 +141,25 @@ const {
   currentImage,
   isBulkDownloading,
   downloadImage,
-  handleBulkDownload,
+  handleBulkDownload: bulkDownloadImages,
   viewImage,
 } = useImageDownloads();
+const { buildDownloadContext } = useAssetDownloadAnalytics();
+const downloadContext = computed(() => {
+  if (!asset.value) {
+    return null;
+  }
+
+  return buildDownloadContext(asset.value, "CricketResultSingle");
+});
+
+function handleImageDownload(url) {
+  downloadImage(url, downloadContext.value);
+}
+
+function handleBulkDownload(urls) {
+  bulkDownloadImages(urls, downloadContext.value);
+}
 
 const imageUrls = computed(() => props.formattedAssets?.[0]?.downloads || []);
 

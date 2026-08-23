@@ -3,93 +3,75 @@
 **Date:** 2026-08-23  
 **From:** Marketing / platform  
 **PostHog project:** `214725` (shared across all Fixtura surfaces)  
-**Hub implementation:** `fixtura-content-hub` (this repo) — PR pending
+**Hub implementation:** `fixtura-content-hub` (this repo) — see `.scratch/hub-analytics/`
 
 ## Request
 
 Implement client analytics on App and Hub using the **same PostHog project key** as the marketing site so we can stitch journeys from first pageview through Delivery Hub usage.
 
-## What you need to read
-
-| Doc | Path (marketing repo) |
-| --- | --- |
-| Spec | `.docs/analytics/Fixtura-Analytics-Spec.md` |
-| Event catalog | `.docs/analytics/event-catalog.md` |
-| Implementation | `.docs/analytics/implementation-guide.md` |
-| Dashboards | `.docs/analytics/dashboards.md` |
-
-Clone or browse: `fixtura/marketing` on branch `staging`.
-
 ## Decisions (settled)
 
 1. **One project** — not separate marketing vs product projects.
 2. **`surface` on every event** — `marketing_site`, `app`, or `hub`. Hub = this Vue Content Hub app (all routes `surface: hub`).
-3. **`identify(backendUserId)`** on login/register — never email. Hub calls `GET /users/me` (cookie session) on boot.
-4. **`group("organization", orgId)`** using `accountOrganisationDetails.id` when account loads.
+3. **`identify(backendUserId)`** — App/marketing only. Hub does **not** call `identify()`; route params define context.
+4. **`group("organization", orgId)`** using Organisation id when Account Organisation details load (including deep-links via Account layout).
 5. **Explicit events** — no autocapture for product funnels.
-6. **Shared consent** — cookie `fixtura_analytics_consent` on `Domain=.fixtura.com.au` (not localStorage; subdomains do not share localStorage).
+6. **Shared consent** — cookie `fixtura_analytics_consent` on `Domain=.fixtura.com.au`.
 7. **Sentry stays** for errors — not PostHog exception capture.
-8. **Server events** for `account_created`, `email_verified`, `first_pack_delivered` (API team). API must use backend user id as `distinct_id` from creation so client `identify()` aliases correctly.
-9. **GA retired** on Hub — PostHog replaces `vue-gtag`.
-10. **Pack** = Render. **Hub** = this repo.
+8. **GA retired** on Hub — PostHog replaces `vue-gtag`.
+9. **Pack** = Render. **Hub** = this repo.
 
 ## Hub deliverables (this repo)
 
-- [x] Env vars: `VUE_APP_POSTHOG_KEY`, `VUE_APP_FEATURE_ANALYTICS`, optional `VUE_APP_POSTHOG_HOST` (default `/ingest`)
-- [x] Init via `src/lib/analytics/` (`posthog-js`, consent cookie gate, no autocapture)
-- [x] Dev `/ingest` proxy in `vue.config.js`
-- [x] `$pageview` with `surface: hub` on router navigation
-- [x] `identify()` via `/users/me` (`VUE_APP_AUTH_ME_PATH` override)
-- [x] `group("organization", …)` on account load
-- [x] `reset()` on logout
-- [x] Catalog events: `hub_opened`, `pack_viewed`, `asset_downloaded`, `pack_rerun`
+- [x] Env vars: `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_FEATURE_ANALYTICS`, optional `NEXT_PUBLIC_POSTHOG_HOST` (default `/ingest`)
+- [x] Init via analytics module (`posthog-js`, consent cookie gate, no autocapture)
+- [x] Dev `/ingest` proxy in Vue CLI config
+- [x] Router-centralised `$pageview` + funnel events with route context registered
+- [x] Organization group on Account Organisation load
+- [x] Catalog events (see table)
 - [x] `CONTEXT.md` glossary
-- [ ] PR link (fill on merge)
+- [x] Spec + tickets under `.scratch/hub-analytics/`
 
-### Hub event triggers
+### Hub event catalog
 
-| Event | Trigger | Properties |
+All events include `surface: hub`. Route-derived properties are attached via `posthog.register()` on navigation and on `$pageview`.
+
+| Event | Trigger | Key properties |
 | --- | --- | --- |
-| `hub_opened` | First `AccountView` load per session | `account_id`, `sport` |
-| `pack_viewed` | Enter `RenderView` | `render_id`, `account_id` |
-| `asset_downloaded` | Successful image/video download | `asset_id`, `render_id`, `account_id`, `asset_type` |
-| `pack_rerun` | Successful asset rerender API **or** pack rerender request | `asset_id` / `render_id`, `account_id`, `trigger` |
+| `$pageview` | Every route change | path + route context |
+| `hub_opened` | Navigate to `/:accountid` (once per session, only after consent) | `account_id`, optional `sport` |
+| `pack_viewed` | Pack (Render) route | `render_id`, `account_id` |
+| `category_viewed` | Grouping category route | `grouping_category`, `render_id`, `account_id` |
+| `asset_viewed` | Asset route | `asset_type`, `grouping_category`, `render_id`, `account_id` |
+| `asset_edit_opened` | Editor route | `asset_type`, `render_id`, `account_id` |
+| `asset_edit_saved` | Successful CMS save | `download_id`, `asset_type`, `render_id`, `account_id` |
+| `asset_downloaded` | Successful image/video/bulk download | `asset_id`, `render_id`, `account_id`, `asset_type` |
+| `pack_rerun` | Asset rerender success or pack rerender request | `trigger`, `reason` (pack), ids |
+| `roster_sync_requested` | Confirm PlayHQ sync | `render_id`, `account_id`, `grouping_category` |
+| `roster_create_requested` | Confirm create roster | `render_id`, `account_id`, `grouping_category` |
 
-## App team (separate Next.js repo)
+### Not tracked (by design)
 
-- [ ] `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_FEATURE_ANALYTICS`
-- [ ] Init + `/ingest` proxy
-- [ ] Consent cookie (shared with marketing)
-- [ ] `$pageview` with `surface: app`
-- [ ] `identify()` + `conversion` `login_success` on auth
-- [ ] `reset()` on logout
-- [ ] Onboarding catalog events
-- [ ] PR updates `event-catalog.md` for any new events
+- Button clicks / UI chrome (no autocapture)
+- User `identify()`
+- API errors / polling (Sentry)
+- Home `/` as funnel start
 
-## API / Strapi team
+## Ship checklist (Hub)
 
-- [ ] `POSTHOG_API_KEY` in server env only
-- [ ] Server capture for lifecycle events in catalog
-- [ ] `GET /users/me` (or equivalent) returning backend `user.id` for Hub `identify()`
-- [ ] Server events use backend user id as `distinct_id` from `account_created` onward
+1. Set `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_FEATURE_ANALYTICS=true`, optional `NEXT_PUBLIC_POSTHOG_HOST`.
+2. Confirm marketing/App write consent cookie `fixtura_analytics_consent=granted` on `.fixtura.com.au` — without it Hub captures nothing.
+3. Prod `/ingest` reverse proxy is infra-owned (dev proxy exists locally).
+4. Joint QA: marketing → App login → Hub Account → Pack → Asset → download; events show `surface: hub` and org group; same browser session can stitch with marketing/App.
+5. Sync marketing `event-catalog.md` with Hub catalog above (external).
 
-## Marketing status (reference)
+## App / API (external — out of Hub scope)
 
-- Live: `$pageview`, `cta_clicked`, `conversion`, `form_submitted`, `user_action`
-- `identify()` on register success (backend user id)
-- QA: `.docs/TESTING.md` PostHog section
-
-## Verification
-
-Joint QA session: one user journey from marketing pricing → register → App login → Hub download, single person in PostHog with events across `marketing_site`, `app`, and `hub`.
-
-Checklist:
-
-1. Consent cookie set on marketing propagates to Hub (same `.fixtura.com.au` domain).
-2. `identify()` merges anonymous pre-login events after App login / Hub boot.
-3. Server `account_created` shares `distinct_id` with client `identify()`.
-4. Hub events carry `surface: hub` and org group.
+- App `identify()` / `login_success` / `reset()` on logout
+- Marketing consent UI + marketing `event-catalog.md` PR
+- API/Strapi server capture (`account_created`, `email_verified`, `first_pack_delivered`)
+- Production CDN `/ingest` reverse proxy
 
 ## Contact
 
-Update PR links when App/Hub analytics ships.
+Update PR links when Hub analytics ships.

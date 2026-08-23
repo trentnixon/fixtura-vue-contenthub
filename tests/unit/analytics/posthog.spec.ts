@@ -1,4 +1,4 @@
-import { isAnalyticsEnabled } from "@/lib/analytics/posthog";
+import { isAnalyticsEnabled } from "@/lib/analytics";
 
 describe("analytics feature flag", () => {
   const originalEnv = process.env;
@@ -12,16 +12,23 @@ describe("analytics feature flag", () => {
   });
 
   it("is disabled when feature flag is off", () => {
-    process.env.VUE_APP_FEATURE_ANALYTICS = "false";
-    process.env.VUE_APP_POSTHOG_KEY = "phc_test";
+    process.env.NEXT_PUBLIC_FEATURE_ANALYTICS = "false";
+    process.env.NEXT_PUBLIC_POSTHOG_KEY = "phc_test";
 
     expect(isAnalyticsEnabled()).toBe(false);
   });
 
   it("is enabled when feature flag and key are set", () => {
-    process.env.VUE_APP_FEATURE_ANALYTICS = "true";
-    process.env.VUE_APP_POSTHOG_KEY = "phc_test";
+    process.env.NEXT_PUBLIC_FEATURE_ANALYTICS = "true";
+    process.env.NEXT_PUBLIC_POSTHOG_KEY = "phc_test";
 
     expect(isAnalyticsEnabled()).toBe(true);
+  });
+
+  it("is disabled when PostHog key is missing", () => {
+    process.env.NEXT_PUBLIC_FEATURE_ANALYTICS = "true";
+    delete process.env.NEXT_PUBLIC_POSTHOG_KEY;
+
+    expect(isAnalyticsEnabled()).toBe(false);
   });
 });

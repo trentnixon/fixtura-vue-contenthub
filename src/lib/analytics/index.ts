@@ -5,21 +5,28 @@ export {
   getConsentCookieDomain,
   CONSENT_COOKIE_NAME,
 } from "./consent";
-export { fetchCurrentUserId } from "./auth";
 export {
   initAnalytics,
-  bootstrapAnalyticsIdentity,
   capturePageview,
   captureHubEvent,
   trackHubOpened,
   trackPackViewed,
   trackAssetDownloaded,
   trackPackRerun,
+  trackAssetEditSaved,
+  trackRosterSyncRequested,
+  trackRosterCreateRequested,
   setOrganizationGroup,
   onAccountLoaded,
-  resetAnalytics,
   isAnalyticsEnabled,
   getPostHogClient,
 } from "./posthog";
+export { trackHubRouteChange } from "./router-tracking";
+export {
+  parseHubRoute,
+  resolveHubFunnelEvent,
+  hubRouteContextProperties,
+} from "./route-context";
 export type { AnalyticsSurface, AssetDownloadContext } from "./types";
+export type { HubRouteContext, HubFunnelEvent } from "./route-context";
 export { HUB_SURFACE } from "./types";

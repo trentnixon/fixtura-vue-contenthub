@@ -137,7 +137,7 @@ import {
   submitRerenderRequestAction,
 } from "@/store/renders/actions";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
-import { trackPackRerun, trackPackViewed } from "@/lib/analytics";
+import { trackPackRerun } from "@/lib/analytics";
 
 // Initialize account and render fetching
 const { fetchAccountById } = useAccountData();
@@ -205,7 +205,6 @@ async function fetchData() {
 // Fetch data on component mount
 onMounted(() => {
   fetchData();
-  trackPackViewed(renderId.value, accountId.value);
 });
 
 // Watch for route parameter changes and refetch data
@@ -215,7 +214,6 @@ watch(
     accountId.value = Number(newParams.accountid);
     renderId.value = Number(newParams.renderid);
     fetchData();
-    trackPackViewed(renderId.value, accountId.value);
   }
 );
 
@@ -263,6 +261,7 @@ async function confirmRerender() {
       render_id: renderId.value,
       account_id: accountId.value,
       trigger: "pack_request",
+      reason: backendReason,
     });
 
     // Show success message

@@ -1,10 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import {
-  bootstrapAnalyticsIdentity,
-  initAnalytics,
-} from "@/lib/analytics";
+import { initAnalytics } from "@/lib/analytics";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import { createPinia } from "pinia";
@@ -41,21 +38,16 @@ use([
 
 loadFonts();
 
-async function bootstrapApp() {
-  const app = createApp(App);
-  const pinia = createPinia();
+const app = createApp(App);
+const pinia = createPinia();
 
-  app.use(router);
-  app.use(vuetify);
-  app.use(pinia);
-  app.use(IconPlugin);
-  app.component("v-chart", VChart);
+app.use(router);
+app.use(vuetify);
+app.use(pinia);
+app.use(IconPlugin);
+app.component("v-chart", VChart);
 
-  initAnalytics();
-  await bootstrapAnalyticsIdentity();
+initAnalytics();
 
-  app.provide(THEME_KEY, "customTheme");
-  app.mount("#app");
-}
-
-void bootstrapApp();
+app.provide(THEME_KEY, "customTheme");
+app.mount("#app");

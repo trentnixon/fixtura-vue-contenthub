@@ -22,4 +22,4 @@ The org that owns one or more accounts. Identified by `accountOrganisationDetail
 
 ## User
 
-The authenticated Fixtura user (Strapi/backend user record). Identified by backend user id via `identify()` — never by email or account id.
+Not tracked in Hub. Content Hub has no login — context comes from the URL (`accountid`, `renderid`, etc.). User `identify()` is App/marketing only; journey stitch relies on PostHog's anonymous session when the user arrives from another surface on the same browser.

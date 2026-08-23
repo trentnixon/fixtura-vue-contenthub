@@ -3,6 +3,21 @@ const path = require("path");
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  chainWebpack: (config) => {
+    config.plugin("define").tap((definitions) => {
+      const env = definitions[0]["process.env"];
+      env.NEXT_PUBLIC_POSTHOG_KEY = JSON.stringify(
+        process.env.NEXT_PUBLIC_POSTHOG_KEY
+      );
+      env.NEXT_PUBLIC_POSTHOG_HOST = JSON.stringify(
+        process.env.NEXT_PUBLIC_POSTHOG_HOST
+      );
+      env.NEXT_PUBLIC_FEATURE_ANALYTICS = JSON.stringify(
+        process.env.NEXT_PUBLIC_FEATURE_ANALYTICS
+      );
+      return definitions;
+    });
+  },
   devServer: {
     proxy: {
       "/ingest": {

@@ -2,8 +2,9 @@ import {
   CONSENT_COOKIE_NAME,
   getAnalyticsConsent,
   getConsentCookieDomain,
+  hasAnalyticsConsent,
   setAnalyticsConsent,
-} from "@/lib/analytics/consent";
+} from "@/lib/analytics";
 
 describe("analytics consent", () => {
   beforeEach(() => {
@@ -18,12 +19,14 @@ describe("analytics consent", () => {
     document.cookie = `${CONSENT_COOKIE_NAME}=granted; Path=/`;
 
     expect(getAnalyticsConsent()).toBe(true);
+    expect(hasAnalyticsConsent()).toBe(true);
   });
 
   it("returns false when consent cookie is denied", () => {
     document.cookie = `${CONSENT_COOKIE_NAME}=denied; Path=/`;
 
     expect(getAnalyticsConsent()).toBe(false);
+    expect(hasAnalyticsConsent()).toBe(false);
   });
 
   it("writes granted consent to the cookie", () => {

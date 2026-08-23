@@ -1,11 +1,14 @@
 import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
 import { useDownloadsStore } from "@/store/downloads";
+import { parseHubRoute, trackAssetEditSaved } from "@/lib/analytics";
 import _ from "lodash";
 
 export function useSaveFixturaAsset() {
   const downloadsStore = useDownloadsStore();
   const { getDownloadData } = storeToRefs(downloadsStore);
+  const route = useRoute();
 
   const isSaving = ref(false);
 
@@ -30,6 +33,13 @@ export function useSaveFixturaAsset() {
       for (const download of downloads) {
         if (download.id) {
           await downloadsStore.saveFixturaAsset(download.id, dataObjRef.value);
+          const routeContext = parseHubRoute(route);
+          trackAssetEditSaved({
+            download_id: download.id,
+            account_id: routeContext.account_id,
+            render_id: routeContext.render_id,
+            asset_type: routeContext.asset_type,
+          });
           console.log(
             `Data for download ID ${download.id} saved successfully.`
           );

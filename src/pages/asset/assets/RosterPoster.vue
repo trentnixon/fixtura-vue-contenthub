@@ -219,6 +219,11 @@ import MediaLayout from "@/components/containers/media/mediaLayout.vue";
 import CategoryHeader from "@/components/primitives/headers/CategoryHeader.vue";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
 import HowToGuide from "@/pages/asset/assets/components/HowToGuide.vue";
+import {
+  parseHubRoute,
+  trackRosterCreateRequested,
+  trackRosterSyncRequested,
+} from "@/lib/analytics";
 
 const props = defineProps({
   formattedAssets: {
@@ -361,6 +366,12 @@ const closeConfirmModal = () => {
 // Confirm sync action
 const confirmSync = () => {
   closeConfirmModal();
+  const routeContext = parseHubRoute(route);
+  trackRosterSyncRequested({
+    account_id: routeContext.account_id,
+    render_id: routeContext.render_id,
+    grouping_category: routeContext.grouping_category,
+  });
   requestTeamRoster();
 };
 
@@ -377,6 +388,12 @@ const closeCreateRosterModal = () => {
 // Confirm create roster action
 const confirmCreateRoster = () => {
   closeCreateRosterModal();
+  const routeContext = parseHubRoute(route);
+  trackRosterCreateRequested({
+    account_id: routeContext.account_id,
+    render_id: routeContext.render_id,
+    grouping_category: routeContext.grouping_category,
+  });
   createRoster();
 };
 

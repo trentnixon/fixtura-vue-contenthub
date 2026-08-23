@@ -8,10 +8,3 @@ export type AssetDownloadContext = {
   account_id: number;
   asset_type: string;
 };
-
-export type MeResponse = {
-  id?: number;
-  data?: {
-    id?: number;
-  };
-};

@@ -4,9 +4,8 @@ declare namespace NodeJS {
     readonly VUE_APP_API_KEY: string;
     readonly VUE_APP_USERNAME: string;
     readonly VUE_APP_PASSWORD: string;
-    readonly VUE_APP_POSTHOG_KEY: string;
-    readonly VUE_APP_POSTHOG_HOST: string;
-    readonly VUE_APP_FEATURE_ANALYTICS: string;
-    readonly VUE_APP_AUTH_ME_PATH: string;
+    readonly NEXT_PUBLIC_POSTHOG_KEY: string;
+    readonly NEXT_PUBLIC_POSTHOG_HOST: string;
+    readonly NEXT_PUBLIC_FEATURE_ANALYTICS: string;
   }
 }

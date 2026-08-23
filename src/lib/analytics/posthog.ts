@@ -1,6 +1,7 @@
 import posthog from "posthog-js";
-import { fetchCurrentUserId } from "./auth";
 import { hasAnalyticsConsent } from "./consent";
+import type { HubRouteContext } from "./route-context";
+import { hubRouteContextProperties } from "./route-context";
 import type { AssetDownloadContext } from "./types";
 import { HUB_SURFACE } from "./types";
 
@@ -8,8 +9,8 @@ let initialized = false;
 
 export function isAnalyticsEnabled(): boolean {
   return (
-    process.env.VUE_APP_FEATURE_ANALYTICS === "true" &&
-    Boolean(process.env.VUE_APP_POSTHOG_KEY)
+    process.env.NEXT_PUBLIC_FEATURE_ANALYTICS === "true" &&
+    Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY)
   );
 }
 
@@ -22,9 +23,9 @@ export function initAnalytics(): void {
     return;
   }
 
-  const apiHost = process.env.VUE_APP_POSTHOG_HOST || "/ingest";
+  const apiHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "/ingest";
 
-  posthog.init(process.env.VUE_APP_POSTHOG_KEY as string, {
+  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
     api_host: apiHost,
     autocapture: false,
     capture_pageview: false,
@@ -35,18 +36,10 @@ export function initAnalytics(): void {
   initialized = true;
 }
 
-export async function bootstrapAnalyticsIdentity(): Promise<void> {
-  if (!canCapture()) {
-    return;
-  }
-
-  const userId = await fetchCurrentUserId();
-  if (userId !== null) {
-    posthog.identify(userId);
-  }
-}
-
-export function capturePageview(path: string): void {
+export function capturePageview(
+  path: string,
+  context?: HubRouteContext
+): void {
   if (!canCapture()) {
     return;
   }
@@ -54,6 +47,7 @@ export function capturePageview(path: string): void {
   posthog.capture("$pageview", {
     surface: HUB_SURFACE,
     $current_url: path,
+    ...(context ? hubRouteContextProperties(context) : {}),
   });
 }
 
@@ -74,6 +68,10 @@ export function captureHubEvent(
 const HUB_OPENED_SESSION_KEY = "fixtura_hub_opened_session";
 
 export function trackHubOpened(accountId: number, sport?: string): void {
+  if (!canCapture()) {
+    return;
+  }
+
   if (sessionStorage.getItem(HUB_OPENED_SESSION_KEY)) {
     return;
   }
@@ -101,14 +99,38 @@ export function trackPackRerun(properties: {
   asset_id?: number;
   account_id?: number;
   trigger: "asset" | "pack_request";
+  reason?: string;
 }): void {
   captureHubEvent("pack_rerun", properties);
 }
 
-export function setOrganizationGroup(
-  orgId: number,
-  orgName?: string
-): void {
+export function trackAssetEditSaved(properties: {
+  asset_id?: number;
+  asset_type?: string;
+  account_id?: number;
+  render_id?: number;
+  download_id?: number;
+}): void {
+  captureHubEvent("asset_edit_saved", properties);
+}
+
+export function trackRosterSyncRequested(properties: {
+  account_id?: number;
+  render_id?: number;
+  grouping_category?: string;
+}): void {
+  captureHubEvent("roster_sync_requested", properties);
+}
+
+export function trackRosterCreateRequested(properties: {
+  account_id?: number;
+  render_id?: number;
+  grouping_category?: string;
+}): void {
+  captureHubEvent("roster_create_requested", properties);
+}
+
+export function setOrganizationGroup(orgId: number, orgName?: string): void {
   if (!canCapture()) {
     return;
   }
@@ -121,23 +143,12 @@ export function setOrganizationGroup(
 }
 
 export function onAccountLoaded(
-  accountId: number,
-  org: { id: number; Name: string } | null,
-  sport?: string
+  _accountId: number,
+  org: { id: number; Name: string } | null
 ): void {
-  trackHubOpened(accountId, sport);
-
   if (org) {
     setOrganizationGroup(org.id, org.Name);
   }
-}
-
-export function resetAnalytics(): void {
-  if (!initialized) {
-    return;
-  }
-
-  posthog.reset();
 }
 
 export function getPostHogClient(): typeof posthog | null {
