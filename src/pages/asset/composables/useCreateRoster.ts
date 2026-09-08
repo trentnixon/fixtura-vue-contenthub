@@ -34,7 +34,7 @@ export function useCreateRoster(): CreateRosterComposable {
   const isPolling = ref<boolean>(false);
 
   const pollInterval = 5000; // Poll every 5 seconds
-  let pollTimeout: ReturnType<typeof setTimeout> | null = null;
+  let pollTimeout: number | null = null;
   const pollingEnabled = ref<boolean>(true);
 
   // Function to create team roster
@@ -128,7 +128,7 @@ export function useCreateRoster(): CreateRosterComposable {
   // Helper function to create a delay
   const delay = (ms: number): Promise<void> => {
     return new Promise((resolve) => {
-      pollTimeout = setTimeout(resolve, ms);
+      pollTimeout = window.setTimeout(resolve, ms);
     });
   };
 

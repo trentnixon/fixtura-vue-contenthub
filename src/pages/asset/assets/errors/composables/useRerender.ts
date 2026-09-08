@@ -28,7 +28,7 @@ export function useAssetRerender() {
   const isPolling = ref(false);
   const rerenderError = ref<string | null>(null);
   const pollInterval = 5000; // Poll every 5 seconds
-  let pollTimeout: ReturnType<typeof setTimeout>;
+  let pollTimeout: number | undefined;
 
   const routeParams = useRouteParams();
 
@@ -130,7 +130,7 @@ export function useAssetRerender() {
    */
   const delay = (ms: number): Promise<void> => {
     return new Promise((resolve) => {
-      pollTimeout = setTimeout(resolve, ms);
+      pollTimeout = window.setTimeout(resolve, ms);
     });
   };
 
