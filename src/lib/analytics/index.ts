@@ -1,11 +1,4 @@
 export {
-  getAnalyticsConsent,
-  setAnalyticsConsent,
-  hasAnalyticsConsent,
-  getConsentCookieDomain,
-  CONSENT_COOKIE_NAME,
-} from "./consent";
-export {
   initAnalytics,
   capturePageview,
   captureHubEvent,

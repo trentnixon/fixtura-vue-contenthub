@@ -1,6 +1,12 @@
 const { defineConfig } = require("@vue/cli-service");
 const path = require("path");
 
+const posthogAssetsProxy = {
+  target: "https://us-assets.i.posthog.com",
+  changeOrigin: true,
+  secure: true,
+};
+
 module.exports = defineConfig({
   transpileDependencies: true,
   chainWebpack: (config) => {
@@ -19,13 +25,25 @@ module.exports = defineConfig({
     });
   },
   devServer: {
-    proxy: {
-      "/ingest": {
+    proxy: [
+      {
+        context: ["/ingest/static"],
+        ...posthogAssetsProxy,
+        pathRewrite: { "^/ingest/static": "/static" },
+      },
+      {
+        context: ["/ingest/array"],
+        ...posthogAssetsProxy,
+        pathRewrite: { "^/ingest/array": "/array" },
+      },
+      {
+        context: ["/ingest"],
         target: "https://us.i.posthog.com",
         changeOrigin: true,
+        secure: true,
         pathRewrite: { "^/ingest": "" },
       },
-    },
+    ],
   },
   configureWebpack: {
     resolve: {

@@ -1,9 +1,12 @@
 import posthog from "posthog-js";
-import { hasAnalyticsConsent } from "./consent";
 import type { HubRouteContext } from "./route-context";
 import { hubRouteContextProperties } from "./route-context";
 import type { AssetDownloadContext } from "./types";
 import { HUB_SURFACE } from "./types";
+
+const POSTHOG_DEFAULTS_VERSION = "2026-05-30";
+const POSTHOG_API_HOST_DEFAULT = "/ingest";
+const POSTHOG_UI_HOST = "https://us.posthog.com";
 
 let initialized = false;
 
@@ -15,13 +18,7 @@ export function isAnalyticsEnabled(): boolean {
 }
 
 function canCapture(): boolean {
-  if (!isAnalyticsEnabled() || !initialized || !hasAnalyticsConsent()) {
-    return false;
-  }
-
-  // Cookie may flip after init with opt_out_capturing_by_default — align SDK.
-  posthog.opt_in_capturing();
-  return true;
+  return isAnalyticsEnabled() && initialized;
 }
 
 export function initAnalytics(): void {
@@ -29,15 +26,22 @@ export function initAnalytics(): void {
     return;
   }
 
-  const apiHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "/ingest";
+  const apiHost =
+    process.env.NEXT_PUBLIC_POSTHOG_HOST || POSTHOG_API_HOST_DEFAULT;
 
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
     api_host: apiHost,
+    ui_host: POSTHOG_UI_HOST,
+    defaults: POSTHOG_DEFAULTS_VERSION,
     autocapture: false,
     capture_pageview: false,
+    capture_pageleave: false,
+    disable_session_recording: true,
     persistence: "localStorage+cookie",
-    opt_out_capturing_by_default: !hasAnalyticsConsent(),
   });
+
+  // Clear persisted opt-out from the prior consent-gated init path.
+  posthog.opt_in_capturing();
 
   initialized = true;
 }
