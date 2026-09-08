@@ -44,7 +44,10 @@ const emit = defineEmits<{
 }>();
 
 const fieldValue = computed(() =>
-  getNestedValue(props.player as unknown as Record<string, unknown>, props.field.path)
+  getNestedValue(
+    props.player as unknown as Record<string, unknown>,
+    props.field.path
+  )
 );
 
 const displayValue = computed(() => {
@@ -56,7 +59,10 @@ const displayValue = computed(() => {
 const fieldValidations = computed(() => {
   const validators: Array<(value: string | number) => string | true> = [];
 
-  if (props.field.inputType === "number" || props.field.inputType === "decimal") {
+  if (
+    props.field.inputType === "number" ||
+    props.field.inputType === "decimal"
+  ) {
     validators.push(isValidNumber);
   }
 

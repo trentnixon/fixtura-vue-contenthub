@@ -16,13 +16,13 @@ Content Hub now saves **Wicket-Keeper** as a first-class category in CMS, with a
 
 ## What changed (2026-07-29)
 
-| Before (interim) | Now (Content Hub) |
-|------------------|-------------------|
-| WK remapped to `Batter` on save | WK saved as `Wicket-Keeper` |
-| Position: `higheststrikerate` or `topscorer` | Fixed position: `wicketKeeper` |
-| Batting stats in edit form | **No batting stats** — fielding only |
-| Sub-category dropdown for WK | **No sub-category** for WK |
-| `fielding` optional / metadata | `fielding` **required** on save |
+| Before (interim)                             | Now (Content Hub)                    |
+| -------------------------------------------- | ------------------------------------ |
+| WK remapped to `Batter` on save              | WK saved as `Wicket-Keeper`          |
+| Position: `higheststrikerate` or `topscorer` | Fixed position: `wicketKeeper`       |
+| Batting stats in edit form                   | **No batting stats** — fielding only |
+| Sub-category dropdown for WK                 | **No sub-category** for WK           |
+| `fielding` optional / metadata               | `fielding` **required** on save      |
 
 ---
 
@@ -64,9 +64,9 @@ When a user saves a wicket-keeper:
 
 ## Fielding schema
 
-| Field | Type | Path |
-|-------|------|------|
-| Catches | number | `fielding.catches` |
+| Field     | Type   | Path                 |
+| --------- | ------ | -------------------- |
+| Catches   | number | `fielding.catches`   |
 | Stumpings | number | `fielding.stumpings` |
 
 Nested under `fielding` only — no top-level `catches` / `stumpings` keys.
@@ -77,20 +77,20 @@ Nested under `fielding` only — no top-level `catches` / `stumpings` keys.
 
 Added to the Content Hub position slug set:
 
-| Slug | Label (edit UI) | Category |
-|------|-----------------|----------|
-| `wicketKeeper` | Wicket Keeper | Wicket-Keeper only |
+| Slug           | Label (edit UI) | Category           |
+| -------------- | --------------- | ------------------ |
+| `wicketKeeper` | Wicket Keeper   | Wicket-Keeper only |
 
 Wicket-keepers have **no sub-category dropdown** — the slug is fixed. Other categories still use sub-category slugs with human-readable labels:
 
-| Slug | Label |
-|------|-------|
-| `topscorer` | Top Scorer |
+| Slug                | Label               |
+| ------------------- | ------------------- |
+| `topscorer`         | Top Scorer          |
 | `higheststrikerate` | Highest Strike Rate |
-| `mostwickets` | Most Wickets |
-| `besteconomy` | Best Economy |
-| `topallrounder` | Top All-Rounder |
-| `bestoftherest` | Best of the Rest |
+| `mostwickets`       | Most Wickets        |
+| `besteconomy`       | Best Economy        |
+| `topallrounder`     | Top All-Rounder     |
+| `bestoftherest`     | Best of the Rest    |
 
 ---
 
@@ -107,12 +107,12 @@ Wicket-keepers have **no sub-category dropdown** — the slug is fixed. Other ca
 
 Based on your earlier contract response, Remotion **today** does not handle this payload:
 
-| CMS field | Remotion today | Needed |
-|-----------|----------------|--------|
-| `category: "Wicket-Keeper"` | Not supported | Accept as 5th category |
-| `position: "wicketKeeper"` | Not in `positionToIconMap` | Map to keeper icon |
-| `fielding.catches` / `fielding.stumpings` | Not read | Display in stat line |
-| `batting` on WK rows | N/A — not sent | — |
+| CMS field                                 | Remotion today             | Needed                 |
+| ----------------------------------------- | -------------------------- | ---------------------- |
+| `category: "Wicket-Keeper"`               | Not supported              | Accept as 5th category |
+| `position: "wicketKeeper"`                | Not in `positionToIconMap` | Map to keeper icon     |
+| `fielding.catches` / `fielding.stumpings` | Not read                   | Display in stat line   |
+| `batting` on WK rows                      | N/A — not sent             | —                      |
 
 Until Remotion support ships, WK rows may not render correctly (or at all). Content Hub will continue saving this shape.
 
@@ -121,15 +121,19 @@ Until Remotion support ships, WK rows may not render correctly (or at all). Cont
 ## Suggested Remotion implementation
 
 1. **Add to `positionToIconMap`:**
+
    ```ts
-   wicketKeeper: "WicketKeeper" // or appropriate icon key
+   wicketKeeper: "WicketKeeper"; // or appropriate icon key
    ```
 
 2. **Stat display branch** (alongside batting/bowling in `row-Classic.tsx`):
+
    ```tsx
-   {player.categoryDetail.position === "wicketKeeper" && player.fielding && (
-     <FieldingStatDisplay fielding={player.fielding} />
-   )}
+   {
+     player.categoryDetail.position === "wicketKeeper" && player.fielding && (
+       <FieldingStatDisplay fielding={player.fielding} />
+     );
+   }
    ```
 
 3. **Category enum** — add `"Wicket-Keeper"` to `types.ts` if category is used for grouping.

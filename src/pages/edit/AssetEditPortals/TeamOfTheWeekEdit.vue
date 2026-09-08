@@ -32,14 +32,22 @@
 
     <v-row class="mt-4 align-start totw-edit-layout">
       <v-col cols="12" class="totw-edit-layout__list">
-        <v-card class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md h-100">
-          <div class="card-title py-2 px-4 d-flex align-center justify-space-between">
-            <span>Team Selection ({{ players.length }}/{{ TOTW_MAX_SQUAD_SIZE }})</span>
+        <v-card
+          class="py-2 px-1 elevation-0 bg-surface-lighten1 rounded-md h-100"
+        >
+          <div
+            class="card-title py-2 px-4 d-flex align-center justify-space-between"
+          >
+            <span
+              >Team Selection ({{ players.length }}/{{
+                TOTW_MAX_SQUAD_SIZE
+              }})</span
+            >
           </div>
           <v-card class="pa-2 elevation-0 bg-surface rounded-md">
             <p class="text-body-2 px-2 mb-2 text-medium-emphasis">
-              Select one player to edit. Drag the handle to reorder — order saves
-              automatically.
+              Select one player to edit. Drag the handle to reorder — order
+              saves automatically.
             </p>
             <div class="totw-player-list">
               <Container
@@ -47,10 +55,7 @@
                 lock-axis="y"
                 @drop="onDrop"
               >
-                <Draggable
-                  v-for="(player, index) in players"
-                  :key="index"
-                >
+                <Draggable v-for="(player, index) in players" :key="index">
                   <TeamOfTheWeekPlayerRow
                     :player="player"
                     :index="index"
@@ -197,7 +202,9 @@ onMounted(async () => {
 
   const playersData = dataObj.value?.data || dataObj.value?.DATA;
   if (playersData && Array.isArray(playersData)) {
-    players.value = playersData.map((player) => normalizeTotwPlayerForEdit(player));
+    players.value = playersData.map((player) =>
+      normalizeTotwPlayerForEdit(player)
+    );
   }
 
   const orgId =
@@ -268,7 +275,9 @@ function removePlayer(index) {
     return;
   }
 
-  players.value = players.value.filter((_, playerIndex) => playerIndex !== index);
+  players.value = players.value.filter(
+    (_, playerIndex) => playerIndex !== index
+  );
 
   if (selectedPlayerIndex.value === null) return;
 
@@ -343,10 +352,9 @@ async function saveChanges() {
   const asset = route.query.asset;
 
   if (accountId && sport && renderId && groupingCategory && asset) {
-    const encodedGrouping = encodeURIComponent(String(groupingCategory)).replace(
-      /\//g,
-      "%2F"
-    );
+    const encodedGrouping = encodeURIComponent(
+      String(groupingCategory)
+    ).replace(/\//g, "%2F");
     router.push(
       `/${accountId}/${sport}/${renderId}/${encodedGrouping}/${asset}`
     );

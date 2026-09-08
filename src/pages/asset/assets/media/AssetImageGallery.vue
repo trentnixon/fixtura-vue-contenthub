@@ -148,7 +148,9 @@ const {
   viewImage,
 } = useImageDownloads();
 const { buildDownloadContext } = useAssetDownloadAnalytics();
-const downloadContext = computed(() => buildDownloadContext(props.asset, "image"));
+const downloadContext = computed(() =>
+  buildDownloadContext(props.asset, "image")
+);
 
 function handleImageDownload(url) {
   downloadImage(url, downloadContext.value);

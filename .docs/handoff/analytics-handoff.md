@@ -36,19 +36,19 @@ Implement client analytics on App and Hub using the **same PostHog project key**
 
 All events include `surface: hub`. Route-derived properties are attached via `posthog.register()` on navigation and on `$pageview`.
 
-| Event | Trigger | Key properties |
-| --- | --- | --- |
-| `$pageview` | Every route change | path + route context |
-| `hub_opened` | Navigate to `/:accountid` (once per session) | `account_id`, optional `sport` |
-| `pack_viewed` | Pack (Render) route | `render_id`, `account_id` |
-| `category_viewed` | Grouping category route | `grouping_category`, `render_id`, `account_id` |
-| `asset_viewed` | Asset route | `asset_type`, `grouping_category`, `render_id`, `account_id` |
-| `asset_edit_opened` | Editor route | `asset_type`, `render_id`, `account_id` |
-| `asset_edit_saved` | Successful CMS save | `download_id`, `asset_type`, `render_id`, `account_id` |
-| `asset_downloaded` | Successful image/video/bulk download | `asset_id`, `render_id`, `account_id`, `asset_type` |
-| `pack_rerun` | Asset rerender success or pack rerender request | `trigger`, `reason` (pack), ids |
-| `roster_sync_requested` | Confirm PlayHQ sync | `render_id`, `account_id`, `grouping_category` |
-| `roster_create_requested` | Confirm create roster | `render_id`, `account_id`, `grouping_category` |
+| Event                     | Trigger                                         | Key properties                                               |
+| ------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| `$pageview`               | Every route change                              | path + route context                                         |
+| `hub_opened`              | Navigate to `/:accountid` (once per session)    | `account_id`, optional `sport`                               |
+| `pack_viewed`             | Pack (Render) route                             | `render_id`, `account_id`                                    |
+| `category_viewed`         | Grouping category route                         | `grouping_category`, `render_id`, `account_id`               |
+| `asset_viewed`            | Asset route                                     | `asset_type`, `grouping_category`, `render_id`, `account_id` |
+| `asset_edit_opened`       | Editor route                                    | `asset_type`, `render_id`, `account_id`                      |
+| `asset_edit_saved`        | Successful CMS save                             | `download_id`, `asset_type`, `render_id`, `account_id`       |
+| `asset_downloaded`        | Successful image/video/bulk download            | `asset_id`, `render_id`, `account_id`, `asset_type`          |
+| `pack_rerun`              | Asset rerender success or pack rerender request | `trigger`, `reason` (pack), ids                              |
+| `roster_sync_requested`   | Confirm PlayHQ sync                             | `render_id`, `account_id`, `grouping_category`               |
+| `roster_create_requested` | Confirm create roster                           | `render_id`, `account_id`, `grouping_category`               |
 
 ### Not tracked (by design)
 

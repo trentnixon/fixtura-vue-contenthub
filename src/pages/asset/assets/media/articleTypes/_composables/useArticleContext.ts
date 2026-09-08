@@ -1,9 +1,10 @@
 import { computed, ref } from "vue";
 import {
-  saveArticleContextAction,
-  fetchArticleContextAction,
   deleteArticleContextAction,
+  fetchArticleContextAction,
+  saveArticleContextAction,
 } from "@/store/aiArticles/actions";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 
 const CONTEXT_MAX_LENGTH = 1000; // Character limit for context
 
@@ -134,8 +135,7 @@ export function useArticleContext(
 
       if (response.data?.success) {
         hasContext.value = true;
-        contextSuccess.value =
-          "Context saved successfully! It will be used in future article generations.";
+        contextSuccess.value = PRESSBOX_COPY.context.savedSuccess;
 
         // Clear success message after 3 seconds
         setTimeout(() => {

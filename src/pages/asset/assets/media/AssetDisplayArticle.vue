@@ -2,7 +2,10 @@
   <MediaLayout>
     <!-- Named slot for the header -->
     <template v-slot:header>
-      <CategoryHeader title="ARTICLES" icon="mdi-newspaper-variant-outline" />
+      <CategoryHeader
+        :title="PRESSBOX_COPY.panel.title"
+        :icon="PRESSBOX_COPY.panel.icon"
+      />
       <v-spacer></v-spacer>
       <!-- <v-btn color="primary" @click="navigateToEdit()"> Edit Writeup </v-btn> -->
       <!-- Copy Button in the Header - Only show when there's a valid article -->
@@ -25,7 +28,7 @@
         color="primary"
         class="mt-4"
       ></v-progress-linear>
-      <p class="mt-2">Loading articles...</p>
+      <p class="mt-2">{{ PRESSBOX_COPY.panel.loading }}</p>
     </template>
 
     <!-- Legacy Article Check - Show BEFORE routing to article type components -->
@@ -33,10 +36,10 @@
       <v-sheet class="overflow-y-auto" :max-height="maxHeight">
         <div class="text-center pa-8">
           <v-icon color="warning" size="64" class="mb-6">mdi-alert</v-icon>
-          <p class="text-h6 font-weight-bold mb-3">Legacy Article Detected</p>
-          <p class="article-body mb-4">
-            This Article is no longer compatible with the new AI system.
+          <p class="text-h6 font-weight-bold mb-3">
+            {{ PRESSBOX_COPY.legacy.title }}
           </p>
+          <p class="article-body mb-4">{{ PRESSBOX_COPY.legacy.body }}</p>
         </div>
       </v-sheet>
     </template>
@@ -59,7 +62,7 @@
     <!-- No Content Slot -->
     <template v-slot:noContent v-else>
       <v-alert type="info" class="mt-4">
-        AI Articles are Currently Disabled.
+        {{ PRESSBOX_COPY.panel.disabled }}
       </v-alert>
     </template>
   </MediaLayout>
@@ -80,6 +83,7 @@ import WeekendWrapUp from "./articleTypes/WeekendWrapUp.vue";
 import SingleResultArticles from "./articleTypes/SingleResultArticles.vue";
 import { useRoute } from "vue-router";
 import { useLegacyCheck } from "@/composables/aiArticles/useLegacyCheck";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 import type { FlattenedArticle } from "@/types/ArticleTypes";
 import { hasPlayerListContent } from "./articleTypes/_composables/extractPlayerList";
 

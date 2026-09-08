@@ -24,7 +24,6 @@ const props = defineProps({
   copyID: String,
 });
 
-console.log("props.articles ", props.articles[0]);
 // Extract article data using computed properties
 const title = computed(
   () => props.articles[0]?.structuredOutput?.title || "No Title"

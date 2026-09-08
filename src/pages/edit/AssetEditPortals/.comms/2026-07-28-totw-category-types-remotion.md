@@ -18,11 +18,11 @@ A `Bowler` with `position: "topscorer"` renders as a batter.
 ## Remotion categories (4 only)
 
 | `category` / `categoryDetail.type` |
-|------------------------------------|
-| `Batter` |
-| `Bowler` |
-| `All-Rounder` |
-| `Twelfth Man` |
+| ---------------------------------- |
+| `Batter`                           |
+| `Bowler`                           |
+| `All-Rounder`                      |
+| `Twelfth Man`                      |
 
 **No `Wicket-Keeper` in Remotion.** Content Hub maps WK → `Batter` on CMS save.
 
@@ -30,14 +30,14 @@ A `Bowler` with `position: "topscorer"` renders as a batter.
 
 ## Position slugs
 
-| Position | Category | Icon | Stats shown |
-|----------|----------|------|-------------|
-| `topscorer` | Batter | Batter1 | Batting |
-| `higheststrikerate` | Batter | Batter2 | Batting |
-| `mostwickets` | Bowler | Bowler1 | Bowling |
-| `besteconomy` | Bowler | Bowler2 | Bowling |
-| `topallrounder` | All-Rounder | AllRounder | Batting + bowling |
-| `bestoftherest` | Twelfth Man | 12th Man | Available stats |
+| Position            | Category    | Icon       | Stats shown       |
+| ------------------- | ----------- | ---------- | ----------------- |
+| `topscorer`         | Batter      | Batter1    | Batting           |
+| `higheststrikerate` | Batter      | Batter2    | Batting           |
+| `mostwickets`       | Bowler      | Bowler1    | Bowling           |
+| `besteconomy`       | Bowler      | Bowler2    | Bowling           |
+| `topallrounder`     | All-Rounder | AllRounder | Batting + bowling |
+| `bestoftherest`     | Twelfth Man | 12th Man   | Available stats   |
 
 Positions are achievement labels — duplicates allowed in production.
 
@@ -45,28 +45,31 @@ Positions are achievement labels — duplicates allowed in production.
 
 ## Stat blocks
 
-| Category | Required | Notes |
-|----------|----------|-------|
-| Batter | `batting` | |
-| Bowler | `bowling` | Omit empty `batting` on save |
-| All-Rounder | `batting`, `bowling`, `allRounder` | Position must be `topallrounder` |
-| Twelfth Man | — | Optional batting/bowling |
-| Wicket-Keeper (edit UI) | `batting` only | Saves as `Batter`; `fielding` stored but not rendered |
+| Category                | Required                           | Notes                                                 |
+| ----------------------- | ---------------------------------- | ----------------------------------------------------- |
+| Batter                  | `batting`                          |                                                       |
+| Bowler                  | `bowling`                          | Omit empty `batting` on save                          |
+| All-Rounder             | `batting`, `bowling`, `allRounder` | Position must be `topallrounder`                      |
+| Twelfth Man             | —                                  | Optional batting/bowling                              |
+| Wicket-Keeper (edit UI) | `batting` only                     | Saves as `Batter`; `fielding` stored but not rendered |
 
 ---
 
 ## Content Hub behaviour
 
 ### Edit UI categories
+
 `Batter`, `Bowler`, `All-Rounder`, `Wicket-Keeper`, `Twelfth Man`
 
 ### On save (`serializeTotwPlayerForCms`)
+
 1. Map `Wicket-Keeper` → `category: "Batter"`, `type: "Batter"`
 2. Validate position matches category (reset to default if invalid)
 3. Strip irrelevant stat blocks (e.g. `batting` on bowlers)
 4. Preserve `fielding` in CMS if present (Remotion ignores today)
 
 ### Default positions
+
 ```ts
 Batter: "topscorer"
 Bowler: "mostwickets"
@@ -76,29 +79,30 @@ Twelfth Man: "bestoftherest"
 ```
 
 ### On category change
+
 Atomically updates `category`, `categoryDetail.type`, `categoryDetail.position`, and stat blocks.
 
 ---
 
 ## Other fields
 
-| Field | Remotion usage |
-|-------|----------------|
-| `rank` | Metadata only — not used for order or labels |
-| `data[]` order | Display order |
-| `fielding` | Not read — safe to store in CMS |
+| Field                 | Remotion usage                                  |
+| --------------------- | ----------------------------------------------- |
+| `rank`                | Metadata only — not used for order or labels    |
+| `data[]` order        | Display order                                   |
+| `fielding`            | Not read — safe to store in CMS                 |
 | `categoryDetail.type` | Not read for rendering — must mirror `category` |
 
 ---
 
 ## Reference squad (12 players)
 
-| Category | Count |
-|----------|-------|
-| Batter | 5 |
-| All-Rounder | 2 |
-| Bowler | 4 |
-| Twelfth Man | 1 |
+| Category    | Count |
+| ----------- | ----- |
+| Batter      | 5     |
+| All-Rounder | 2     |
+| Bowler      | 4     |
+| Twelfth Man | 1     |
 
 Not enforced by renderer — accepts any non-empty `data[]`.
 

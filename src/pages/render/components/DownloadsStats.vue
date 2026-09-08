@@ -20,7 +20,7 @@
         icon="mdi-file-document"
         buttonText=""
         :value="renderMetrics.summary.totalAiArticles"
-        subtitle="Total Articles"
+        :subtitle="PRESSBOX_COPY.stats.totalWriteups"
         theme="cardNeutral"
       />
     </v-col>
@@ -47,6 +47,7 @@
 
 <script setup>
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 import { computed } from "vue";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
 

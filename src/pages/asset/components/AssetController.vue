@@ -35,6 +35,7 @@ import { computed, ref, watch } from "vue";
 import { useRenderAssets } from "@/pages/asset/composables/useRenderAssets";
 import { useRoute } from "vue-router";
 import { useAiArticlesStore } from "@/store/aiArticles";
+import { usePrivateAiArticleState } from "@/store/aiArticles/private";
 
 import Weekendsinglegameresult from "@/pages/asset/assets/WeekendSingleGameResult.vue";
 import Rosterposter from "@/pages/asset/assets/RosterPoster.vue";
@@ -48,6 +49,7 @@ const route = useRoute();
 
 // Get AI articles store to enrich articles with createdAt
 const aiArticlesStore = useAiArticlesStore();
+const aiArticlePrivateStore = usePrivateAiArticleState();
 
 function toPascalCase(str) {
   return str
@@ -130,7 +132,7 @@ watch(
   { immediate: true }
 );
 
-// Pass AI articles with createdAt field enriched from full article store
+// Pass AI articles enriched from full article store (structuredOutput, createdAt)
 const aiArticles = computed(() => {
   const articles = selectedRenderData.value?.aiArticles || [];
 
@@ -138,22 +140,21 @@ const aiArticles = computed(() => {
     return [];
   }
 
-  // Get full articles from store to enrich with createdAt
-  const fullArticles = aiArticlesStore.getFullAiArticles();
+  const fullArticles = aiArticlePrivateStore.fullAiArticles;
 
-  // Map createdAt from full articles if available
   return articles.map((article) => {
     const fullArticle = fullArticles[article.id];
-    const createdAt = fullArticle?.attributes?.createdAt;
+    const attrs = fullArticle?.attributes;
+    const structuredOutput =
+      attrs?.structuredOutput ?? article.structuredOutput ?? null;
 
-    // Use createdAt if valid, otherwise fall back to publishedAt for legacy detection
+    const createdAt = attrs?.createdAt;
     let dateToUse = null;
 
     if (createdAt && createdAt !== "Unknown Date" && createdAt.trim() !== "") {
       dateToUse = createdAt;
     } else {
-      // Fall back to publishedAt if createdAt is not available
-      const publishedAt = fullArticle?.attributes?.publishedAt;
+      const publishedAt = attrs?.publishedAt;
       if (
         publishedAt &&
         publishedAt !== "Unknown Date" &&
@@ -163,14 +164,14 @@ const aiArticles = computed(() => {
       }
     }
 
-    if (dateToUse) {
-      return {
-        ...article,
-        createdAt: dateToUse, // Store in createdAt field for legacy check
-      };
-    }
-
-    return article;
+    return {
+      ...article,
+      structuredOutput,
+      ...(typeof attrs?.hasCompleted === "boolean"
+        ? { hasCompleted: attrs.hasCompleted }
+        : {}),
+      ...(dateToUse ? { createdAt: dateToUse } : {}),
+    };
   });
 });
 

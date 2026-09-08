@@ -6,7 +6,9 @@
         <!-- Locked state: Show lock icon and label -->
         <template v-if="isLocked">
           <v-icon color="warning" size="small">mdi-lock</v-icon>
-          <span class="text-caption ml-2">Article Locked</span>
+          <span class="text-caption ml-2">{{
+            PRESSBOX_COPY.locked.label
+          }}</span>
         </template>
 
         <!-- Normal state: Show buttons -->
@@ -17,11 +19,14 @@
           >
             <IconButton
               icon="mdi-file-document-edit"
-              :tooltip="buttonText"
+              :tooltip="rewriteDisabledTooltip || buttonText"
               size="small"
               color="primary"
               :loading="isPending"
-              :disabled="isPending"
+              :disabled="
+                isPending ||
+                (articlePhase === 'articleWritten' && !canRequestReview)
+              "
               @click="showConfirmationDialog = true"
             />
             <div class="d-flex align-center ms-auto" style="gap: 8px">
@@ -39,7 +44,7 @@
                       Context
                     </v-chip>
                   </template>
-                  <span>Context has been added to this article</span>
+                  <span>{{ PRESSBOX_COPY.context.addedTooltip }}</span>
                 </v-tooltip>
                 <IconButton
                   icon="mdi-text-box-plus"
@@ -55,30 +60,28 @@
           </div>
         </template>
 
-        <div v-if="requestError" class="ml-3 text-error">
+        <div
+          v-if="
+            requestError && articleStatus !== 'failed' && !isPollingTimedOut
+          "
+          class="ml-3 text-error"
+        >
           {{ requestError }}
         </div>
       </div>
 
       <!-- Confirmation Dialog -->
-      <ConfirmationModal
+      <PressboxConfirmationModal
         v-model="showConfirmationDialog"
-        :title="`Confirm ${buttonText}`"
+        :title="buttonText"
+        :subhead="confirmationCopy.subhead"
+        :description="confirmationCopy.description"
+        :confirm-label="buttonText"
         :persistent="isPending"
         :loading="isPending"
         :disabled="isPending"
         @confirm="confirmAndRequest"
-      >
-        <p v-if="articlePhase === 'initial' || articlePhase === 'postPending'">
-          Are you sure you want to request a new Upcoming Fixtures article? This
-          will generate a fresh article based on the current data.
-        </p>
-        <p v-else-if="articlePhase === 'articleWritten'">
-          Are you sure you want to request a review? This will generate a new
-          version of the article based on your feedback.
-        </p>
-        <p v-else>Are you sure you want to proceed with this request?</p>
-      </ConfirmationModal>
+      />
 
       <!-- Context Dialog -->
       <ContextDialog
@@ -105,27 +108,34 @@
         :formattedArticles="formattedArticles"
         :isRequesting="isPending"
         :isLocked="isLocked"
+        :is-polling-timed-out="isPollingTimedOut"
+        :is-checking-status="isCheckingStatus"
+        :detail-message="requestError || undefined"
         @request-writeup="showConfirmationDialog = true"
+        @check-status="void checkGenerationStatus()"
+        @keep-waiting="keepWaitingForGeneration()"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import {
-  pollWeekendArticleStatus,
-  triggerWeekendArticleAction,
-} from "@/store/aiArticles/actions";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useArticleFeedback } from "@/composables/aiArticles/useArticleFeedback";
 import { useArticleStatus } from "@/composables/aiArticles/useArticleStatus";
-import { useArticlePolling } from "@/composables/aiArticles/useArticlePolling";
+import { useArticleGenerationLifecycle } from "@/composables/aiArticles/useArticleGenerationLifecycle";
+import {
+  getPressboxButtonText,
+  PRESSBOX_COPY,
+  resolvePressboxConfirmationCopy,
+} from "@/constants/pressboxCopy";
+import { useArticleTriggerFlow } from "@/composables/aiArticles/useArticleTriggerFlow";
 import { FlattenedArticle } from "@/types/ArticleTypes";
 import { useUpcomingFixturesFormatting } from "./_composables/useUpcomingFixturesFormatting";
 import { useArticleContext } from "./_composables/useArticleContext";
 import IconButton from "@/components/primitives/buttons/IconButton.vue";
-import ConfirmationModal from "@/components/primitives/modals/ConfirmationModal.vue";
+import PressboxConfirmationModal from "./_components/PressboxConfirmationModal.vue";
 import ContextDialog from "./_components/ContextDialog.vue";
 import UpcomingFixturesDisplay from "./_components/UpcomingFixturesDisplay.vue";
 
@@ -138,20 +148,18 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const router = useRouter();
-
-// Function to trigger data sync on render (refresh page data)
-function triggerDataSync() {
-  router.go(0); // Reload current page
-}
 
 // Initialize UpcomingFixtures formatting composable
 const articlesRef = computed(() => props.articles);
-const {
-  formattedArticles,
-  hasArticle,
-  copyArticle: copyArticleFromComposable,
-} = useUpcomingFixturesFormatting(articlesRef);
+const { formattedArticles, copyArticle: copyArticleFromComposable } =
+  useUpcomingFixturesFormatting(articlesRef);
+
+// Match UpcomingFixturesDisplay: a CMS article row alone is not a completed writeup.
+const hasValidContent = computed(() => {
+  return formattedArticles.value.some(
+    (article) => article.fixtures && article.fixtures.length > 0
+  );
+});
 
 // Display helpers
 const accountIdDisplay = computed<number | null>(() => {
@@ -185,18 +193,15 @@ defineExpose({
 // Initialize composables
 const { feedbackCount, isLocked, updateFeedback } = useArticleFeedback();
 const { articleStatus, articlePhase } = useArticleStatus(
-  hasArticle,
+  hasValidContent,
   feedbackCount
 );
-const { startPolling, stopPolling } = useArticlePolling();
 
-// Component state
-const isPending = ref(false);
-const requestError = ref("");
-const triggerResponse = ref<unknown>(null);
-const showConfirmationDialog = ref(false);
+const resolvedArticleId = computed<number | null>(() => {
+  const first = props.articles?.[0];
+  return first?.id ?? null;
+});
 
-// Initialize article context composable
 const {
   showContextDialog,
   contextText,
@@ -221,198 +226,59 @@ const {
   () => resolvedArticleId.value
 );
 
+const isPending = ref(false);
+const showConfirmationDialog = ref(false);
+const requestError = ref("");
+
+const {
+  isPollingTimedOut,
+  isCheckingStatus,
+  startGenerationPolling,
+  checkGenerationStatus,
+  keepWaitingForGeneration,
+} = useArticleGenerationLifecycle({
+  accountId: () => accountIdDisplay.value,
+  renderId: () => renderIdDisplay.value,
+  articleId: () => resolvedArticleId.value,
+  articleStatus,
+  isPending,
+  updateFeedback,
+  requestError,
+  onMountComplete: fetchExistingContext,
+});
+
+const { canRequestReview, rewriteDisabledTooltip, executeArticleTrigger } =
+  useArticleTriggerFlow({
+    accountId: () => accountIdDisplay.value,
+    renderId: () => renderIdDisplay.value,
+    articleId: () => resolvedArticleId.value,
+    articlePhase,
+    articleStatus,
+    hasContext,
+    isLocked,
+    isPending,
+    updateFeedback,
+    requestError,
+    startGenerationPolling,
+  });
+
 // Button text based on phase
-const buttonText = computed(() => {
-  const phase = articlePhase.value;
-  const status = articleStatus.value;
+const buttonText = computed(() =>
+  getPressboxButtonText(articlePhase.value, articleStatus.value)
+);
 
-  if (phase === "pending") {
-    if (status === "writing") return "Writing…";
-    if (status === "pending") return "Pending…";
-    return "Processing…";
-  }
+const confirmationCopy = computed(() =>
+  resolvePressboxConfirmationCopy("upcoming", articlePhase.value)
+);
 
-  if (phase === "articleWritten") {
-    return "Request a Review";
-  }
-
-  // Initial or postPending
-  return "Request Write-up";
-});
-
-// Show additional buttons (Add Context) whenever article is NOT locked
 const showAdditionalButtons = computed(() => {
-  return !isLocked.value;
+  return !isLocked.value && hasValidContent.value;
 });
 
-// Watch articleStatus and handle state changes
-watch(articleStatus, (newStatus, oldStatus) => {
-  // Detect transition from pending to completed for data sync
-  if (oldStatus === "pending" && newStatus === "completed") {
-    triggerDataSync();
-  }
-
-  // Only set isPending for actual polling state (pending only)
-  isPending.value = newStatus === "pending";
-
-  // Stop polling if status is NOT pending
-  if (newStatus !== "pending") {
-    stopPolling();
-  }
-});
-
-// Resolve IDs for trigger payload
-const resolvedArticleId = computed<number | null>(() => {
-  const first = props.articles?.[0];
-  return first?.id ?? null;
-});
-
-// Confirmation dialog handler
 function confirmAndRequest() {
   showConfirmationDialog.value = false;
-  onRequestWriteup();
+  void executeArticleTrigger();
 }
-
-async function onRequestWriteup() {
-  try {
-    requestError.value = "";
-    triggerResponse.value = null;
-    isPending.value = true;
-
-    const accountId = accountIdDisplay.value;
-    const renderId = renderIdDisplay.value;
-    const articleId = resolvedArticleId.value;
-
-    if (
-      typeof accountId !== "number" ||
-      typeof renderId !== "number" ||
-      typeof articleId !== "number"
-    ) {
-      throw new Error(
-        "Missing required identifiers (accountId, renderId, articleId)"
-      );
-    }
-
-    // Capture and display the trigger response
-    // Note: Using weekend article action for now - replace with UpcomingFixtures-specific action when available
-    const response = await triggerWeekendArticleAction({
-      accountId,
-      renderId,
-      articleId,
-    });
-    triggerResponse.value = response;
-
-    // Check status endpoint to determine if polling is needed
-    const statusRes = await pollWeekendArticleStatus({
-      accountId,
-      renderId,
-      articleId,
-    });
-
-    if (statusRes.data) {
-      const status = statusRes.data.status;
-
-      // Update feedback from response
-      updateFeedback(statusRes.data);
-
-      // Only start polling if status is pending
-      if (status === "pending") {
-        startPolling(
-          { accountId, renderId, articleId },
-          (data) => {
-            // Update feedback on each poll
-            updateFeedback(data);
-          },
-          () => {
-            // On complete - data sync will be handled by watcher
-          },
-          (error) => {
-            requestError.value = error;
-            isPending.value = false;
-          }
-        );
-      } else {
-        // Status is already completed/failed, don't poll
-        isPending.value = false;
-        if (status === "failed") {
-          requestError.value = statusRes.data.locked
-            ? "Article is locked (feedback limit reached or article too old)"
-            : "Article generation failed";
-        }
-      }
-    }
-  } catch (e: unknown) {
-    const error = e as Error;
-    requestError.value = error?.message || "Unable to trigger write-up";
-    isPending.value = false;
-  }
-}
-
-// Check status on mount and resume polling if needed
-onMounted(async () => {
-  const accountId = accountIdDisplay.value;
-  const renderId = renderIdDisplay.value;
-  const articleId = resolvedArticleId.value;
-
-  if (
-    typeof accountId !== "number" ||
-    typeof renderId !== "number" ||
-    typeof articleId !== "number"
-  ) {
-    return; // Can't check status without IDs
-  }
-
-  try {
-    // Check current status
-    const statusRes = await pollWeekendArticleStatus({
-      accountId,
-      renderId,
-      articleId,
-    });
-
-    if (statusRes.data) {
-      const status = statusRes.data.status;
-
-      // Update feedback from response
-      updateFeedback(statusRes.data);
-
-      // If pending, automatically start polling
-      if (status === "pending") {
-        isPending.value = true;
-        startPolling(
-          { accountId, renderId, articleId },
-          (data) => {
-            // Update feedback on each poll
-            updateFeedback(data);
-          },
-          () => {
-            // On complete - data sync will be handled by watcher
-          },
-          (error) => {
-            requestError.value = error;
-            isPending.value = false;
-          }
-        );
-      } else if (status === "failed") {
-        // Article failed, show error
-        if (statusRes.data.locked) {
-          requestError.value =
-            "Article is locked (feedback limit reached or article too old)";
-        } else {
-          requestError.value = "Article generation failed";
-        }
-      }
-    }
-
-    // Fetch existing context if article exists
-    if (articleId) {
-      await fetchExistingContext();
-    }
-  } catch (e: unknown) {
-    // Silently fail on mount - don't show error unless user triggers
-    console.warn("Failed to check article status on mount:", e);
-  }
-});
 </script>
 
 <style scoped>

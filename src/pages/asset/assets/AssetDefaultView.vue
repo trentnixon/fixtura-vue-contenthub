@@ -49,6 +49,7 @@ import AssetDisplayArticle from "./media/AssetDisplayArticle.vue";
 import AssetTabs from "@/pages/asset/components/AssetTabs.vue";
 import { useAssetState } from "../composables/useAssetState";
 import AssetStateRenderer from "./AssetState/AssetStateRenderer.vue";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 
 const props = defineProps({
   formattedAssets: {
@@ -91,7 +92,7 @@ const assetTabs = computed(() => [
   },
   {
     value: "articles",
-    label: "Articles",
+    label: PRESSBOX_COPY.panel.tabLabel,
     condition: props.formattedArticles.length > 0,
   },
 ]);

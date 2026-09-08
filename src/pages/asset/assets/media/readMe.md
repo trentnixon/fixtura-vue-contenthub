@@ -12,6 +12,12 @@ Handles media rendering within the Asset view, including the AI Articles section
 - `media/articleTypes/UpcomingFixtures.vue`: Upcoming fixtures AI article renderer with context management and article generation.
 - `media/articleTypes/SingleResultArticles.vue`: Single result article renderer.
 
+## Child Modules
+
+- `./articleTypes/readMe.md` — article type orchestrators and composables
+- `./.comms/` — cross-team API contracts (CMS Pressbox trigger)
+- `./.research/` — implementation spikes and plans
+
 ## Relations
 
 - Parent folder: [../readMe.md](../readMe.md)

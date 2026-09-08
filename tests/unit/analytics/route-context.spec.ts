@@ -1,7 +1,4 @@
-import {
-  parseHubRoute,
-  resolveHubFunnelEvent,
-} from "@/lib/analytics";
+import { parseHubRoute, resolveHubFunnelEvent } from "@/lib/analytics";
 
 describe("parseHubRoute", () => {
   it("parses account landing route", () => {

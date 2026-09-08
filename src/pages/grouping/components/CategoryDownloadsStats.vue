@@ -39,7 +39,7 @@
         :icon="icons.assets.articles"
         buttonText=""
         :value="getSelectedCategoryStats?.aiWriteups || 0"
-        subtitle="Total Articles"
+        :subtitle="PRESSBOX_COPY.stats.totalWriteups"
         theme="cardNeutral"
       />
     </v-col>
@@ -51,6 +51,7 @@ import { ref, watch, inject } from "vue";
 import { useRoute } from "vue-router";
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
 import { useRenderGroupingData } from "@/pages/grouping/composables/useRenderGroupingData";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 const icons = inject("icons");
 // Get route parameters
 const route = useRoute();

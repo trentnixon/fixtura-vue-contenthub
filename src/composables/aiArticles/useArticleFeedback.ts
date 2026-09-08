@@ -9,12 +9,18 @@ import { updateFeedbackFromResponse } from "@/types/ArticleTypes";
 export function useArticleFeedback() {
   const feedbackCount = ref<number>(0);
   const feedbackLimit = ref<number>(FEEDBACK_CONFIG.DEFAULT_LIMIT);
+  const apiLocked = ref<boolean>(false);
+  const canProvideFeedback = ref<boolean>(true);
 
   /**
-   * Check if article is locked (feedback count >= limit)
+   * Locked when CMS reports lock, disallows regeneration, or attempt count at limit.
    */
   const isLocked = computed(() => {
-    return feedbackCount.value >= feedbackLimit.value;
+    return (
+      apiLocked.value ||
+      !canProvideFeedback.value ||
+      feedbackCount.value >= feedbackLimit.value
+    );
   });
 
   /**
@@ -22,6 +28,14 @@ export function useArticleFeedback() {
    */
   function updateFeedback(data: ArticleStatusData): void {
     updateFeedbackFromResponse(data, feedbackCount, feedbackLimit);
+
+    if (typeof data.locked === "boolean") {
+      apiLocked.value = data.locked;
+    }
+
+    if (typeof data.feedback?.canProvideFeedback === "boolean") {
+      canProvideFeedback.value = data.feedback.canProvideFeedback;
+    }
   }
 
   /**
@@ -30,12 +44,16 @@ export function useArticleFeedback() {
   function resetFeedback(): void {
     feedbackCount.value = 0;
     feedbackLimit.value = FEEDBACK_CONFIG.DEFAULT_LIMIT;
+    apiLocked.value = false;
+    canProvideFeedback.value = true;
   }
 
   return {
     feedbackCount,
     feedbackLimit,
     isLocked,
+    apiLocked,
+    canProvideFeedback,
     updateFeedback,
     resetFeedback,
   };

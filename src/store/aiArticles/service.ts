@@ -75,6 +75,19 @@ export interface UpdateFixturesResponse {
   };
 }
 
+export type TriggerRequestReason =
+  | "initial"
+  | "editorial_feedback"
+  | "source_changed";
+
+export interface TriggerArticlePayload {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+  requestReason?: TriggerRequestReason;
+  requestReasonDetail?: string;
+}
+
 export async function fetchAiArticleFromService(
   id: number
 ): Promise<ApiResponse<AiArticle>> {
@@ -115,11 +128,9 @@ export async function fetchAiArticlesByRenderIdFromService(
 }
 
 // POST trigger to queue AI write-up creation
-export async function triggerWeekendArticleFromService(payload: {
-  accountId: number;
-  renderId: number;
-  articleId: number;
-}): Promise<TriggerResponse> {
+export async function triggerWeekendArticleFromService(
+  payload: TriggerArticlePayload
+): Promise<TriggerResponse> {
   const response = await fetcher.post<TriggerResponse>(
     "/ai-article/trigger",
     payload
@@ -135,6 +146,22 @@ export async function fetchWeekendArticleStatusFromService(payload: {
 }): Promise<StatusResponse> {
   const response = await fetcher.post<StatusResponse>(
     "/ai-article/status",
+    payload
+  );
+  return response;
+}
+
+/**
+ * Reset a failed writeup back to a retryable state.
+ * POST /ai-article/reset — CMS TKT-PBX-012 (2026-09-02).
+ */
+export async function resetArticleGenerationFromService(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+}): Promise<StatusResponse> {
+  const response = await fetcher.post<StatusResponse>(
+    "/ai-article/reset",
     payload
   );
   return response;

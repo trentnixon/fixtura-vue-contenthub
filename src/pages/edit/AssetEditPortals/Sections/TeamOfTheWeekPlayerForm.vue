@@ -119,7 +119,11 @@ import {
   isRequired,
   isValidName,
 } from "@/pages/edit/validations/genericValidations";
-import type { TotwEditCategory, TotwPlayer, TotwPositionSlug } from "@/types/TeamOfTheWeek";
+import type {
+  TotwEditCategory,
+  TotwPlayer,
+  TotwPositionSlug,
+} from "@/types/TeamOfTheWeek";
 import {
   TOTW_CATEGORY_OPTIONS,
   getCategoryPositionLabel,
@@ -206,8 +210,10 @@ function updatePosition(position: TotwPositionSlug | null) {
 
 function updateClubByName(newClubName: string) {
   const selectedClub = teamOptions.value.find(
-    (club: { name: string; logo?: { url: string; width: number; height: number } }) =>
-      club.name === newClubName
+    (club: {
+      name: string;
+      logo?: { url: string; width: number; height: number };
+    }) => club.name === newClubName
   );
   if (selectedClub?.logo) {
     updateField("club", {

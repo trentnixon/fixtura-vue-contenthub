@@ -260,7 +260,9 @@ export function getPositionSelectItemsForCategory(
   }));
 }
 
-export function showPositionSelectForCategory(category: TotwEditCategory): boolean {
+export function showPositionSelectForCategory(
+  category: TotwEditCategory
+): boolean {
   return category !== "Wicket-Keeper";
 }
 
@@ -394,11 +396,15 @@ export function getPrimaryStatLabel(player: TotwPlayer): string {
   }
 
   if (category === "All-Rounder") {
-    return `${player.batting?.runs ?? 0} Runs / ${player.bowling?.wickets ?? 0} Wkts`;
+    return `${player.batting?.runs ?? 0} Runs / ${
+      player.bowling?.wickets ?? 0
+    } Wkts`;
   }
 
   if (category === "Wicket-Keeper") {
-    return `${player.fielding?.catches ?? 0} Catches / ${player.fielding?.stumpings ?? 0} St`;
+    return `${player.fielding?.catches ?? 0} Catches / ${
+      player.fielding?.stumpings ?? 0
+    } St`;
   }
 
   return `${player.batting?.runs ?? 0} Runs`;
@@ -587,7 +593,9 @@ export function getSquadStatusMessage(count: number): string | null {
     return "No players in the squad. Add players to build your Team of the Week.";
   }
   if (count < TOTW_MIN_SQUAD_SIZE) {
-    return `Squad has ${count} of ${TOTW_MIN_SQUAD_SIZE} required players. Add ${TOTW_MIN_SQUAD_SIZE - count} more to complete the XI.`;
+    return `Squad has ${count} of ${TOTW_MIN_SQUAD_SIZE} required players. Add ${
+      TOTW_MIN_SQUAD_SIZE - count
+    } more to complete the XI.`;
   }
   if (count === TOTW_MIN_SQUAD_SIZE) {
     return `Full XI selected (${TOTW_MIN_SQUAD_SIZE} players). You can optionally add a Twelfth Man.`;

@@ -24,10 +24,22 @@
 - [x] Fixture comparison/diff view before saving
 - [x] Bulk edit operations (e.g., update date for all fixtures)
 - [x] Performance optimization: lazy loading fixture data
+- [x] Pressbox rewrite trigger contract (Round 1 + 2): `requestReason`, gating, error UX, shared trigger flow
+  - Comms: `.comms/2026-09-01-content-hub-pressbox-rewrite-trigger-contract.md`
+  - Plan: `.research/2026-09-01-pressbox-rewrite-implementation.md`
+- [x] Article completion polling (Phase A): poll `pending` + `writing`, refetch `structuredOutput` on complete
+  - `.research/2026-09-01-article-completion-polling-review.md`
+  - `.comms/2026-09-01-content-hub-pressbox-article-completion-polling.md`
+- [x] Pressbox failed reset / retry (Hub + CMS TKT-PBX-012): reset call, failed UI, timeout UI, refetch on regen reset
+  - `.comms/2026-09-02-content-hub-pressbox-failed-reset-contract.md`
+  - `.comms/2026-09-02-cms-handoff-pressbox-failed-reset-hub.md`
 
 ## ⏳ To Do (easy → hard)
 
-_No pending items at this time._
+1. [ ] **Manual QA — Pressbox reset + rewrites** (P1)
+   - Restart CMS with TKT-PBX-012 before testing
+   - Reset QA: `.comms/2026-09-02-cms-handoff-pressbox-failed-reset-hub.md`
+   - Rewrite QA: `.comms/2026-09-01-cms-response-pressbox-section0.md`
 
 ## 💡 Recommendations
 

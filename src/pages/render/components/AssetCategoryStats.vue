@@ -47,7 +47,7 @@
         icon="mdi-file-document"
         buttonText=""
         :value="getCategoryTotal('writeup')"
-        subtitle="Writeup Assets"
+        :subtitle="PRESSBOX_COPY.stats.writeupAssets"
         theme="cardNeutral"
       >
         <template v-slot:chart>
@@ -70,6 +70,7 @@
 <script setup>
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
 import PieChartMini from "@/components/charts/mini/PieChart.vue";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 import { computed } from "vue";
 import { useRenderData } from "@/pages/render/composables/useRenderData";
 

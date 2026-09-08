@@ -1,4 +1,6 @@
 import { AiArticle, FormattedAiArticle } from "@/types";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
+import { ArticleStatus } from "@/types/ArticleTypes";
 import { usePrivateAiArticleState } from "./private";
 import {
   fetchAiArticleFromService,
@@ -11,11 +13,18 @@ import {
   deleteArticleContext,
   fetchArticleFixtures,
   updateArticleFixtures,
+  resetArticleGenerationFromService,
   type SaveContextResponse,
   type FetchContextResponse,
   type DeleteContextResponse,
   type UpdateFixturesResponse,
+  type TriggerArticlePayload,
+  type ArticleStatusData,
 } from "./service";
+import {
+  parseTriggerError,
+  isTransientNetworkError,
+} from "@/composables/aiArticles/parseTriggerError";
 
 export async function fetchAiArticle(id: number) {
   const state = usePrivateAiArticleState();
@@ -80,12 +89,14 @@ export async function fetchFullAiArticlesByIds(ids: number[]) {
 }
 
 // Trigger AI weekend article creation
-export async function triggerWeekendArticleAction(payload: {
-  accountId: number;
-  renderId: number;
-  articleId: number;
-}) {
+export async function triggerWeekendArticleAction(
+  payload: TriggerArticlePayload,
+  options?: { restoreStatusOnError?: ArticleStatus | "idle" }
+) {
   const state = usePrivateAiArticleState();
+  const statusBeforeTrigger = state.status;
+  const restoreStatus =
+    options?.restoreStatusOnError ?? statusBeforeTrigger ?? "idle";
   try {
     state.loading = true;
     state.error = null;
@@ -102,8 +113,8 @@ export async function triggerWeekendArticleAction(payload: {
     }
     return res; // Return response for UI display
   } catch (error) {
-    state.error = (error as Error).message;
-    state.status = "failed";
+    state.error = parseTriggerError(error);
+    state.status = restoreStatus;
     throw error; // Re-throw so component can handle
   } finally {
     state.loading = false;
@@ -140,11 +151,11 @@ export async function pollWeekendArticleStatus(payload: {
       // Handle locked state or other error conditions
       if (res.data.locked) {
         state.error =
-          "Article is locked (feedback limit reached or article too old)";
+          "Writeup is locked (generation limit reached or writeup too old)";
       }
 
       if (res.data.status === "failed") {
-        state.error = "Article generation failed";
+        state.error = PRESSBOX_COPY.errors.generationFailed;
       }
     }
     return res;
@@ -190,6 +201,15 @@ export async function pollWeekendArticleStatus(payload: {
           currentStatus: state.status,
         }
       );
+    } else if (isTransientNetworkError(error)) {
+      // Transient connectivity — preserve status so polling can retry
+      console.warn(
+        "[pollWeekendArticleStatus] Transient network error - preserving status:",
+        {
+          currentStatus: state.status,
+          errorMessage,
+        }
+      );
     } else {
       // Real error, set to failed
       state.status = "failed";
@@ -202,9 +222,62 @@ export async function pollWeekendArticleStatus(payload: {
   }
 }
 
-// Optionally fetch completed article data
+/**
+ * Ask CMS to clear a failed generation so trigger can run again.
+ * Returns status payload on success.
+ */
+export async function resetArticleGenerationAction(payload: {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+}): Promise<ArticleStatusData> {
+  const state = usePrivateAiArticleState();
+
+  try {
+    state.error = null;
+    const res = await resetArticleGenerationFromService(payload);
+    if (res.data) {
+      state.status = res.data.status ?? "waiting";
+      if (typeof res.data.locked === "boolean" && res.data.locked) {
+        state.error = PRESSBOX_COPY.errors.locked;
+      }
+      return res.data;
+    }
+
+    throw new Error(PRESSBOX_COPY.errors.resetFailed);
+  } catch (error) {
+    if (isTransientNetworkError(error)) {
+      throw error;
+    }
+
+    state.error = parseTriggerError(error);
+    throw error;
+  }
+}
+
+/** Clear Hub-side failed state before a local retry attempt. */
+export function clearLocalFailedGenerationState(): void {
+  const state = usePrivateAiArticleState();
+  if (state.status === "failed") {
+    state.status = "waiting";
+  }
+  state.error = null;
+}
+
+// Optionally fetch completed article data (legacy path — prefer refreshFullAiArticle)
 export async function fetchWeekendArticleDownload(articleId: number) {
-  return await fetchWeekendArticleDownloadFromService(articleId);
+  return await refreshFullAiArticle(articleId);
+}
+
+/** Refetch a single article's structuredOutput into fullAiArticles store. */
+export async function refreshFullAiArticle(articleId: number) {
+  const state = usePrivateAiArticleState();
+  const response = await fetchAiArticleFromService(articleId);
+  if (response?.data) {
+    const rawArticle = response.data as AiArticle;
+    state.fullAiArticles[rawArticle.id] = formatAiArticles(rawArticle);
+  }
+  return response;
 }
 
 // ============================================================

@@ -46,10 +46,7 @@ export function initAnalytics(): void {
   initialized = true;
 }
 
-export function capturePageview(
-  path: string,
-  context?: HubRouteContext
-): void {
+export function capturePageview(path: string, context?: HubRouteContext): void {
   if (!canCapture()) {
     return;
   }

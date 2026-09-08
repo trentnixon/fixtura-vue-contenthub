@@ -51,7 +51,7 @@
           :icon="icons.assets.articles"
           buttonText=""
           :value="totalAiArticles"
-          subtitle="Articles written"
+          :subtitle="PRESSBOX_COPY.stats.writeupsGenerated"
           theme="cardNeutral"
         >
           <template v-slot:chart>
@@ -60,7 +60,7 @@
           <template v-slot:extra>
             <div>
               <p>
-                <strong>Percentage AI Articles:</strong>
+                <strong>{{ PRESSBOX_COPY.stats.percentageWriteups }}:</strong>
                 {{ percentageAiArticles }}%
               </p>
             </div>
@@ -78,6 +78,7 @@ import { useDisplay } from "vuetify";
 import CardSmall1DataPoint from "@/components/primitives/cards/CardSmall1DataPoint.vue";
 import PieChartMini from "@/components/charts/mini/PieChart.vue";
 import BarChartMini from "@/components/charts/mini/BarChart.vue";
+import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 
 // Import composable
 import { useAccountData } from "@/pages/account/composables/useAccountData";
