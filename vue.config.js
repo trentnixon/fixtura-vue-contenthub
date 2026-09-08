@@ -25,25 +25,22 @@ module.exports = defineConfig({
     });
   },
   devServer: {
-    proxy: [
-      {
-        context: ["/ingest/static"],
+    proxy: {
+      "/ingest/static": {
         ...posthogAssetsProxy,
         pathRewrite: { "^/ingest/static": "/static" },
       },
-      {
-        context: ["/ingest/array"],
+      "/ingest/array": {
         ...posthogAssetsProxy,
         pathRewrite: { "^/ingest/array": "/array" },
       },
-      {
-        context: ["/ingest"],
+      "/ingest": {
         target: "https://us.i.posthog.com",
         changeOrigin: true,
         secure: true,
         pathRewrite: { "^/ingest": "" },
       },
-    ],
+    },
   },
   configureWebpack: {
     resolve: {

@@ -18,6 +18,12 @@ import type { ArticleStatusData } from "@/store/aiArticles/service";
 import type { ArticleIds, ArticleStatus } from "@/types/ArticleTypes";
 import { useArticlePolling } from "./useArticlePolling";
 
+type ResolvedArticleIds = {
+  accountId: number;
+  renderId: number;
+  articleId: number;
+};
+
 export interface ArticleGenerationLifecycleOptions {
   accountId: () => number | null;
   renderId: () => number | null;
@@ -32,7 +38,7 @@ export interface ArticleGenerationLifecycleOptions {
 
 function resolveArticleIds(
   options: ArticleGenerationLifecycleOptions
-): ArticleIds | null {
+): ResolvedArticleIds | null {
   const accountId = options.accountId();
   const renderId = options.renderId();
   const articleId = options.articleId();
