@@ -268,6 +268,7 @@ const { canRequestReview, rewriteDisabledTooltip, executeArticleTrigger } =
     updateFeedback,
     requestError,
     startGenerationPolling,
+    refreshContextState: fetchExistingContext,
   });
 
 const buttonText = computed(() =>

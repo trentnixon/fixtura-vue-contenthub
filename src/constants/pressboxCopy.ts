@@ -105,9 +105,9 @@ export const PRESSBOX_COPY = {
     weekendInitialSubhead: "Send a new match report to the Press Box?",
     weekendInitialDescription:
       "We'll generate a fresh writeup based on your current fixture data.",
-    weekendRegenerationSubhead: "Request a review of this match report?",
+    weekendRegenerationSubhead: "Request another version of this match report?",
     weekendRegenerationDescription:
-      "We'll generate a new version using your saved editorial context or fixture changes.",
+      "We'll generate a new writeup from your current fixture data. You can also add editorial context first to steer the result.",
     ladderInitialSubhead: "Send a new ladder summary to the Press Box?",
     ladderInitialDescription:
       "We'll generate a fresh writeup based on your current standings data.",
@@ -126,9 +126,9 @@ export const PRESSBOX_COPY = {
       "Send a new performance writeup to the Press Box?",
     performanceInitialDescription:
       "We'll generate a fresh writeup based on your current stats.",
-    regenerationSubhead: "Request a review of this writeup?",
+    regenerationSubhead: "Request another version of this writeup?",
     regenerationDescription:
-      "We'll generate a new version using your saved editorial context.",
+      "We'll generate a new writeup from your current data. Add editorial context first if you want to steer the tone or focus.",
   },
   errors: {
     locked: "This writeup can't be regenerated (limit or age).",
@@ -147,9 +147,6 @@ export const PRESSBOX_COPY = {
       "Writeup reset is not available. Restart or update CMS, then try again.",
   },
   tooltips: {
-    rewriteNeedsContextOrFixtures:
-      "Add editorial context or save fixture changes to request a review.",
-    rewriteNeedsContext: "Add editorial context to request a review.",
     backToWriteup: "Back to writeup",
   },
   navigation: {

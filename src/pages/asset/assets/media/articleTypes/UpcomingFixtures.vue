@@ -260,6 +260,7 @@ const { canRequestReview, rewriteDisabledTooltip, executeArticleTrigger } =
     updateFeedback,
     requestError,
     startGenerationPolling,
+    refreshContextState: fetchExistingContext,
   });
 
 // Button text based on phase

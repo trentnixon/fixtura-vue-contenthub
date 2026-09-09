@@ -4,7 +4,8 @@ import { PRESSBOX_COPY } from "@/constants/pressboxCopy";
 export type TriggerRequestReason =
   | "initial"
   | "editorial_feedback"
-  | "source_changed";
+  | "source_changed"
+  | "user_requested_regeneration";
 
 export interface RegenerationGateInput {
   articlePhase: ArticlePhase;
@@ -23,36 +24,26 @@ export function isFailedGenerationRetry(
 }
 
 /**
- * Pressbox regeneration requires editorial context and/or saved fixture changes.
- * First write (non-articleWritten phases) is allowed when not locked/pending.
- * Failed generation always allows retry when not locked/pending.
+ * Pressbox regeneration is allowed whenever the writeup is not locked or in progress.
+ * Attempt limits and eligibility are enforced by CMS (403 / locked status).
  */
 export function canRequestRegeneration(input: RegenerationGateInput): boolean {
-  if (input.isLocked || input.isPending) {
-    return false;
-  }
-
-  if (isFailedGenerationRetry(input.articleStatus)) {
-    return true;
-  }
-
-  if (input.articlePhase !== "articleWritten") {
-    return true;
-  }
-
-  if (input.supportsFixtureRegeneration) {
-    return input.hasContext || input.fixturesSavedForRegeneration;
-  }
-
-  return input.hasContext;
+  return !input.isLocked && !input.isPending;
 }
 
 /**
- * Q4 decision tree: fixture save → source_changed; context only → editorial_feedback.
+ * Resolve controlled requestReason for CMS Pressbox trigger.
+ * Regeneration priority: source_changed → editorial_feedback → user_requested_regeneration.
+ *
+ * Contract (TKT-PBX-013 / Round 1 2026-09-09):
+ * - user_requested_regeneration is evidence-free at CMS (lock/limit/window only).
+ * - Persisted context ⇒ editorial_feedback even if user did not edit context this session (Q4).
+ * - Plain regen may still include persisted userFeedbackPrompt in worker snapshot (Q3-A); Hub does not clear context.
  */
 export function resolveTriggerRequestReason(input: {
   isRegeneration: boolean;
   isFailedRetry?: boolean;
+  hasPriorWriteup: boolean;
   hasContext: boolean;
   fixturesSavedForRegeneration: boolean;
 }): TriggerRequestReason | null {
@@ -63,7 +54,9 @@ export function resolveTriggerRequestReason(input: {
     if (input.hasContext) {
       return "editorial_feedback";
     }
-    return "initial";
+    return input.hasPriorWriteup
+      ? "user_requested_regeneration"
+      : "initial";
   }
 
   if (!input.isRegeneration) {
@@ -78,7 +71,7 @@ export function resolveTriggerRequestReason(input: {
     return "editorial_feedback";
   }
 
-  return null;
+  return "user_requested_regeneration";
 }
 
 export function getRewriteDisabledTooltip(
@@ -90,24 +83,6 @@ export function getRewriteDisabledTooltip(
 
   if (input.isLocked) {
     return PRESSBOX_COPY.errors.locked;
-  }
-
-  if (
-    isFailedGenerationRetry(input.articleStatus) ||
-    input.articlePhase !== "articleWritten"
-  ) {
-    return null;
-  }
-
-  if (input.supportsFixtureRegeneration) {
-    if (!input.hasContext && !input.fixturesSavedForRegeneration) {
-      return PRESSBOX_COPY.tooltips.rewriteNeedsContextOrFixtures;
-    }
-    return null;
-  }
-
-  if (!input.hasContext) {
-    return PRESSBOX_COPY.tooltips.rewriteNeedsContext;
   }
 
   return null;

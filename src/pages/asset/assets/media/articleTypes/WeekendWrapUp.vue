@@ -449,6 +449,7 @@ const {
   requestError,
   startGenerationPolling,
   supportsFixtureRegeneration: true,
+  refreshContextState: fetchExistingContext,
 });
 
 // Initialize fixture editing composable

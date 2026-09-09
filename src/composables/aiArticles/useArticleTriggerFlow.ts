@@ -40,6 +40,8 @@ export interface ArticleTriggerFlowOptions {
   startGenerationPolling: (ids: ArticleIds) => void;
   requestError?: Ref<string>;
   onRegenerationTriggered?: () => void;
+  /** Refresh persisted context before resolving requestReason (Q4 priority). */
+  refreshContextState?: () => Promise<void>;
 }
 
 export function useArticleTriggerFlow(options: ArticleTriggerFlowOptions) {
@@ -109,7 +111,7 @@ export function useArticleTriggerFlow(options: ArticleTriggerFlowOptions) {
     ) {
       requestError.value =
         getRewriteDisabledTooltip(gateInput.value) ??
-        "Add editorial context or save fixture changes before requesting a review.";
+        PRESSBOX_COPY.errors.lockedLimit;
       return;
     }
 
@@ -120,18 +122,24 @@ export function useArticleTriggerFlow(options: ArticleTriggerFlowOptions) {
       return;
     }
 
+    if ((isRegeneration || isFailedRetry) && options.refreshContextState) {
+      try {
+        await options.refreshContextState();
+      } catch (error) {
+        console.warn(
+          "[useArticleTriggerFlow] refreshContextState failed:",
+          error
+        );
+      }
+    }
+
     const requestReason = resolveTriggerRequestReason({
       isRegeneration,
       isFailedRetry,
+      hasPriorWriteup: options.articlePhase.value === "articleWritten",
       hasContext: options.hasContext.value,
       fixturesSavedForRegeneration: fixturesSavedForRegeneration.value,
     });
-
-    if (isRegeneration && !requestReason) {
-      requestError.value =
-        "Add editorial context or save fixture changes before requesting a review.";
-      return;
-    }
 
     const priorStatus = isRegeneration ? storeState.status : undefined;
     let restoreStatusOnError = priorStatus;

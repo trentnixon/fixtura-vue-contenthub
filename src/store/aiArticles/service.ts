@@ -78,7 +78,8 @@ export interface UpdateFixturesResponse {
 export type TriggerRequestReason =
   | "initial"
   | "editorial_feedback"
-  | "source_changed";
+  | "source_changed"
+  | "user_requested_regeneration";
 
 export interface TriggerArticlePayload {
   accountId: number;

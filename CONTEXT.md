@@ -39,7 +39,7 @@ A user action that queues AI writeup creation via `POST /api/ai-article/trigger`
 _Avoid_: Request write-up (legacy UI copy on some buttons)
 
 **Regeneration**:
-A generation trigger after a writeup already exists. Requires a controlled `requestReason` on the CMS Pressbox path.
+A generation trigger after a writeup already exists. Requires a controlled `requestReason` on the CMS Pressbox path (`user_requested_regeneration`, `editorial_feedback`, or `source_changed`).
 _Avoid_: Rewrite (API/docs term), Request a Review (user-facing label — use in UI only, not in domain docs)
 
 **Editorial context**:
@@ -51,5 +51,5 @@ The number of times a writeup has been triggered, including the first generation
 _Avoid_: Feedback count, review count, rewrite count
 
 **Request a Review**:
-User-facing label for requesting a regeneration. Implies editorial review, not a separate CMS operation.
+User-facing label for requesting a regeneration — another AI version of the writeup, with or without editorial context or source edits.
 _Avoid_: Request rewrite, Regenerate (unless renaming UI deliberately)
