@@ -35,18 +35,19 @@
   - `.comms/2026-09-02-cms-handoff-pressbox-failed-reset-hub.md`
 - [x] Pressbox plain regeneration (`user_requested_regeneration`): remove UI gate, default regen reason, CMS comms
   - `.comms/2026-09-09-content-hub-pressbox-user-requested-regeneration.md`
+  - Hub commit: `432e564`
 
 ## ⏳ To Do (easy → hard)
 
-1. [ ] **CMS TKT-PBX-013 — ship `user_requested_regeneration`** (P1)
-   - Request: `.comms/2026-09-09-content-hub-pressbox-user-requested-regeneration.md`
-   - Ack: `src/api/pressbox/.comms/2026-09-09-cms-ack-pressbox-user-requested-regeneration.md` (CMS canonical)
-   - Hub mirror: `.comms/2026-09-09-cms-ack-pressbox-user-requested-regeneration.md`
-   - **Blocker (Q9):** worker/queue enum extension before deploy
-   - **QA (Q10):** CMS staging → Hub row #1; Hub 400 pre-deploy expected
-   - **Verify (Q12):** `npm run test:pressbox` + Strapi schema sync locally
+1. [ ] **Local QA — plain regen row #1** (P1)
+   - Handoff: `.comms/2026-09-09-cms-handoff-pressbox-plain-regen-hub-local-qa.md`
+   - CMS TKT-PBX-013 on local Strapi; Hub → `http://localhost:1337/api/` (see `.env`)
+   - Article with **no** persisted context; Request a Review → **200** + `user_requested_regeneration`
+   - **Q9:** confirm Pressbox worker accepts enum (200 + stuck job = worker not updated)
 
-2. [ ] **Manual QA — Pressbox reset + rewrites** (P1)
+2. [ ] **CMS staging deploy** (P1, after local QA + Pressbox Q9 ack)
+
+3. [ ] **Manual QA — Pressbox reset + rewrites** (P1)
    - Restart CMS with TKT-PBX-012 before testing
    - Reset QA: `.comms/2026-09-02-cms-handoff-pressbox-failed-reset-hub.md`
    - Rewrite QA: `.comms/2026-09-01-cms-response-pressbox-section0.md`
