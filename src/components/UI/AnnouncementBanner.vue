@@ -38,7 +38,7 @@ const props = defineProps({
 const show = ref(true);
 
 // Check localStorage to see if banner was dismissed
-const storageKey = "announcement-banner-dismissed";
+const storageKey = "announcement-banner-dismissed-2026-10-12";
 
 onMounted(() => {
   const dismissed = localStorage.getItem(storageKey);
