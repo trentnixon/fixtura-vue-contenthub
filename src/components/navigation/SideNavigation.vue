@@ -6,29 +6,25 @@
     :model-value="drawer"
     @update:model-value="updateDrawer"
   >
-    <v-layout class="fill-height" style="flex-direction: column">
-      <template v-if="!Boolean(getOrganizationDetails)">
-        <v-skeleton-loader type="paragraph"></v-skeleton-loader>
-      </template>
-      <template v-else>
-        <v-container class="text-center p-2">
-          <!-- Added p-2 for padding and rounded-md for border-radius -->
-          <v-avatar class="mb-0" v-if="getOrganizationDetails" size="x-large">
-            <v-img
-              :alt="getAccountName"
-              :src="getOrganizationDetails.ParentLogo"
-            ></v-img>
-          </v-avatar>
-          <div class="text-body">{{ getAccountName }}</div>
-        </v-container>
-      </template>
-      <v-container
-        class="pa-1 text-start flex-grow-1 d-flex flex-column pa-0 p-1"
-        fluid
-      >
-        <!-- Replaced pa-1 with p-1 and added rounded-md -->
-        <v-list>
-          <!-- Bundle link with correct icon -->
+    <div class="side-nav">
+      <div class="side-nav__org">
+        <template v-if="!Boolean(getOrganizationDetails)">
+          <v-skeleton-loader type="paragraph"></v-skeleton-loader>
+        </template>
+        <template v-else>
+          <v-container class="text-center pa-2">
+            <v-avatar class="mb-0" v-if="getOrganizationDetails" size="x-large">
+              <v-img
+                :alt="getAccountName"
+                :src="getOrganizationDetails.ParentLogo"
+              ></v-img>
+            </v-avatar>
+            <div class="text-body">{{ getAccountName }}</div>
+          </v-container>
+        </template>
+      </div>
+      <div class="side-nav__body">
+        <v-list class="side-nav__pinned">
           <v-list-item
             class="rounded-md shadow-2"
             v-if="accountid"
@@ -40,9 +36,10 @@
               <v-icon>{{ icons.bundles.bundle }}</v-icon>
             </template>
           </v-list-item>
+        </v-list>
+        <template v-if="renderId">
           <v-divider class="mt-2"></v-divider>
-          <v-list v-if="renderId">
-            <!-- Render link with correct icon -->
+          <v-list class="side-nav__pinned">
             <v-list-item
               class="rounded-md shadow-2"
               :to="{ path: `/${accountid}/${sport}/${renderId}` }"
@@ -54,34 +51,29 @@
                 <v-icon>{{ icons.bundles.bundleDate }} </v-icon>
               </template>
             </v-list-item>
-            <template v-if="renderId">
-              <v-divider class="mt-2"></v-divider>
-            </template>
-
-            <!-- Dynamic list of categories with icons and truncated text -->
-            <template v-if="renderId && filteredCategoryItems">
-              <v-list class="overflow-y-auto" style="min-height: 60vh">
-                <v-list-item
-                  class="rounded-md shadow-2 my-1"
-                  active-class="active-nav-item"
-                  v-for="(item, index) in filteredCategoryItems"
-                  :key="index"
-                  :title="truncateText(item.category, 20)"
-                  :subtitle="`Assets: ${item.assetCount} | Articles: ${item.articleCount}`"
-                  :to="item.link"
-                  :active="isActiveCategory(item.category)"
-                >
-                  <template v-slot:append>
-                    <v-icon>{{ getIconForCategory(item.category) }}</v-icon>
-                  </template>
-                </v-list-item>
-              </v-list>
-              <v-divider class="mt-2"></v-divider>
-            </template>
           </v-list>
-        </v-list>
-      </v-container>
-    </v-layout>
+          <v-divider class="mt-2"></v-divider>
+          <div v-if="filteredCategoryItems" class="side-nav__categories">
+            <v-list>
+              <v-list-item
+                class="rounded-md shadow-2 my-1"
+                active-class="active-nav-item"
+                v-for="(item, index) in filteredCategoryItems"
+                :key="index"
+                :title="truncateText(item.category, 20)"
+                :subtitle="`Assets: ${item.assetCount} | Articles: ${item.articleCount}`"
+                :to="item.link"
+                :active="isActiveCategory(item.category)"
+              >
+                <template v-slot:append>
+                  <v-icon>{{ getIconForCategory(item.category) }}</v-icon>
+                </template>
+              </v-list-item>
+            </v-list>
+          </div>
+        </template>
+      </div>
+    </div>
   </v-navigation-drawer>
 </template>
 
@@ -156,3 +148,36 @@ function truncateText(text, length) {
   return text;
 }
 </script>
+
+<style scoped>
+:deep(.v-navigation-drawer__content) {
+  min-height: 0;
+}
+
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.side-nav__org,
+.side-nav__pinned {
+  flex: 0 0 auto;
+}
+
+.side-nav__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.side-nav__categories {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+</style>
