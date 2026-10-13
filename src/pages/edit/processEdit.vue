@@ -17,6 +17,15 @@
       <p>Editor is only available on desktop and tablet devices.</p>
     </div>
   </div>
+
+  <v-snackbar
+    v-model="editNotice.visible"
+    :timeout="editNotice.timeout"
+    :color="editNotice.color"
+    location="top"
+  >
+    {{ editNotice.message }}
+  </v-snackbar>
 </template>
 
 <script setup>
@@ -25,6 +34,7 @@ import { useRoute } from "vue-router";
 import { useRenderAssets } from "@/pages/asset/composables/useRenderAssets";
 import HeaderSection from "@/pages/edit/components/HeaderSection.vue";
 import { useDisplay } from "vuetify";
+import { editNotice } from "@/pages/edit/composables/useEditNotice";
 
 // Import asset-specific edit components
 import WeekendResultsEdit from "@/pages/edit/AssetEditPortals/WeekendResultsEdit.vue";

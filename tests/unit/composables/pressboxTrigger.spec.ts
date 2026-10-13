@@ -53,7 +53,9 @@ describe("pressboxTrigger", () => {
     });
 
     it("blocks when pending", () => {
-      expect(canRequestRegeneration(gateInput({ isPending: true }))).toBe(false);
+      expect(canRequestRegeneration(gateInput({ isPending: true }))).toBe(
+        false
+      );
     });
   });
 
@@ -129,9 +131,9 @@ describe("pressboxTrigger", () => {
 
   describe("getRewriteDisabledTooltip", () => {
     it("returns pending message when generation is in flight", () => {
-      expect(
-        getRewriteDisabledTooltip(gateInput({ isPending: true }))
-      ).toBe(PRESSBOX_COPY.errors.generationInProgress);
+      expect(getRewriteDisabledTooltip(gateInput({ isPending: true }))).toBe(
+        PRESSBOX_COPY.errors.generationInProgress
+      );
     });
 
     it("returns locked message when writeup is locked", () => {

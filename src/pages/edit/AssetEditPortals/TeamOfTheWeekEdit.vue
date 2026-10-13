@@ -18,6 +18,8 @@
         color="success"
         @click="saveVideoMeta"
         label="Update Meta Data"
+        :loading="isSaving"
+        :disabled="isSaving"
       />
     </div>
 

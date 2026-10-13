@@ -24,10 +24,20 @@ export async function fetchDownloadsByRenderIdFromService(
   return response;
 }
 
+export interface ForceAssetRerenderResult {
+  success: boolean;
+  message: string;
+  error: string | null;
+}
+
+export type ForceAssetRerenderResponse =
+  | ForceAssetRerenderResult
+  | ApiResponse<boolean>;
+
 export async function triggerRerenderInService(
   id: number
-): Promise<ApiResponse<boolean>> {
-  const response = await fetcher.post<ApiResponse<boolean>>(
+): Promise<ForceAssetRerenderResponse> {
+  const response = await fetcher.post<ForceAssetRerenderResponse>(
     `/download/ForceAssetRerender`,
     {
       data: { RerenderID: id },

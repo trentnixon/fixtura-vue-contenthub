@@ -86,12 +86,13 @@ export async function fetchAssetsByRenderAction(
   userID: number,
   renderID: number,
   groupingCategory: string,
-  assetType: string
+  assetType: string,
+  showLoading = true
 ) {
   const state = usePrivateRendersState();
 
   try {
-    state.loading = true;
+    if (showLoading) state.loading = true;
     state.error = null;
 
     console.log("[fetchAssetsByRenderAction] Calling API with:", {
@@ -132,7 +133,7 @@ export async function fetchAssetsByRenderAction(
     state.error = `Failed to fetch assets: ${(error as Error).message}`;
     state.selectedFixturaAsset = null;
   } finally {
-    state.loading = false;
+    if (showLoading) state.loading = false;
   }
 }
 

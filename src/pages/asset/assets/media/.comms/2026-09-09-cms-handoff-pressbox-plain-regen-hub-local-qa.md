@@ -67,12 +67,12 @@ on Bull payload v1. If worker Zod is strict, update worker in the same local ses
 
 ## What Hub sends (unchanged from your spec)
 
-| Scenario | `requestReason` |
-| -------- | --------------- |
-| First write | omitted → CMS `"initial"` |
-| Plain “Request a Review” | **`user_requested_regeneration`** |
-| Persisted editorial context | `editorial_feedback` |
-| Fixtures saved this session (Weekend Wrap) | `source_changed` |
+| Scenario                                   | `requestReason`                   |
+| ------------------------------------------ | --------------------------------- |
+| First write                                | omitted → CMS `"initial"`         |
+| Plain “Request a Review”                   | **`user_requested_regeneration`** |
+| Persisted editorial context                | `editorial_feedback`              |
+| Fixtures saved this session (Weekend Wrap) | `source_changed`                  |
 
 Example plain regen body:
 
@@ -93,14 +93,14 @@ Legacy `accountId` / `renderId` optional (cross-check only); **`articleId` requi
 
 Run against one Pressbox-eligible article with a **completed writeup**, not locked, attempts remaining, render within 7 days.
 
-| # | Steps | Expected |
-| - | ----- | -------- |
+| #     | Steps                                                                           | Expected                                                                                                                       |
+| ----- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | **1** | Completed writeup, **no** saved context, **no** fixture save → Request a Review | Hub sends `user_requested_regeneration` → CMS **200**, `status: "pending"`, `feedback.count` +1, `generationRequestId` present |
-| **2** | Same article with saved context (no edit) → Request a Review | Hub sends `editorial_feedback` → CMS **200** (unchanged path) |
-| **3** | Weekend Wrap: save fixtures → Request a Review | Hub sends `source_changed` → CMS **200** if digest changed |
-| **4** | At feedback limit or locked | Hub disabled or CMS **403** |
-| **5** | Failed regen → Reset → Request a Review (no new edits) | Reset **200** → trigger `user_requested_regeneration` → **200** |
-| **6** | First write (no prior success) | No `requestReason` → CMS **200**, `"initial"` |
+| **2** | Same article with saved context (no edit) → Request a Review                    | Hub sends `editorial_feedback` → CMS **200** (unchanged path)                                                                  |
+| **3** | Weekend Wrap: save fixtures → Request a Review                                  | Hub sends `source_changed` → CMS **200** if digest changed                                                                     |
+| **4** | At feedback limit or locked                                                     | Hub disabled or CMS **403**                                                                                                    |
+| **5** | Failed regen → Reset → Request a Review (no new edits)                          | Reset **200** → trigger `user_requested_regeneration` → **200**                                                                |
+| **6** | First write (no prior success)                                                  | No `requestReason` → CMS **200**, `"initial"`                                                                                  |
 
 **Row #1 is the release gate** for TKT-PBX-013.
 
@@ -149,14 +149,14 @@ Job payload should include `"requestReason": "user_requested_regeneration"`.
 
 ## Failure modes (don’t misdiagnose)
 
-| Symptom | Likely cause |
-| ------- | ------------ |
-| **400** `requestReason is required and must be controlled` | CMS not on TKT-PBX-013 build, or typo in reason string |
-| **200** but no Redis job / worker never starts | Redis down, `REDISCLOUD_URL` missing, enqueue error → check CMS logs |
-| **200** but worker fails immediately | **Q9** — worker enum does not allow `user_requested_regeneration` |
-| **403** locked / limit | Expected — not a plain-regen defect |
-| Hub sends `editorial_feedback` when you expected plain | **Known v1:** persisted context on article (Q4) — clear context or use article without `userFeedbackPrompt` for row #1 |
-| Trigger uses Journalist path | `PRESSBOX_ENABLED` not `true` or unsupported composition |
+| Symptom                                                    | Likely cause                                                                                                           |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **400** `requestReason is required and must be controlled` | CMS not on TKT-PBX-013 build, or typo in reason string                                                                 |
+| **200** but no Redis job / worker never starts             | Redis down, `REDISCLOUD_URL` missing, enqueue error → check CMS logs                                                   |
+| **200** but worker fails immediately                       | **Q9** — worker enum does not allow `user_requested_regeneration`                                                      |
+| **403** locked / limit                                     | Expected — not a plain-regen defect                                                                                    |
+| Hub sends `editorial_feedback` when you expected plain     | **Known v1:** persisted context on article (Q4) — clear context or use article without `userFeedbackPrompt` for row #1 |
+| Trigger uses Journalist path                               | `PRESSBOX_ENABLED` not `true` or unsupported composition                                                               |
 
 ---
 

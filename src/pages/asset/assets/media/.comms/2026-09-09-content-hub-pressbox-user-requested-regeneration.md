@@ -20,12 +20,12 @@ Content Hub is shipping support for a new controlled reason: **`user_requested_r
 
 ## Product intent
 
-| User goal | Expected UX | `requestReason` (Hub sends) |
-| --------- | ----------- | ----------------------------- |
-| First writeup | Send to Press Box | omitted → CMS `"initial"` |
-| Don’t like output — try again | Request a Review (always available when not locked) | **`user_requested_regeneration`** |
-| Added editorial context | Request a Review | `editorial_feedback` |
-| Saved fixture changes (Weekend Wrap) | Request a Review | `source_changed` |
+| User goal                            | Expected UX                                         | `requestReason` (Hub sends)       |
+| ------------------------------------ | --------------------------------------------------- | --------------------------------- |
+| First writeup                        | Send to Press Box                                   | omitted → CMS `"initial"`         |
+| Don’t like output — try again        | Request a Review (always available when not locked) | **`user_requested_regeneration`** |
+| Added editorial context              | Request a Review                                    | `editorial_feedback`              |
+| Saved fixture changes (Weekend Wrap) | Request a Review                                    | `source_changed`                  |
 
 **Priority when multiple apply** (Hub resolves one reason per trigger):
 
@@ -41,8 +41,8 @@ Plain regeneration must **not** require `userFeedbackPrompt` or a changed source
 
 ### 1. Add controlled `requestReason` value
 
-| Value | When valid | Preconditions |
-| ----- | ---------- | ------------- |
+| Value                           | When valid                                                    | Preconditions                                                                                                           |
+| ------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `"user_requested_regeneration"` | Any Pressbox regeneration after a prior successful generation | Same as today: not locked, under `feedback.limit`, within eligibility window. **No** context or digest change required. |
 
 ### 2. Behaviour
@@ -55,23 +55,23 @@ Plain regeneration must **not** require `userFeedbackPrompt` or a changed source
 
 ### 3. Reject cases (unchanged)
 
-| Condition | Status | Notes |
-| --------- | ------ | ----- |
-| Missing / invalid `requestReason` on rewrite | **400** | Unchanged |
-| `"initial"` after successful generation | **400** | Unchanged |
-| Locked / at limit / outside window | **403** | Unchanged |
-| `"editorial_feedback"` without snapshot | **400** | Unchanged — Hub only sends this when context API succeeded |
-| `"source_changed"` without digest change | **400** | Unchanged — Hub only sends after fixture save API |
+| Condition                                    | Status  | Notes                                                      |
+| -------------------------------------------- | ------- | ---------------------------------------------------------- |
+| Missing / invalid `requestReason` on rewrite | **400** | Unchanged                                                  |
+| `"initial"` after successful generation      | **400** | Unchanged                                                  |
+| Locked / at limit / outside window           | **403** | Unchanged                                                  |
+| `"editorial_feedback"` without snapshot      | **400** | Unchanged — Hub only sends this when context API succeeded |
+| `"source_changed"` without digest change     | **400** | Unchanged — Hub only sends after fixture save API          |
 
 ### 4. Failed reset + retry
 
 After `POST /api/ai-article/reset` on a **failed regeneration** (prior `structuredOutput` preserved, status restored to `completed`):
 
-| Hub condition | `requestReason` |
-| ------------- | --------------- |
-| Fixtures saved this session | `source_changed` |
-| Persisted context | `editorial_feedback` |
-| Otherwise | **`user_requested_regeneration`** |
+| Hub condition               | `requestReason`                   |
+| --------------------------- | --------------------------------- |
+| Fixtures saved this session | `source_changed`                  |
+| Persisted context           | `editorial_feedback`              |
+| Otherwise                   | **`user_requested_regeneration`** |
 
 Hub will **no longer** send omitted/`initial` for failed regen retry when a completed writeup exists.
 
@@ -111,13 +111,13 @@ Optional `requestReasonDetail` remains **omitted** in Hub v1 for all reasons.
 
 ## Hub changes (shipped with this comms)
 
-| Area | Change |
-| ---- | ------ |
-| UI gating | **Removed** precondition gate on “Request a Review” — enabled whenever writeup exists, not locked, not in progress |
-| `pressboxTrigger.ts` | Default regen reason → `user_requested_regeneration`; `canRequestRegeneration` only checks lock + pending |
-| Tooltips | Removed “add context to request a review” disable tooltips; lock / in-progress tooltips unchanged |
-| Confirmation copy | Regeneration modal explains user can request another version (attempt limits still apply) |
-| Failed retry | Fallback regen reason → `user_requested_regeneration` when not first-write failure |
+| Area                 | Change                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| UI gating            | **Removed** precondition gate on “Request a Review” — enabled whenever writeup exists, not locked, not in progress |
+| `pressboxTrigger.ts` | Default regen reason → `user_requested_regeneration`; `canRequestRegeneration` only checks lock + pending          |
+| Tooltips             | Removed “add context to request a review” disable tooltips; lock / in-progress tooltips unchanged                  |
+| Confirmation copy    | Regeneration modal explains user can request another version (attempt limits still apply)                          |
+| Failed retry         | Fallback regen reason → `user_requested_regeneration` when not first-write failure                                 |
 
 **Until CMS ships:** plain “Request a Review” will return **400** if CMS does not recognise `user_requested_regeneration`. Hub surfaces CMS `error.message`; existing writeup remains visible.
 
@@ -125,15 +125,15 @@ Optional `requestReasonDetail` remains **omitted** in Hub v1 for all reasons.
 
 ## QA matrix (joint)
 
-| # | Scenario | Request | Expected |
-| - | -------- | ------- | -------- |
-| 1 | Completed writeup, no context/fixture change | `user_requested_regeneration` | **200**, new generation queued |
-| 2 | Completed writeup, context saved | `editorial_feedback` | **200** (unchanged) |
-| 3 | Weekend Wrap, fixtures saved | `source_changed` | **200** (unchanged) |
-| 4 | Locked / at limit | any regen reason | **403** or disabled UI |
-| 5 | Unknown `requestReason` | e.g. typo | **400** — controlled value message |
-| 6 | Failed regen → reset → retry, no new edits | `user_requested_regeneration` | Reset **200** → trigger **200** |
-| 7 | First write (no prior success) | no `requestReason` | **200** → `"initial"` (unchanged) |
+| #   | Scenario                                     | Request                       | Expected                           |
+| --- | -------------------------------------------- | ----------------------------- | ---------------------------------- |
+| 1   | Completed writeup, no context/fixture change | `user_requested_regeneration` | **200**, new generation queued     |
+| 2   | Completed writeup, context saved             | `editorial_feedback`          | **200** (unchanged)                |
+| 3   | Weekend Wrap, fixtures saved                 | `source_changed`              | **200** (unchanged)                |
+| 4   | Locked / at limit                            | any regen reason              | **403** or disabled UI             |
+| 5   | Unknown `requestReason`                      | e.g. typo                     | **400** — controlled value message |
+| 6   | Failed regen → reset → retry, no new edits   | `user_requested_regeneration` | Reset **200** → trigger **200**    |
+| 7   | First write (no prior success)               | no `requestReason`            | **200** → `"initial"` (unchanged)  |
 
 ---
 
@@ -141,16 +141,16 @@ Optional `requestReasonDetail` remains **omitted** in Hub v1 for all reasons.
 
 Full CMS ack: [2026-09-09-cms-ack-pressbox-user-requested-regeneration.md](./2026-09-09-cms-ack-pressbox-user-requested-regeneration.md)
 
-| # | Question | Decision |
-| - | -------- | -------- |
-| Q1 | Name | **`user_requested_regeneration`** — locked |
-| Q2 | Evidence model | **A** — CMS evidence-free; enum + lock/limit/window only |
-| Q3 | Persisted context on plain regen | **A (v1)** — may still apply in worker snapshot; not required |
-| Q4 | Old context ⇒ `editorial_feedback`? | **Accept Hub priority** for v1 |
-| Q5 | Worker prompt | **Same path** — variation out of scope |
-| Q6 | Rate limit | **Same `feedback.limit` (5)** |
-| Q7 | CMS ship scope | Enum + tests + §4 docs + TKT-PBX-013 + ack |
-| Q8 | Pre-deploy 400 | Expected until CMS deploy; Hub shows `error.message` |
+| #   | Question                            | Decision                                                      |
+| --- | ----------------------------------- | ------------------------------------------------------------- |
+| Q1  | Name                                | **`user_requested_regeneration`** — locked                    |
+| Q2  | Evidence model                      | **A** — CMS evidence-free; enum + lock/limit/window only      |
+| Q3  | Persisted context on plain regen    | **A (v1)** — may still apply in worker snapshot; not required |
+| Q4  | Old context ⇒ `editorial_feedback`? | **Accept Hub priority** for v1                                |
+| Q5  | Worker prompt                       | **Same path** — variation out of scope                        |
+| Q6  | Rate limit                          | **Same `feedback.limit` (5)**                                 |
+| Q7  | CMS ship scope                      | Enum + tests + §4 docs + TKT-PBX-013 + ack                    |
+| Q8  | Pre-deploy 400                      | Expected until CMS deploy; Hub shows `error.message`          |
 
 **Deploy order:** CMS **TKT-PBX-013** to **staging** before joint QA row #1. Hub may ship first; **400 until CMS live is expected** (Round 2 Q10).
 
@@ -161,13 +161,13 @@ Full CMS ack: [2026-09-09-cms-ack-pressbox-user-requested-regeneration.md](./202
 Canonical CMS ack: `src/api/pressbox/.comms/2026-09-09-cms-ack-pressbox-user-requested-regeneration.md`  
 Hub mirror: [2026-09-09-cms-ack-pressbox-user-requested-regeneration.md](./2026-09-09-cms-ack-pressbox-user-requested-regeneration.md)
 
-| # | Question | Decision |
-| - | -------- | -------- |
-| Q9 | Worker job schema | Confirm Pressbox worker enum before CMS deploy; extend queue + Zod or get written pass-through confirmation |
-| Q10 | Deploy / QA sequencing | CMS staging first → Hub row #1; pre-deploy Hub **400** is not a bug |
-| Q11 | CMS ack location | Canonical in `src/api/pressbox/.comms/` (TKT-PBX-011/012 pattern) |
-| Q12 | Schema migration | `npm run test:pressbox` + Strapi sync in TKT-PBX-013; no separate migration ticket unless staging drift |
-| Q13 | Stale-context support note | Paragraph in CMS ack **Known behaviour (v1)** — not Hub `CONTEXT.md` |
+| #   | Question                   | Decision                                                                                                    |
+| --- | -------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Q9  | Worker job schema          | Confirm Pressbox worker enum before CMS deploy; extend queue + Zod or get written pass-through confirmation |
+| Q10 | Deploy / QA sequencing     | CMS staging first → Hub row #1; pre-deploy Hub **400** is not a bug                                         |
+| Q11 | CMS ack location           | Canonical in `src/api/pressbox/.comms/` (TKT-PBX-011/012 pattern)                                           |
+| Q12 | Schema migration           | `npm run test:pressbox` + Strapi sync in TKT-PBX-013; no separate migration ticket unless staging drift     |
+| Q13 | Stale-context support note | Paragraph in CMS ack **Known behaviour (v1)** — not Hub `CONTEXT.md`                                        |
 
 ---
 

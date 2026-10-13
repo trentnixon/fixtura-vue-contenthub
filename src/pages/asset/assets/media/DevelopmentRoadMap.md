@@ -40,6 +40,7 @@
 ## ⏳ To Do (easy → hard)
 
 1. [ ] **Local QA — plain regen row #1** (P1)
+
    - Handoff: `.comms/2026-09-09-cms-handoff-pressbox-plain-regen-hub-local-qa.md`
    - CMS TKT-PBX-013 on local Strapi; Hub → `http://localhost:1337/api/` (see `.env`)
    - Article with **no** persisted context; Request a Review → **200** + `user_requested_regeneration`

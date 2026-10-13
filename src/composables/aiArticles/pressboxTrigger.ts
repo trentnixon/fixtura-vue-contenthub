@@ -54,9 +54,7 @@ export function resolveTriggerRequestReason(input: {
     if (input.hasContext) {
       return "editorial_feedback";
     }
-    return input.hasPriorWriteup
-      ? "user_requested_regeneration"
-      : "initial";
+    return input.hasPriorWriteup ? "user_requested_regeneration" : "initial";
   }
 
   if (!input.isRegeneration) {

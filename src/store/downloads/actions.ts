@@ -7,6 +7,7 @@ import {
   fetchDownloadsByRenderIdFromService,
   updateDownloadInService,
   fetchAssetByLinkIDFromService,
+  type ForceAssetRerenderResponse,
 } from "./service";
 import { Download } from "@/types";
 import { trackAssetEditSaved, trackPackRerun } from "@/lib/analytics";
@@ -76,6 +77,24 @@ export interface RerenderResponse {
   error: string | null; // Allow the error to be null
 }
 
+function isForceRerenderResult(
+  response: ForceAssetRerenderResponse
+): response is Extract<ForceAssetRerenderResponse, { success: boolean }> {
+  return "success" in response && typeof response.success === "boolean";
+}
+
+function rerenderWasAccepted(response: ForceAssetRerenderResponse): boolean {
+  if (isForceRerenderResult(response)) return response.success;
+  return response.data === true;
+}
+
+function rerenderMessage(response: ForceAssetRerenderResponse): string {
+  if (isForceRerenderResult(response) && response.message) {
+    return response.message;
+  }
+  return "Rerender triggered";
+}
+
 // Asset render and polling
 export async function triggerRerender(
   id: number,
@@ -89,10 +108,10 @@ export async function triggerRerender(
 
     // Make the API call to trigger the rerender
     const response = await triggerRerenderInService(id);
-    if (response?.data === true) {
+    if (rerenderWasAccepted(response)) {
       state.rerenderResponse = {
         success: true,
-        message: "Rerender triggered",
+        message: rerenderMessage(response),
         error: null,
       };
       trackPackRerun({

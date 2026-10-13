@@ -16,12 +16,11 @@
       <div v-if="asset.editTrigger" class="ml-2">
         <!-- Retry Button -->
         <PrimaryButton
-          v-if="canRetry"
           color="success"
           label="Apply Edits"
           @click="handleRerender"
-          :loading="isRerendering"
-          :disabled="!canRetry || isRerendering"
+          :loading="isPolling"
+          :disabled="isPolling"
           size="small"
         />
       </div>
@@ -42,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useVideoDownload } from "../../composables/useVideoDownload";
 import { useAssetDownloadAnalytics } from "../../composables/useAssetDownloadAnalytics";
 import CategoryHeader from "@/components/primitives/headers/CategoryHeader.vue";
@@ -64,8 +63,14 @@ const props = defineProps({
   },
 });
 
-// Since we only expect one video URL, extract it directly
-const videoUrl = ref(props.videoUrls);
+const mediaVersion = ref(0);
+
+const videoUrl = computed(() => {
+  const source = props.videoUrls;
+  if (!mediaVersion.value || typeof source !== "string") return source;
+  const joiner = source.includes("?") ? "&" : "?";
+  return `${source}${joiner}v=${mediaVersion.value}`;
+});
 const { isDownloading, downloadVideo } = useVideoDownload();
 const { buildDownloadContext } = useAssetDownloadAnalytics();
 
@@ -73,20 +78,11 @@ async function handleDownload() {
   const context = buildDownloadContext(props.asset, "video");
   await downloadVideo(videoUrl.value, context);
 }
-// State for whether the user can retry
-const canRetry = ref(true);
-
-// Composable handling rerender logic
-const { triggerRerender, isRerendering, rerenderResponse, isPolling } =
-  useAssetRerender();
+// Composable handling rerender logic. isPolling belongs to this video only.
+const { triggerRerender, isPolling } = useAssetRerender();
 
 const handleRerender = async () => {
-  canRetry.value = false; // Disable retry button
-  await triggerRerender(props.asset);
-
-  // Allow retry if CMS returned an error
-  if (rerenderResponse && !rerenderResponse.success) {
-    canRetry.value = true;
-  }
+  const finished = await triggerRerender(props.asset);
+  if (finished) mediaVersion.value += 1;
 };
 </script>

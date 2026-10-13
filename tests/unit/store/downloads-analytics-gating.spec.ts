@@ -48,6 +48,23 @@ describe("downloads store Asset pack_rerun gating", () => {
     });
   });
 
+  it("emits pack_rerun when the rerender body reports success", async () => {
+    mockTriggerRerenderInService.mockResolvedValue({
+      success: true,
+      message: "Rerender triggered successfully",
+      error: null,
+    });
+
+    await triggerRerender(42, { render_id: 7, account_id: 3 });
+
+    expect(trackPackRerun).toHaveBeenCalledWith({
+      asset_id: 42,
+      render_id: 7,
+      account_id: 3,
+      trigger: "asset",
+    });
+  });
+
   it("does not emit pack_rerun when rerender data is unsuccessful", async () => {
     mockTriggerRerenderInService.mockResolvedValue({ data: false });
 

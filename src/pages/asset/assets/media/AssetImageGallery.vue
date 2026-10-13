@@ -18,13 +18,12 @@
       <div v-if="asset.editTrigger" class="ml-2">
         <!-- Retry Button -->
         <PrimaryButton
-          v-if="canRetry"
           color="success"
           label="Apply Edits"
           @click="handleRerender"
-          :loading="isRerendering"
+          :loading="isPolling"
           size="small"
-          :disabled="!canRetry || isRerendering"
+          :disabled="isPolling"
         />
       </div>
     </template>
@@ -50,7 +49,7 @@
             :md="isSingleImage ? 12 : 3"
           >
             <AssetCard
-              :image="url"
+              :image="displayUrl(url)"
               title="Image Asset"
               subtitle="Downloadable"
               description="Click the button to download or view the image"
@@ -160,20 +159,20 @@ function handleBulkDownload(urls) {
   bulkDownloadImages(urls, downloadContext.value);
 }
 
-// State for whether the user can retry
-const canRetry = ref(true);
+const mediaVersion = ref(0);
 
-// Composable handling rerender logic
-const { triggerRerender, isRerendering, rerenderResponse, isPolling } =
-  useAssetRerender();
+// Composable handling rerender logic. isPolling belongs to this gallery only.
+const { triggerRerender, isPolling } = useAssetRerender();
 
 const handleRerender = async () => {
-  canRetry.value = false; // Disable retry button
-  await triggerRerender(props.asset);
-
-  // Allow retry if CMS returned an error
-  if (rerenderResponse && !rerenderResponse.success) {
-    canRetry.value = true;
-  }
+  const finished = await triggerRerender(props.asset);
+  if (finished) mediaVersion.value += 1;
 };
+
+function displayUrl(url) {
+  if (!mediaVersion.value) return url;
+  const value = String(url);
+  const joiner = value.includes("?") ? "&" : "?";
+  return `${value}${joiner}v=${mediaVersion.value}`;
+}
 </script>
