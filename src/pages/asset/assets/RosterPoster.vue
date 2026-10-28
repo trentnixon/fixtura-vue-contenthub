@@ -36,9 +36,9 @@
           @click="openCreateRosterModal"
           variant="outlined"
           size="small"
-          tooltip="Create Rosters"
+          :tooltip="createRosterTooltip"
           :loading="loading || isPolling || isCreatingRoster"
-          :disabled="isCreatingRoster"
+          :disabled="isCreatingRoster || !hasFixtureRosterData"
         />
         <IconButton
           :icon="
@@ -197,6 +197,7 @@
         <PrimaryButton
           color="success"
           label="Create"
+          :disabled="!hasFixtureRosterData"
           @click="confirmCreateRoster"
         />
       </v-card-actions>
@@ -277,6 +278,29 @@ const currentView = ref(hasValidAssets.value ? "imageAsset" : "CricketRoster");
 const isConfirmModalOpen = ref(false);
 const isCreateRosterModalOpen = ref(false);
 const showInstructions = useStorage("showInstructions", true);
+
+// Temp gate: creating with no player data leaves isCreatingRoster stuck.
+function fixtureHasRosterData(fixture) {
+  const roster = fixture?.TeamRoster;
+  if (!roster || typeof roster !== "object") return false;
+
+  return [roster.homeTeam, roster.awayTeam].some(
+    (team) =>
+      Array.isArray(team?.players) &&
+      team.players.some((player) => String(player ?? "").trim() !== "")
+  );
+}
+
+const hasFixtureRosterData = computed(() => {
+  const fixtures = rosterFixtures.value;
+  return Array.isArray(fixtures) && fixtures.some(fixtureHasRosterData);
+});
+
+const createRosterTooltip = computed(() =>
+  hasFixtureRosterData.value
+    ? "Create Rosters"
+    : "Create Rosters is unavailable until a fixture has player data"
+);
 
 const galleryState = computed(() => {
   if (imageAsset.value) {
@@ -377,6 +401,7 @@ const confirmSync = () => {
 
 // Open create roster modal
 const openCreateRosterModal = () => {
+  if (!hasFixtureRosterData.value) return;
   isCreateRosterModalOpen.value = true;
 };
 
@@ -387,6 +412,7 @@ const closeCreateRosterModal = () => {
 
 // Confirm create roster action
 const confirmCreateRoster = () => {
+  if (!hasFixtureRosterData.value) return;
   closeCreateRosterModal();
   const routeContext = parseHubRoute(route);
   trackRosterCreateRequested({
